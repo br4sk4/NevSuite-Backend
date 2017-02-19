@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://nevsuite.naffets.net/backend"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:domain="http://nevsuite.naffets.net/backend">
+
+    <xs:complexType name="ReferenceDTO">
+        <xs:sequence>
+            <xs:element name="primaryKey" type="xs:long" />
+            <xs:element name="uuid" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ReferenceListDTO">
+        <xs:sequence>
+            <xs:element name="reference" type="domain:ReferenceDTO" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings
+        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:annox="http://annox.dev.java.net"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd"
+        jaxb:extensionBindingPrefixes="xjc annox"
+        version="2.1">
+
+    <jaxb:globalBindings>
+        <jaxb:serializable uid="1"/>
+        <xjc:superInterface name="net.naffets.nevsuite.backend.framework.core.api.DataTransferObject"/>
+        <jaxb:javaType name="java.time.Instant" xmlType="xs:dateTime"
+                       parseMethod="Instant.parse"
+                       printMethod="toString" />
+    </jaxb:globalBindings>
+
+    <jaxb:bindings schemaLocation="backend-domain.xsd" node="/xs:schema">
+
+        <jaxb:bindings node="xs:complexType[@name='ReferenceDTO']">
+            <annox:annotate>
+                <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="Reference"/>
+            </annox:annotate>
+        </jaxb:bindings>
+
+        <jaxb:bindings node="xs:complexType[@name='ReferenceListDTO']">
+            <annox:annotate>
+                <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="ReferenceList"/>
+            </annox:annotate>
+        </jaxb:bindings>
+
+    </jaxb:bindings>
+
+</jaxb:bindings>

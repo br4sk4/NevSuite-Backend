@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>BaseComponents</artifactId>
+        <groupId>net.naffets.nevsuite.microservices</groupId>
+        <version>0.11</version>
+    </parent>
+
+    <artifactId>Timeseries</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>timeseries-core-lib</module>
+        <module>timeseries-domain-api</module>
+        <module>timeseries-domain-ejb</module>
+        <module>timeseries-webservice</module>
+        <module>timeseries-bundle</module>
+    </modules>
+
+    <dependencyManagement>
+
+        <dependencies>
+
+            <dependency>
+                <groupId>net.naffets.nevsuite.microservices</groupId>
+                <artifactId>backend-core-lib</artifactId>
+                <version>0.11</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.naffets.nevsuite.microservices</groupId>
+                <artifactId>backend-domain-api</artifactId>
+                <version>0.11</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.naffets.nevsuite.microservices</groupId>
+                <artifactId>timeseries-core-lib</artifactId>
+                <version>0.11</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.naffets.nevsuite.microservices</groupId>
+                <artifactId>timeseries-domain-api</artifactId>
+                <version>0.11</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.naffets.nevsuite.microservices</groupId>
+                <artifactId>timeseries-domain-ejb</artifactId>
+                <version>0.11</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
+
+
+</project>
