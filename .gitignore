@@ -1,3 +1,5 @@
+assets
+
 BaseComponents/Timeseries/timeseries-domain-api/src/gen
 BaseComponents/Timeseries/timeseries-domain-ejb/src/gen
 Framework/Backend/backend-domain-api/src/gen
