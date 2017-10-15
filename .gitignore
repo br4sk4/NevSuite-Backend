@@ -1,5 +1,7 @@
 BaseComponents/Timeseries/timeseries-api/src/gen/*
 BaseComponents/Timeseries/timeseries-api/target
+BaseComponents/Timeseries/timeseries-core/src/gen/*
+BaseComponents/Timeseries/timeseries-core/target
 BaseComponents/Timeseries/timeseries-domain/src/gen/*
 BaseComponents/Timeseries/timeseries-domain/target
 Framework/Backend/backend-api/src/gen/*
