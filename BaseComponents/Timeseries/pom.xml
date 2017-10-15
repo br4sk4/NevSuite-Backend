@@ -42,12 +42,6 @@
                 <version>0.11</version>
             </dependency>
 
-            <dependency>
-                <groupId>net.naffets.nevsuite.microservices</groupId>
-                <artifactId>timeseries-domain</artifactId>
-                <version>0.11</version>
-            </dependency>
-
         </dependencies>
 
     </dependencyManagement>
