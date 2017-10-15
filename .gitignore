@@ -1,4 +1,10 @@
-BaseComponents/Timeseries/timeseries-domain-api/src/gen
-BaseComponents/Timeseries/timeseries-domain-ejb/src/gen
-Framework/Backend/backend-domain-api/src/gen
-Framework/Backend/backend-domain-ejb/src/gen
+BaseComponents/Timeseries/timeseries-api/src/gen/*
+BaseComponents/Timeseries/timeseries-api/target
+BaseComponents/Timeseries/timeseries-domain/src/gen/*
+BaseComponents/Timeseries/timeseries-domain/target
+Framework/Backend/backend-api/src/gen/*
+Framework/Backend/backend-api/target
+Framework/Backend/backend-domain/src/gen/*
+Framework/Backend/backend-domain/target
+.idea
+*.iml

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>Timeseries</artifactId>
+        <groupId>net.naffets.nevsuite.microservices</groupId>
+        <version>0.11</version>
+    </parent>
+
+    <name>timeseries</name>
+    <artifactId>timeseries-domain</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <start-class>net.naffets.nevsuite.backend.SpringBooter</start-class>
+    </properties>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>com.mysema.maven</groupId>
+                <artifactId>apt-maven-plugin</artifactId>
+                <version>1.1.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/gen/java</outputDirectory>
+                            <processor>com.mysema.query.apt.hibernate.HibernateAnnotationProcessor</processor>
+                            <options>
+                                <querydsl.entityAccessors>true</querydsl.entityAccessors>
+                            </options>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>de.juplo</groupId>
+                <artifactId>hibernate4-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>GenerateOracleSchema</id>
+                        <goals>
+                            <goal>export</goal>
+                        </goals>
+                        <configuration>
+                            <hibernateDialect>org.hibernate.dialect.Oracle10gDialect</hibernateDialect>
+                            <persistenceUnit>NevSuite-Oracle-PU</persistenceUnit>
+                            <outputFile>${project.basedir}/src/gen/db/oracle-schema.sql</outputFile>
+                            <target>SCRIPT</target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>GenerateH2Schema</id>
+                        <goals>
+                            <goal>export</goal>
+                        </goals>
+                        <configuration>
+                            <hibernateDialect>org.hibernate.dialect.H2Dialect</hibernateDialect>
+                            <persistenceUnit>NevSuite-H2-PU</persistenceUnit>
+                            <outputFile>${project.basedir}/src/gen/db/h2-schema.sql</outputFile>
+                            <target>SCRIPT</target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>net.naffets.nevsuite.microservices</groupId>
+            <artifactId>backend-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.naffets.nevsuite.microservices</groupId>
+            <artifactId>timeseries-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.naffets.nevsuite.microservices</groupId>
+            <artifactId>timeseries-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.moxy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.naffets.nevsuite.contrib</groupId>
+            <artifactId>oracle-jdbc</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

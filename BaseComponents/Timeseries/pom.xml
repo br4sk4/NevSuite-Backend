@@ -15,11 +15,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>timeseries-core-lib</module>
-        <module>timeseries-domain-api</module>
-        <module>timeseries-domain-ejb</module>
-        <module>timeseries-webservice</module>
-        <module>timeseries-bundle</module>
+        <module>timeseries-api</module>
+        <module>timeseries-core</module>
+        <module>timeseries-domain</module>
     </modules>
 
     <dependencyManagement>
@@ -28,31 +26,25 @@
 
             <dependency>
                 <groupId>net.naffets.nevsuite.microservices</groupId>
-                <artifactId>backend-core-lib</artifactId>
+                <artifactId>backend-api</artifactId>
                 <version>0.11</version>
             </dependency>
 
             <dependency>
                 <groupId>net.naffets.nevsuite.microservices</groupId>
-                <artifactId>backend-domain-api</artifactId>
+                <artifactId>timeseries-api</artifactId>
                 <version>0.11</version>
             </dependency>
 
             <dependency>
                 <groupId>net.naffets.nevsuite.microservices</groupId>
-                <artifactId>timeseries-core-lib</artifactId>
+                <artifactId>timeseries-core</artifactId>
                 <version>0.11</version>
             </dependency>
 
             <dependency>
                 <groupId>net.naffets.nevsuite.microservices</groupId>
-                <artifactId>timeseries-domain-api</artifactId>
-                <version>0.11</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.naffets.nevsuite.microservices</groupId>
-                <artifactId>timeseries-domain-ejb</artifactId>
+                <artifactId>timeseries-domain</artifactId>
                 <version>0.11</version>
             </dependency>
 

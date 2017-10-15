@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://nevsuite.naffets.net/timeseries"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:timeseries="http://nevsuite.naffets.net/timeseries">
+
+    <xs:complexType name="TimeseriesHeadDTO">
+        <xs:sequence>
+            <xs:element name="primaryKey" type="xs:string"/>
+            <xs:element name="identifier" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="derivationType" type="xs:string"/>
+            <xs:element name="persistence" type="xs:string"/>
+            <xs:element name="periodicity" type="xs:string"/>
+            <xs:element name="blockSize" type="xs:string"/>
+            <xs:element name="rasterType" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TimeseriesHeadListDTO">
+        <xs:sequence>
+            <xs:element name="head" type="timeseries:TimeseriesHeadDTO" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="IntervalDTO">
+        <xs:sequence>
+            <xs:element name="timestampFrom" type="xs:dateTime"/>
+            <xs:element name="timestampTo" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValueDTO">
+        <xs:sequence>
+            <xs:element name="timestamp" type="xs:dateTime"/>
+            <xs:element name="value" type="xs:decimal"/>
+            <xs:element name="status" type="xs:string"/>
+            <xs:element name="version" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ValueListDTO">
+        <xs:sequence>
+            <xs:element name="value" type="timeseries:ValueDTO" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RasterblockDTO">
+        <xs:sequence>
+            <xs:element name="primaryKey" type="xs:string"/>
+            <xs:element name="timeseriesIdentifier" type="xs:string"/>
+            <xs:element name="interval" type="timeseries:IntervalDTO"/>
+            <xs:element name="valueMap" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TimeseriesDTO">
+        <xs:sequence>
+            <xs:element name="head" type="timeseries:TimeseriesHeadDTO"/>
+            <xs:element name="valueMap" type="timeseries:ValueListDTO"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

@@ -2,23 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>Framework</artifactId>
         <groupId>net.naffets.nevsuite.microservices</groupId>
         <version>0.11</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>Backend</artifactId>
     <packaging>pom</packaging>
 
     <modules>
 
-        <module>backend-core-lib</module>
-        <module>backend-domain-api</module>
-        <module>backend-domain-ejb</module>
-        <module>backend-bundle</module>
-        <module>backend-webservice</module>
+        <module>backend-api</module>
+        <module>backend-domain</module>
 
     </modules>
 
@@ -28,19 +27,7 @@
 
             <dependency>
                 <groupId>net.naffets.nevsuite.microservices</groupId>
-                <artifactId>backend-core-lib</artifactId>
-                <version>0.11</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.naffets.nevsuite.microservices</groupId>
-                <artifactId>backend-domain-api</artifactId>
-                <version>0.11</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.naffets.nevsuite.microservices</groupId>
-                <artifactId>backend-domain-ejb</artifactId>
+                <artifactId>backend-api</artifactId>
                 <version>0.11</version>
             </dependency>
 
