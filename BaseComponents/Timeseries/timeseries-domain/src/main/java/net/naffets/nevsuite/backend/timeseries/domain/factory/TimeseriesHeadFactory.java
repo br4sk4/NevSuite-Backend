@@ -46,6 +46,7 @@ public class TimeseriesHeadFactory {
                                                TimeseriesPersistence persistence,
                                                TimeseriesPeriodicity periodicity) throws InvalidTimeseriesConfigException {
 
+        /*
         TimeseriesHead ts = new TimeseriesHead(
                 identifier,
                 type,
@@ -63,8 +64,9 @@ public class TimeseriesHeadFactory {
             else
                 e.printStackTrace();
         }
+        */
 
-        return ts;
+        return new TimeseriesHead();
     }
 
 }

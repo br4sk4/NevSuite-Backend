@@ -1,6 +1,7 @@
 package net.naffets.nevsuite.backend.framework.webservice;
 
 import net.naffets.nevsuite.backend.framework.domain.entity.Person;
+import net.naffets.nevsuite.backend.framework.domain.service.BackendComponentService;
 import net.naffets.nevsuite.backend.framework.domain.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,21 +18,24 @@ import java.util.List;
 public class BackendComponentWebservice {
 
     @Autowired
-    private PersonService service;
+    private BackendComponentService componentService;
+
+    @Autowired
+    private PersonService personService;
 
     @RequestMapping("/respond")
     public String respond() {
-        return "May the force be with you!";
+        return componentService.respond();
     }
 
     @RequestMapping("/person")
     public List<Person> findPerson() {
-        return service.findAll();
+        return personService.findAll();
     }
 
     @RequestMapping("/person/{id}")
     public Person findPerson(@PathVariable(name = "id") String id) {
-        return service.findByPrimaryKey(id);
+        return personService.findByPrimaryKey(id);
     }
 
 }

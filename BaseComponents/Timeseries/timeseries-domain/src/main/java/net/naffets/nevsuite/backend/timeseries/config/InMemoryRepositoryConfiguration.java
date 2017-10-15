@@ -16,7 +16,7 @@ import java.util.Map;
  * @author br4sk4 / created on 13.10.2017
  */
 @Configuration
-@EnableJpaRepositories(basePackages = "net.naffets.nevsuite.backend.framework.domain.repository.temporary", entityManagerFactoryRef = "inMemoryEntityManagerFactory")
+@EnableJpaRepositories(basePackages = "net.naffets.nevsuite.backend.timeseries.domain.repository.temporary", entityManagerFactoryRef = "inMemoryEntityManagerFactory")
 public class InMemoryRepositoryConfiguration {
 
     @Bean
@@ -36,7 +36,7 @@ public class InMemoryRepositoryConfiguration {
             EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(inMemoryDataSource())
-                .packages("net.naffets.nevsuite.backend.framework.domain")
+                .packages("net.naffets.nevsuite.backend.timeseries.domain")
                 .persistenceUnit("inMemory")
                 .properties(jpaProperties())
                 .build();

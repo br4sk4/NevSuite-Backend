@@ -15,7 +15,7 @@ import javax.sql.DataSource;
  * @author br4sk4 / created on 13.10.2017
  */
 @Configuration
-@EnableJpaRepositories(basePackages = "net.naffets.nevsuite.backend.framework.domain.repository.persistent")
+@EnableJpaRepositories(basePackages = "net.naffets.nevsuite.backend.timeseries.domain.repository.persistent")
 public class PersistenceRepositoryConfiguration {
 
     @Bean
@@ -37,7 +37,7 @@ public class PersistenceRepositoryConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(mainDataSource())
-                .packages("net.naffets.nevsuite.backend.framework.domain")
+                .packages("net.naffets.nevsuite.backend.timeseries.domain")
                 .persistenceUnit("main")
                 .build();
     }
