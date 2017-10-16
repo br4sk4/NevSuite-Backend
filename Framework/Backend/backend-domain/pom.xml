@@ -17,12 +17,20 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <start-class>net.naffets.nevsuite.backend.SpringBooter</start-class>
+        <start-class>net.naffets.nevsuite.backend.framework.SpringBooter</start-class>
     </properties>
 
     <build>
+
         <finalName>${project.name}</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>${start-class}</mainClass>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>de.juplo</groupId>
                 <artifactId>hibernate4-maven-plugin</artifactId>
