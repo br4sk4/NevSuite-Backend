@@ -5,8 +5,8 @@
 
     <xs:complexType name="ReferenceDTO">
         <xs:sequence>
-            <xs:element name="primaryKey" type="xs:long" />
-            <xs:element name="uuid" type="xs:string" />
+            <xs:element name="primaryKey" type="xs:string" />
+            <xs:element name="typeDiscriminator" type="xs:string" />
         </xs:sequence>
     </xs:complexType>
 

@@ -9,22 +9,15 @@ import net.naffets.nevsuite.backend.framework.core.api.Reference;
  */
 public abstract class AbstractReference implements Reference {
 
-    protected Long primaryKey;
-    protected String uuid;
+    protected String primaryKey;
 
     protected AbstractReference(EntityBean entityBean) {
         this.primaryKey = entityBean.getPrimaryKey();
-        this.uuid = entityBean.getUuid();
     }
 
     @Override
-    public Long getPrimaryKey() {
+    public String getPrimaryKey() {
         return this.primaryKey;
-    }
-
-    @Override
-    public String getUuid() {
-        return this.uuid;
     }
 
 }

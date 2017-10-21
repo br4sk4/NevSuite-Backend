@@ -5,47 +5,31 @@ import net.naffets.nevsuite.backend.framework.core.api.EntityBean;
 import net.naffets.nevsuite.backend.framework.core.api.Validatable;
 import net.naffets.nevsuite.backend.framework.core.api.ValidationConstraint;
 
+import javax.persistence.Basic;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
  * @author br4sk4
  * created on 03.07.2015
  */
-public abstract class AbstractEntityBean<ENTITY extends EntityBean, DTO extends DataTransferObject> extends AbstractDomainObject implements EntityBean<ENTITY, DTO> {
+@MappedSuperclass
+public abstract class AbstractEntityBean<DTO extends DataTransferObject> extends AbstractDomainObject implements EntityBean<DTO> {
+
+    @Id
+    @Basic(optional = false)
+    protected String primaryKey;
 
     public AbstractEntityBean() {
-        this.setPrimaryKey(null);
-        this.setUuid(UUID.randomUUID().toString());
+        this.primaryKey = UUID.randomUUID().toString();
     }
 
-    public AbstractEntityBean(Long primaryKey) {
-        this.setPrimaryKey(primaryKey);
-
-        this.addValidationConstraint(new ValidationConstraint<Validatable>() {
-            @Override
-            public boolean validate(Validatable object) throws Exception {
-                return object != null;
-            }
-        });
-
-        this.addValidationConstraint(new ValidationConstraint<Validatable>() {
-            @Override
-            public boolean validate(Validatable object) throws Exception {
-                return ((AbstractEntityBean) object).getPrimaryKey() != null;
-            }
-        });
-
-        this.addValidationConstraint(new ValidationConstraint<Validatable>() {
-            @Override
-            public boolean validate(Validatable object) throws Exception {
-                return ((AbstractEntityBean) object).getUuid() != null;
-            }
-        });
-    }
-
-    @Override
-    public boolean isEntity() {
-        return true;
+    public AbstractEntityBean(String primaryKey) {
+        this.primaryKey = primaryKey;
+        this.addValidationConstraint(Objects::nonNull);
+        this.addValidationConstraint(object -> ((AbstractEntityBean) object).getPrimaryKey() != null);
     }
 
     @Override
@@ -56,15 +40,13 @@ public abstract class AbstractEntityBean<ENTITY extends EntityBean, DTO extends 
 
         AbstractEntityBean that = (AbstractEntityBean) o;
 
-        if (!this.getPrimaryKey().equals(that.getPrimaryKey())) return false;
-        return this.getUuid().equals(that.getUuid());
+        return this.getPrimaryKey().equals(that.getPrimaryKey());
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + this.getPrimaryKey().hashCode();
-        result = 31 * result + this.getUuid().hashCode();
         return result;
     }
 

@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author br4sk4 / created on 13.10.2017
@@ -39,7 +41,20 @@ public class PersistenceRepositoryConfiguration {
                 .dataSource(mainDataSource())
                 .packages("net.naffets.nevsuite.backend.timeseries.domain")
                 .persistenceUnit("main")
+                .properties(jpaProperties())
                 .build();
+    }
+
+    private Map<String, Object> jpaProperties() {
+        DataSourceProperties dataSourceProperties = mainDataSourceProperties();
+        Map<String, Object> properties = new HashMap<>();
+        String autoGenerationStrategy = "validate";
+        if (dataSourceProperties.getUrl().equals("jdbc:h2:mem:mainDB")) {
+            properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+            autoGenerationStrategy = "create-drop";
+        }
+        properties.put("hibernate.hbm2ddl.auto", autoGenerationStrategy);
+        return properties;
     }
 
 }

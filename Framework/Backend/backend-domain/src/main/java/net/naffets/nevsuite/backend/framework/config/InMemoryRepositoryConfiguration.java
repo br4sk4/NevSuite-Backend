@@ -45,6 +45,7 @@ public class InMemoryRepositoryConfiguration {
     private Map<String, Object> jpaProperties() {
         Map<String, Object> props = new HashMap<>();
         props.put("hibernate.hbm2ddl.auto", "create-drop");
+        props.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         return props;
     }
 

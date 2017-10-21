@@ -1,5 +1,9 @@
 package net.naffets.nevsuite.backend.framework.domain.entity;
 
+import net.naffets.nevsuite.backend.framework.core.api.DataTransferObject;
+import net.naffets.nevsuite.backend.framework.core.api.Reference;
+import net.naffets.nevsuite.backend.framework.core.base.AbstractEntityBean;
+
 import javax.persistence.*;
 
 /**
@@ -7,12 +11,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "T_PERSON")
-public class Person {
-
-    @Id
-    @Basic(optional = false)
-    @Column(name = "pers_id")
-    private String primaryKey;
+@AttributeOverride(name = "primaryKey", column = @Column(name = "pers_id"))
+public class Person<DTO extends DataTransferObject> extends AbstractEntityBean<DTO> {
 
     @Column(name = "pers_firstname")
     private String firstName;
@@ -44,4 +44,13 @@ public class Person {
         this.lastName = lastName;
     }
 
+    @Override
+    public DTO asDTO() {
+        return null;
+    }
+
+    @Override
+    public Reference asReference() {
+        return null;
+    }
 }

@@ -6,8 +6,6 @@ package net.naffets.nevsuite.backend.framework.core.api;
  */
 public interface Identifiable {
 
-    Long getPrimaryKey();
-
-    String getUuid();
+    String getPrimaryKey();
 
 }

@@ -5,10 +5,4 @@ package net.naffets.nevsuite.backend.framework.core.base;
  * created on 19.04.2016
  */
 public abstract class AbstractValueObject extends AbstractDomainObject {
-
-    @Override
-    public boolean isValueObject() {
-        return true;
-    }
-
 }
