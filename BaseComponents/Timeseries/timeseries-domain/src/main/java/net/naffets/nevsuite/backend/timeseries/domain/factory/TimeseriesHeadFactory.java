@@ -11,31 +11,8 @@ import net.naffets.nevsuite.backend.timeseries.lang.exception.InvalidTimeseriesC
  */
 public class TimeseriesHeadFactory {
 
-    public static TimeseriesHead fromDTO(TimeseriesHeadDTO dto) {
-        TimeseriesHead entity = new TimeseriesHead();
-
-        entity.setPrimaryKey(dto.getPrimaryKey());
-        entity.setIdentifier(dto.getIdentifier());
-        entity.setType(dto.getType() != null ? TimeseriesType.valueOf(dto.getType()) : null);
-        entity.setDerivationType(dto.getDerivationType() != null ? TimeseriesDerivationType.valueOf(dto.getDerivationType()) : null);
-        entity.setPersistence(dto.getPersistence() != null ? TimeseriesPersistence.valueOf(dto.getPersistence()) : null);
-        entity.setPeriodicity(dto.getPeriodicity() != null ? TimeseriesPeriodicity.valueOf(dto.getPeriodicity()) : null);
-        entity.setBlockSize(dto.getBlockSize() != null ? TimeseriesBlocksize.valueOf(dto.getBlockSize()) : null);
-        entity.setRasterType(dto.getRasterType() != null ? TimeseriesRastertype.valueOf(dto.getRasterType()) : null);
-
-        return entity;
-    }
-
-    public TimeseriesHead createEmpty() {
-        TimeseriesHead entity = new TimeseriesHead();
-        entity.setPrimaryKey(null);
-        return entity;
-    }
-
     public TimeseriesHead createNew() {
-        TimeseriesHead entity = new TimeseriesHead();
-        entity.setPrimaryKey(null);
-        return entity;
+        return new TimeseriesHead();
     }
 
     public TimeseriesHead createTimeseriesHead(String identifier,
@@ -45,7 +22,6 @@ public class TimeseriesHeadFactory {
                                                TimeseriesBlocksize blockSize,
                                                TimeseriesPersistence persistence,
                                                TimeseriesPeriodicity periodicity) throws InvalidTimeseriesConfigException {
-
         TimeseriesHead ts = new TimeseriesHead(
                 identifier,
                 type,
@@ -56,15 +32,27 @@ public class TimeseriesHeadFactory {
                 periodicity);
 
         try {
-            // validation
+            ts.validate();
+        } catch (InvalidTimeseriesConfigException e) {
+            throw e;
         } catch (Exception e) {
-            if (e.getClass().equals(InvalidTimeseriesConfigException.class))
-                throw (InvalidTimeseriesConfigException) e;
-            else
-                e.printStackTrace();
+            e.printStackTrace();
         }
 
         return new TimeseriesHead();
+    }
+
+    public static TimeseriesHead fromDTO(TimeseriesHeadDTO dto) {
+        TimeseriesHead entity = new TimeseriesHead();
+        entity.setPrimaryKey(dto.getPrimaryKey());
+        entity.setIdentifier(dto.getIdentifier());
+        entity.setType(dto.getType() != null ? TimeseriesType.valueOf(dto.getType()) : null);
+        entity.setDerivationType(dto.getDerivationType() != null ? TimeseriesDerivationType.valueOf(dto.getDerivationType()) : null);
+        entity.setPersistence(dto.getPersistence() != null ? TimeseriesPersistence.valueOf(dto.getPersistence()) : null);
+        entity.setPeriodicity(dto.getPeriodicity() != null ? TimeseriesPeriodicity.valueOf(dto.getPeriodicity()) : null);
+        entity.setBlockSize(dto.getBlockSize() != null ? TimeseriesBlocksize.valueOf(dto.getBlockSize()) : null);
+        entity.setRasterType(dto.getRasterType() != null ? TimeseriesRastertype.valueOf(dto.getRasterType()) : null);
+        return entity;
     }
 
 }

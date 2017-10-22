@@ -8,10 +8,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.zip.GZIPInputStream;
@@ -73,7 +71,7 @@ public abstract class AbstractDataTransferObjectBuilder<DTO extends DataTransfer
         return this;
     }
 
-    public Boolean isPrettyPrinting() {
+    public Boolean isPrettyPrintingEnabled() {
         return this.prettyPrintingEnabled;
     }
 
@@ -81,12 +79,14 @@ public abstract class AbstractDataTransferObjectBuilder<DTO extends DataTransfer
         return this.compressionEnabled;
     }
 
-    public DTO fromJson(Source json) {
+    @SuppressWarnings("unchecked")
+    public DTO fromJson(String json) {
         try {
+            Source jsonSource = new StreamSource(new StringReader(isCompressionEnabled() ? gunzip(json) : json));
             JAXBContext jaxbContext = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(new Class[]{dto.getClass()}, new Properties());
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             jaxbUnmarshaller.setProperty("eclipselink.media-type", "application/json");
-            return this.fromDTO((DTO) jaxbUnmarshaller.unmarshal(json, dto.getClass()).getValue()).build();
+            return (DTO) jaxbUnmarshaller.unmarshal(jsonSource, dto.getClass()).getValue();
         } catch (JAXBException e) {
             e.printStackTrace();
         }
@@ -99,10 +99,10 @@ public abstract class AbstractDataTransferObjectBuilder<DTO extends DataTransfer
             JAXBContext jaxbContext = JAXBContextFactory.createContext(new Class[]{dto.getClass()}, new Properties());
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty("eclipselink.media-type", "application/json");
-            if (isPrettyPrinting()) jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            if (isPrettyPrintingEnabled()) jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             StringWriter writer = new StringWriter();
             jaxbMarshaller.marshal(dto, writer);
-            return this.compressionEnabled ? gzip(writer.toString()) : writer.toString();
+            return isCompressionEnabled() ? gzip(writer.toString()) : writer.toString();
         } catch (JAXBException e) {
             e.printStackTrace();
         }
@@ -110,12 +110,14 @@ public abstract class AbstractDataTransferObjectBuilder<DTO extends DataTransfer
         return "";
     }
 
-    public DTO fromXml(Source xml) {
+    @SuppressWarnings("unchecked")
+    public DTO fromXml(String xml) {
         try {
+            Source xmlSource = new StreamSource(new StringReader(isCompressionEnabled() ? gunzip(xml) : xml));
             JAXBContext jaxbContext = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(new Class[]{dto.getClass()}, new Properties());
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             jaxbUnmarshaller.setProperty("eclipselink.media-type", "application/xml");
-            return this.fromDTO((DTO) jaxbUnmarshaller.unmarshal(xml, dto.getClass()).getValue()).build();
+            return this.fromDTO((DTO) jaxbUnmarshaller.unmarshal(xmlSource, dto.getClass()).getValue()).build();
         } catch (JAXBException e) {
             e.printStackTrace();
         }
@@ -129,9 +131,9 @@ public abstract class AbstractDataTransferObjectBuilder<DTO extends DataTransfer
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty("eclipselink.media-type", "application/xml");
             StringWriter writer = new StringWriter();
-            if (isPrettyPrinting()) jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            if (isPrettyPrintingEnabled()) jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(dto, writer);
-            return this.compressionEnabled ? gzip(writer.toString()) : writer.toString();
+            return isCompressionEnabled() ? gzip(writer.toString()) : writer.toString();
         } catch (JAXBException e) {
             e.printStackTrace();
         }
