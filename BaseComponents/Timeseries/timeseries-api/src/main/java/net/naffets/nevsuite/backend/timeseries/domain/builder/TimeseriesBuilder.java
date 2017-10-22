@@ -2,12 +2,13 @@ package net.naffets.nevsuite.backend.timeseries.domain.builder;
 
 import net.naffets.nevsuite.backend.framework.core.base.AbstractDataTransferObjectBuilder;
 import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesDTO;
-import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesHeadDTO;
-import net.naffets.nevsuite.backend.timeseries.domain.dto.ValueListDTO;
+import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesValueDTO;
+import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesReferenceDTO;
+
+import java.util.List;
 
 /**
- * @author br4sk4
- * created on 22.10.2016
+ * @author br4sk4 / created on 22.10.2017
  */
 public class TimeseriesBuilder extends AbstractDataTransferObjectBuilder<TimeseriesDTO> {
 
@@ -16,20 +17,19 @@ public class TimeseriesBuilder extends AbstractDataTransferObjectBuilder<Timeser
     }
 
     @Override
-    public AbstractDataTransferObjectBuilder<TimeseriesDTO> fromDTO(TimeseriesDTO timeseriesDTO) {
-        dto.setHead(timeseriesDTO.getHead());
-        dto.setValueMap(timeseriesDTO.getValueMap());
+    public TimeseriesBuilder fromDTO(TimeseriesDTO timeseries) {
+        dto.setReference(timeseries.getReference());
+        dto.setValueMap(timeseries.getValueMap());
         return this;
     }
 
-    public TimeseriesBuilder withTimeseriesHead(TimeseriesHeadDTO value) {
-        dto.setHead(value);
+    public TimeseriesBuilder withReference(TimeseriesReferenceDTO reference) {
+        dto.setReference(reference);
         return this;
     }
 
-    public TimeseriesBuilder withValueMap(ValueListDTO value) {
-        dto.setValueMap(value);
+    public TimeseriesBuilder withValueMap(List<TimeseriesValueDTO> data) {
+        dto.setValueMap(data);
         return this;
     }
-
 }

@@ -33,6 +33,15 @@ public abstract class AbstractEntityBean<DTO extends DataTransferObject> extends
     }
 
     @Override
+    public String getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(String primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

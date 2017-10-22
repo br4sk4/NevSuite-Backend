@@ -1,6 +1,6 @@
 package net.naffets.nevsuite.backend.timeseries.domain.repository.persistent;
 
-import net.naffets.nevsuite.backend.timeseries.domain.entity.Rasterblock;
+import net.naffets.nevsuite.backend.timeseries.domain.entity.TimeseriesDocument;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,8 +11,8 @@ import java.util.List;
  * created on 25.10.2016
  */
 @Repository
-public interface RasterblockRepository extends JpaRepository<Rasterblock, String> {
+public interface TimeseriesDocumentRepository extends JpaRepository<TimeseriesDocument, String> {
 
-    List<Rasterblock> findByTimeseriesIdentifier(String identifier);
+    List<TimeseriesDocument> findByTimeseriesIdentifier(String identifier);
 
 }

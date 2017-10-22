@@ -1,5 +1,8 @@
 package net.naffets.nevsuite.backend.timeseries.domain.entity;
 
+import net.naffets.nevsuite.backend.framework.core.api.DataTransferObject;
+import net.naffets.nevsuite.backend.framework.core.api.Reference;
+import net.naffets.nevsuite.backend.framework.core.base.AbstractEntityBean;
 import net.naffets.nevsuite.backend.timeseries.domain.basictype.*;
 
 import javax.persistence.*;
@@ -10,39 +13,31 @@ import java.io.Serializable;
  * created on 11.06.2015
  */
 @Entity
-@Table(name = "T_META_TIMESERIES_HEAD")
-public class TimeseriesHead implements Serializable {
+@Table(name = "t_meta_timeseries_head")
+@AttributeOverride(name = "primaryKey", column = @Column(name = "mets_id"))
+public class TimeseriesHead<DTO extends DataTransferObject> extends AbstractEntityBean<DTO> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @Basic(optional = false)
-    @Column(name = "METS_ID")
-    protected String primaryKey;
-
-    @Column(name = "METS_IDENTIFIER")
+    @Column(name = "mets_identifier")
     protected String identifier;
-
-    // Type - Information
     @Enumerated(EnumType.STRING)
-    @Column(name = "METS_TYPE")
+    @Column(name = "mets_type")
     protected TimeseriesType type;
     @Enumerated(EnumType.STRING)
-    @Column(name = "METS_DERIVATIONTYPE")
+    @Column(name = "mets_derivationtype")
     protected TimeseriesDerivationType derivationType;
     @Enumerated(EnumType.STRING)
-    @Column(name = "METS_PERSISTENCE")
+    @Column(name = "mets_persistence")
     protected TimeseriesPersistence persistence;
     @Enumerated(EnumType.STRING)
-    @Column(name = "METS_PERIODICITY")
+    @Column(name = "mets_periodicity")
     protected TimeseriesPeriodicity periodicity;
-
-    // Rasterblockung - Information
     @Enumerated(EnumType.STRING)
-    @Column(name = "METS_BLOCKSIZE")
+    @Column(name = "mets_blocksize")
     protected TimeseriesBlocksize blockSize;
     @Enumerated(EnumType.STRING)
-    @Column(name = "METS_RASTERTYPE")
+    @Column(name = "mets_rastertype")
     protected TimeseriesRastertype rasterType;
 
     public TimeseriesHead() {
@@ -65,7 +60,6 @@ public class TimeseriesHead implements Serializable {
         this.blockSize = blockSize;
         this.persistence = persistence;
         this.periodicity = periodicity;
-
     }
 
     public void setBlockSize(TimeseriesBlocksize blockSize) {
@@ -74,14 +68,6 @@ public class TimeseriesHead implements Serializable {
 
     public void setRasterType(TimeseriesRastertype rasterType) {
         this.rasterType = rasterType;
-    }
-
-    public String getPrimaryKey() {
-        return this.primaryKey;
-    }
-
-    public void setPrimaryKey(String primaryKey) {
-        this.primaryKey = primaryKey;
     }
 
     public String getIdentifier() {
@@ -132,4 +118,13 @@ public class TimeseriesHead implements Serializable {
         this.periodicity = periodicity;
     }
 
+    @Override
+    public DTO asDTO() {
+        return null;
+    }
+
+    @Override
+    public Reference asReference() {
+        return null;
+    }
 }

@@ -14,7 +14,7 @@ public class TimeseriesHeadBuilder extends AbstractDataTransferObjectBuilder<Tim
     }
 
     @Override
-    public AbstractDataTransferObjectBuilder<TimeseriesHeadDTO> fromDTO(TimeseriesHeadDTO timeseriesHeadDTO) {
+    public TimeseriesHeadBuilder fromDTO(TimeseriesHeadDTO timeseriesHeadDTO) {
         this.dto.setPrimaryKey(timeseriesHeadDTO.getPrimaryKey());
         this.dto.setIdentifier(timeseriesHeadDTO.getIdentifier());
         this.dto.setType(timeseriesHeadDTO.getType());

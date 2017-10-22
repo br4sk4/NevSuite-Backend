@@ -1,12 +1,9 @@
-BaseComponents/Timeseries/timeseries-api/src/gen/*
 BaseComponents/Timeseries/timeseries-api/target
-BaseComponents/Timeseries/timeseries-core/src/gen/*
 BaseComponents/Timeseries/timeseries-core/target
-BaseComponents/Timeseries/timeseries-domain/src/gen/*
 BaseComponents/Timeseries/timeseries-domain/target
-Framework/Backend/backend-api/src/gen/*
+BaseComponents/Timeseries/timeseries-domain/src/gen
 Framework/Backend/backend-api/target
-Framework/Backend/backend-domain/src/gen/*
 Framework/Backend/backend-domain/target
+Framework/Backend/backend-domain/src/gen
 .idea
 *.iml

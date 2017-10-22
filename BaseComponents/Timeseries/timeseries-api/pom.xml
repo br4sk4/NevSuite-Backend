@@ -14,54 +14,6 @@
     <artifactId>timeseries-api</artifactId>
     <packaging>jar</packaging>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.7.4</version>
-                <executions>
-                    <execution>
-                        <id>generate-dto</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <strict>false</strict>
-                            <schemaIncludes>
-                                <value>timeseries-domain.xsd</value>
-                            </schemaIncludes>
-                            <bindingIncludes>
-                                <include>timeseries-domain-binding.xml</include>
-                            </bindingIncludes>
-                            <extension>true</extension>
-                            <schemaDirectory>src/main/resources/domain</schemaDirectory>
-                            <bindingDirectory>src/main/resources/domain</bindingDirectory>
-                            <generatePackage>net.naffets.nevsuite.backend.timeseries.domain.dto</generatePackage>
-                            <generateDirectory>src/gen/java</generateDirectory>
-                            <args>
-                                <arg>-Xannotate</arg>
-                            </args>
-                            <plugins>
-                                <plugin>
-                                    <groupId>org.jvnet.jaxb2_commons</groupId>
-                                    <artifactId>jaxb2-basics</artifactId>
-                                    <version>0.6.0</version>
-                                </plugin>
-                                <plugin>
-                                    <groupId>org.jvnet.jaxb2_commons</groupId>
-                                    <artifactId>jaxb2-basics-annotate</artifactId>
-                                    <version>0.6.0</version>
-                                </plugin>
-                            </plugins>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
 
         <dependency>
