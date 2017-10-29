@@ -37,9 +37,9 @@ class HomeStore extends ReduceStore {
     getInitialState() {
         let componentInfos = [];
 
-        const host = ( window.location.hostname != "" ) ? window.location.hostname + ':' + window.location.port : 'localhost:8080';
-        this.createComponent("Common Backend", 'http://' + host + '/backend-webservice/ComponentService/respond');
-        this.createComponent("Timeseries", 'http://' + host + '/timeseries-webservice/ComponentService/respond');
+        const host = ( window.location.hostname != "" ) ? window.location.hostname + ':8080' : 'localhost:8080';
+        this.createComponent("Common Backend", 'http://' + host + '/backend/ComponentService/respond');
+        this.createComponent("Timeseries", 'http://' + host + '/timeseries/ComponentService/respond');
 
         return Immutable.fromJS({
             componentInfos: componentInfos,

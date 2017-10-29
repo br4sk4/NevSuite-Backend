@@ -21,8 +21,9 @@
     </properties>
 
     <build>
-        <plugins>
 
+        <finalName>${project.name}</finalName>
+        <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -30,7 +31,6 @@
                     <mainClass>${start-class}</mainClass>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>com.mysema.maven</groupId>
                 <artifactId>apt-maven-plugin</artifactId>
@@ -50,7 +50,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>de.juplo</groupId>
                 <artifactId>hibernate4-maven-plugin</artifactId>
@@ -82,7 +81,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
