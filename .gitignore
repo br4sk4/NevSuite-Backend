@@ -1,9 +1,13 @@
 BaseComponents/Timeseries/timeseries-api/target
 BaseComponents/Timeseries/timeseries-core/target
 BaseComponents/Timeseries/timeseries-domain/target
-BaseComponents/Timeseries/timeseries-domain/src/gen
+BaseComponents/Timeseries/timeseries-domain/src/gen/*
 Framework/Backend/backend-api/target
 Framework/Backend/backend-domain/target
-Framework/Backend/backend-domain/src/gen
+Framework/Backend/backend-domain/src/gen/*
+Frontend/src/node_modules/
+Frontend/src/etc/
+Frontend/target/
+nevsuite.bundle.js
 .idea
 *.iml

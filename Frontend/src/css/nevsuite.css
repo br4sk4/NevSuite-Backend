@@ -1,0 +1,190 @@
+body{
+	overflow: hidden;
+	background-color: darkgrey;
+	
+	height: 100vh;
+	width: 100vw;
+
+	padding: 0;
+	margin: 0;
+}
+
+.appContainer {
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	width: 100%;
+	height: 100%;
+	background: darkgrey;
+	color: black;
+}
+
+.tabLane {
+    overflow: visible;
+    width: 100%;
+    height: 26px;
+    background: white;
+    border-left: solid 1px lightgrey;
+    border-bottom: solid 1px lightgrey;
+}
+
+.tabPager {
+    float: left;
+    overflow: hidden;
+    width: 100%;
+    height: 27px;
+}
+
+.tabPagerButtonLeft {
+    float: left;
+    width: 23px;
+    height: 23px;
+    margin-left: 2px;
+    margin-right: 1px;
+    padding-top: 3px;
+    padding-left: 3px;
+    border: solid lightgrey 1px;
+}
+
+.tabPagerButtonLeft:hover {
+    border: solid 1px #86BFA0;
+    background: #D3F0E0;
+}
+
+.tabPagerButtonLeft:active {
+    border: solid 1px #429366;
+    background: #86BFA0;
+}
+
+.tabPagerButtonLeft.disabled {
+    color: lightgrey;
+}
+
+.tabPagerButtonLeft.disabled:hover {
+    color: lightgrey;
+    background: white;
+    border: solid lightgrey 1px;
+}
+
+.tabPagerButtonRight {
+    float: left;
+    width: 23px;
+    height: 23px;
+    margin-left: 1px;
+    margin-right: 1px;
+    padding-top: 3px;
+    padding-left: 3px;
+    border: solid lightgrey 1px;
+}
+
+.tabPagerButtonRight:hover {
+    border: solid 1px #86BFA0;
+    background: #D3F0E0;
+}
+
+.tabPagerButtonRight:active {
+    border: solid 1px #429366;
+    background: #86BFA0;
+}
+
+.tabPagerButtonRight.disabled {
+    color: lightgrey;
+}
+
+.tabPagerButtonRight.disabled:hover {
+    color: lightgrey;
+    background: white;
+    border: solid lightgrey 1px;
+}
+
+.tabPagerButtonPlus {
+    float: left;
+    width: 23px;
+    height: 23px;
+    margin-left: 1px;
+    margin-right: 2px;
+    padding-top: 3px;
+    padding-left: 3px;
+    border: solid lightgrey 1px;
+}
+
+.tabPagerButtonPlus:hover {
+    border: solid 1px #86BFA0;
+    background: #D3F0E0;
+}
+
+.tabLaneSpacer {
+    width: 100%;
+    height: 3px;
+    background: #86BFA0;
+    border-bottom: solid 1px lightgrey;
+}
+
+.tabHeading {
+    overflow: hidden;
+    float: left;
+    margin-top: 1px;
+    width: 190px;
+    height: 25px;
+    background: white;
+    border: solid 1px lightgrey;
+
+    font-size: 8pt;
+    line-height: 25px;
+    text-align: left;
+}
+
+.tabHeadingLabel {
+    float: left;
+    width: 167px;
+    height: 100%;
+    padding-left: 10px;
+}
+
+.tabRemoveButton {
+    float: right;
+    height: 100%;
+    padding-top: 6px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.tabRemoveButton:hover {
+    color: darkred;
+}
+
+.tabHeading:hover {
+    border: solid 1px #86BFA0;
+    background: #D3F0E0;
+}
+
+.tabHeading.active {
+    border-top: solid 3px #429366;
+    border-left: solid 1px #429366;
+    border-right: solid 1px #429366;
+    border-bottom: #86BFA0;
+    background: #86BFA0;
+}
+
+.tabContent {
+    position: absolute;
+    overflow: auto;
+
+    width: 100%;
+
+    top: 29px;
+    bottom: 0;
+}
+
+.tabSectionSeparator {
+    width: 100%;
+    height: 4px;
+    border: solid lightgrey 1px;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #86BFA0;
+}

@@ -1,0 +1,42 @@
+﻿<html>
+
+    <head>
+
+        <!-- Application-Info -->
+        <title>NevSuite</title>
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+        
+        <!-- Base-APIs -->
+        <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+
+        <!-- UI-StyleSheets -->
+        <link type="text/css" rel="stylesheet" href="css/nevsuite.css">
+        <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css"/>
+
+        <!-- Disable Browser-ContextMenu -->
+        <script type="text/javascript">
+            if ( $(document).bind != null ) {
+                $(document).bind('contextmenu', function (e) {
+                    return false;
+                });
+            }
+        </script>
+
+    </head>
+
+    <body>
+
+        <application/>
+
+        <!-- React-Flux-APIs -->
+        <script type="text/javascript" src="node_modules/flux/dist/Flux.js"></script>
+        <script type="text/javascript" src="node_modules/react/dist/react.js"></script>
+        <script type="text/javascript" src="node_modules/react-dom/dist/react-dom.js"></script>
+
+        <!-- NevSuiteApp -->
+        <script type="text/javascript" src="./js/nevsuite.bundle.js"></script>
+
+    </body>
+
+</html>

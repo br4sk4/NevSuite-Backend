@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>MicroServices</artifactId>
+        <groupId>net.naffets.nevsuite.microservices</groupId>
+        <version>0.11</version>
+    </parent>
+
+    <artifactId>Frontend</artifactId>
+
+    <packaging>pom</packaging>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
+
+                    <execution>
+                        <id>exec-npm-install</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>install</argument>
+                                <argument>./src</argument>
+                                <argument>--save-dev</argument>
+                                <argument>--prefix</argument>
+                                <argument>./src</argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>exec-webpack</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <workingDirectory>./src</workingDirectory>
+                            <executable>./node_modules/.bin/webpack</executable>
+                            <arguments>
+                                <argument>--config</argument>
+                                <argument>webpack.js</argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+</project>

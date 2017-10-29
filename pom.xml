@@ -24,6 +24,7 @@
 
         <module>Framework</module>
         <module>BaseComponents</module>
+        <module>Frontend</module>
 
     </modules>
 
