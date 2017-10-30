@@ -84,6 +84,39 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>deploy</id>
+            <properties>
+                <tomcat.home>${project.basedir}/../../../.tomcat</tomcat.home>
+                <nevsuite.home>${tomcat.home}/webapps</nevsuite.home>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>moveFiles</id>
+                                <phase>install</phase>
+                                <configuration>
+                                    <tasks>
+                                        <copy todir="${nevsuite.home}" flatten="true" overwrite="true" verbose="true" failonerror="true">
+                                            <fileset dir="${project.basedir}/target" includes="**/*.war"/>
+                                        </copy>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
 
         <dependency>

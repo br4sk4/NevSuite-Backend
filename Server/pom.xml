@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>MicroServices</artifactId>
+        <groupId>net.naffets.nevsuite.microservices</groupId>
+        <version>0.11</version>
+    </parent>
+
+    <artifactId>Server</artifactId>
+    <packaging>pom</packaging>
+    <name>NevSuite-Standalone-Server</name>
+
+    <profiles>
+        <profile>
+            <id>server</id>
+            <properties>
+                <tomcat.home>${project.basedir}/../.tomcat</tomcat.home>
+            </properties>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>2.6.1</version>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${tomcat.home}</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>2.7</version>
+                        <executions>
+                            <execution>
+                                <id>copy-server</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${tomcat.home}</outputDirectory>
+                                    <includeEmptyDirs>true</includeEmptyDirs>
+                                    <resources>
+                                        <resource>
+                                            <directory>tomcat</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

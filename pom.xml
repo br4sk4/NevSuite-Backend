@@ -22,9 +22,10 @@
 
     <modules>
 
+        <module>Server</module>
+        <module>Frontend</module>
         <module>Framework</module>
         <module>BaseComponents</module>
-        <module>Frontend</module>
 
     </modules>
 
