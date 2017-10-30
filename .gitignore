@@ -8,7 +8,7 @@ Framework/Backend/backend-domain/src/gen/*
 Frontend/src/js/nevsuite.bundle.js
 Frontend/src/node_modules/
 Frontend/target/
-Server/tomcat/*
+Server/tomcat/
 .tomcat
 .idea
 *.iml
