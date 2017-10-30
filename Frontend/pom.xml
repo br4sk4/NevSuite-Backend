@@ -181,7 +181,7 @@
                         <configuration>
                             <filesets>
                                 <fileset>
-                                    <directory>${nevsuite.home}/docroot/</directory>
+                                    <directory>${nevsuite.home}/nevsuite/</directory>
                                 </fileset>
                             </filesets>
                         </configuration>
