@@ -38,6 +38,7 @@
                                     <executable>npm</executable>
                                     <arguments>
                                         <argument>install</argument>
+                                        <argument>./</argument>
                                         <argument>--save-dev</argument>
                                     </arguments>
                                 </configuration>
@@ -70,6 +71,7 @@
                                     <executable>npm</executable>
                                     <arguments>
                                         <argument>install</argument>
+                                        <argument>./</argument>
                                         <argument>--prefix</argument>
                                         <argument>../target</argument>
                                     </arguments>
@@ -110,6 +112,7 @@
                                         <argument>/C</argument>
                                         <argument>npm</argument>
                                         <argument>install</argument>
+                                        <argument>./</argument>
                                         <argument>--save-dev</argument>
                                     </arguments>
                                 </configuration>
@@ -146,6 +149,7 @@
                                         <argument>/C</argument>
                                         <argument>npm</argument>
                                         <argument>install</argument>
+                                        <argument>./</argument>
                                         <argument>--prefix</argument>
                                         <argument>../target</argument>
                                     </arguments>
