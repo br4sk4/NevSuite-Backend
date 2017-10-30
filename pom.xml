@@ -17,7 +17,7 @@
 
     <packaging>pom</packaging>
 
-    <name>NevSuite-Backend</name>
+    <name>NevSuite</name>
     <description>MicroService-Project for NevSuite</description>
 
     <modules>

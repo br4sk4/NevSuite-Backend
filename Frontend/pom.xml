@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>Frontend</artifactId>
-
+    <name>Nevsuite-Frontend</name>
     <packaging>pom</packaging>
 
     <profiles>
