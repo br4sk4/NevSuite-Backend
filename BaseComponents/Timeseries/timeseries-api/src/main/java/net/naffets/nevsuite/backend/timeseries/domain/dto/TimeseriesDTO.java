@@ -2,6 +2,7 @@ package net.naffets.nevsuite.backend.timeseries.domain.dto;
 
 import net.naffets.nevsuite.backend.framework.core.api.DataTransferObject;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
         "reference",
         "valueMap"
 })
+@XmlRootElement(name = "timeseries")
 public class TimeseriesDTO implements Serializable, DataTransferObject {
 
     private final static long serialVersionUID = 1L;

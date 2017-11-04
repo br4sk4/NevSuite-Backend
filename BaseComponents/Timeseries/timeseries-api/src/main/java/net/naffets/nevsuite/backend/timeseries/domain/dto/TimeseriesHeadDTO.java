@@ -2,6 +2,7 @@ package net.naffets.nevsuite.backend.timeseries.domain.dto;
 
 import net.naffets.nevsuite.backend.framework.core.api.DataTransferObject;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
@@ -18,7 +19,7 @@ import java.io.Serializable;
         "blockSize",
         "rasterType"
 })
-
+@XmlRootElement(name = "timeseriesHead")
 public class TimeseriesHeadDTO implements Serializable, DataTransferObject {
 
     private final static long serialVersionUID = 1L;

@@ -1,9 +1,12 @@
 package net.naffets.nevsuite.backend.timeseries.webservice;
 
+import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesInterval;
+import net.naffets.nevsuite.backend.timeseries.core.valueplugin.BigDecimalPlugin;
 import net.naffets.nevsuite.backend.timeseries.domain.builder.TimeseriesHeadBuilder;
 import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesHeadDTO;
 import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesValueDTO;
 import net.naffets.nevsuite.backend.timeseries.domain.entity.TimeseriesHead;
+import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDataProviderService;
 import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDomainService;
 import net.naffets.nevsuite.backend.timeseries.lang.persistence.ValueMapDocumentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +31,9 @@ public class TimeseriesDomainWebservice {
 
     @Autowired
     private TimeseriesDomainService domainService;
+
+    @Autowired
+    private TimeseriesDataProviderService<BigDecimal> dataProviderService;
 
     @RequestMapping("/timeseriesHead")
     public List<TimeseriesHeadDTO> findTimeseriesHead() {
@@ -50,26 +59,18 @@ public class TimeseriesDomainWebservice {
                 .withDerivationType(timeseriesHead.getDerivationType().toString())
                 .withPersistence(timeseriesHead.getPersistence().toString())
                 .withPeriodicity(timeseriesHead.getPeriodicity().toString())
-                //.withBlockSize(timeseriesHead.getBlocksize().toString())
-                //.withRasterType(timeseriesHead.getRastertype().toString())
+                .withBlockSize(timeseriesHead.getBlocksize().toString())
+                .withRasterType(timeseriesHead.getRastertype().toString())
                 .toJson();
     }
 
     @RequestMapping(value = "/timeseries", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public String testTimeseriesPersistenceUnit() {
-        List<TimeseriesValueDTO> list = new LinkedList<>();
-        for (int x = 10; x <= 12; x++) {
-            TimeseriesValueDTO valueDTO = new TimeseriesValueDTO();
-            valueDTO.setTimestamp("2017-01-01T" + ((x < 10) ? "0" : "") + x + ":00:00Z");
-            valueDTO.setValue(Integer.toString(x));
-            list.add(valueDTO);
-        }
-
-        return new ValueMapDocumentBuilder()
-                .withValues(list)
-                .setPrettyPrintingEnabled(false)
-                .setCompressionEnabled(false)
-                .toJson();
+    public HashMap<Instant, BigDecimal> testTimeseriesPersistenceUnit() {
+        dataProviderService.setValuePlugin(new BigDecimalPlugin());
+        Instant measurementTimestamp = Instant.now();
+        HashMap<Instant, BigDecimal> valueMap = dataProviderService.load(new TimeseriesInterval(Instant.parse("2017-01-01T00:00:00Z"), Instant.parse("2017-01-02T00:00:00Z")));
+        System.out.println("ReadOperation: " + (Instant.now().toEpochMilli() - measurementTimestamp.toEpochMilli()) + " ms");
+        return valueMap;
     }
 
 }
