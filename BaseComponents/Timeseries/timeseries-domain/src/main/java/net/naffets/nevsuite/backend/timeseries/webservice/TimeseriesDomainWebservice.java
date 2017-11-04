@@ -2,13 +2,13 @@ package net.naffets.nevsuite.backend.timeseries.webservice;
 
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesInterval;
 import net.naffets.nevsuite.backend.timeseries.core.valueplugin.BigDecimalPlugin;
+import net.naffets.nevsuite.backend.timeseries.domain.assembler.TimeseriesAssembler;
+import net.naffets.nevsuite.backend.timeseries.domain.builder.TimeseriesBuilder;
 import net.naffets.nevsuite.backend.timeseries.domain.builder.TimeseriesHeadBuilder;
 import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesHeadDTO;
-import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesValueDTO;
 import net.naffets.nevsuite.backend.timeseries.domain.entity.TimeseriesHead;
 import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDataProviderService;
 import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDomainService;
-import net.naffets.nevsuite.backend.timeseries.lang.persistence.ValueMapDocumentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,12 +63,16 @@ public class TimeseriesDomainWebservice {
     }
 
     @RequestMapping(value = "/timeseries", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HashMap<Instant, BigDecimal> testTimeseriesPersistenceUnit() {
+    public String testPersistentTimeseries() {
         dataProviderService.setValuePlugin(new BigDecimalPlugin());
         Instant measurementTimestamp = Instant.now();
-        HashMap<Instant, BigDecimal> valueMap = dataProviderService.load(new TimeseriesInterval(Instant.parse("2017-01-01T00:00:00Z"), Instant.parse("2017-01-02T00:00:00Z")));
+        TimeseriesBuilder timeseries = new TimeseriesAssembler<BigDecimal>().assembleTimeseries(
+                domainService.findAllTimeseriesHeads().stream().findFirst().orElse(null),
+                dataProviderService.load(new TimeseriesInterval(Instant.parse("2017-01-01T00:00:00Z"), Instant.parse("2017-01-02T00:00:00Z"))));
         System.out.println("ReadOperation: " + (Instant.now().toEpochMilli() - measurementTimestamp.toEpochMilli()) + " ms");
-        return valueMap;
+        return timeseries
+                .setPrettyPrintingEnabled(true)
+                .toJson();
     }
 
 }
