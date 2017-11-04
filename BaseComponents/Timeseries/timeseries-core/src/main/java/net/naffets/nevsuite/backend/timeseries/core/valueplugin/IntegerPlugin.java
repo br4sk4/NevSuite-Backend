@@ -8,6 +8,10 @@ import java.math.BigDecimal;
  */
 public class IntegerPlugin extends ValuePluginBase<Integer> {
 
+    public Integer create(String value) {
+        return Integer.parseInt(value);
+    }
+
     public Integer create(Integer value) {
         return value;
     }

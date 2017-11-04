@@ -8,6 +8,10 @@ import java.math.BigDecimal;
  */
 public class BigDecimalPlugin extends ValuePluginBase<BigDecimal> implements ValuePlugin<BigDecimal> {
 
+    public BigDecimal create(String value) {
+        return new BigDecimal(value);
+    }
+
     public BigDecimal create(Integer value) {
         return new BigDecimal(Integer.toString(value));
     }

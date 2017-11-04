@@ -27,6 +27,10 @@ public class VersionedValueStatusPairPlugin<V extends Comparable<V>, S> extends 
         this.version = Instant.now();
     }
 
+    public VersionedValueStatusPair<V, S> create(String value) {
+        return new VersionedValueStatusPair<>(valuePlugin.create(value), defaultStatus, version);
+    }
+
     public VersionedValueStatusPair<V, S> create(Integer value) {
         return new VersionedValueStatusPair<>(valuePlugin.create(value), defaultStatus, version);
     }

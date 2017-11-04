@@ -23,6 +23,10 @@ public class ValueStatusPairPlugin<V extends Comparable<V>, S> extends ValuePlug
         this.defaultStatus = defaultStatus;
     }
 
+    public ValueStatusPair<V, S> create(String value) {
+        return new ValueStatusPair<>(valuePlugin.create(value), defaultStatus);
+    }
+
     public ValueStatusPair<V, S> create(Integer value) {
         return new ValueStatusPair<>(valuePlugin.create(value), defaultStatus);
     }

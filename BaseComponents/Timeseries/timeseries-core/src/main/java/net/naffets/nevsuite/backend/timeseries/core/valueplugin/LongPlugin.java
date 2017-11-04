@@ -8,6 +8,10 @@ import java.math.BigDecimal;
  */
 public class LongPlugin extends ValuePluginBase<Long> {
 
+    public Long create(String value) {
+        return Long.parseLong(value);
+    }
+
     public Long create(Integer value) {
         return value.longValue();
     }

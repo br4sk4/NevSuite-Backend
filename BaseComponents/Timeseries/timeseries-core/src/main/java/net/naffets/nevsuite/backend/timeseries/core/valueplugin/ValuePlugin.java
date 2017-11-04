@@ -9,6 +9,8 @@ import java.util.List;
  */
 public interface ValuePlugin<T> {
 
+    T create(String value);
+
     T create(Integer value);
 
     T create(Long value);
