@@ -11,7 +11,7 @@ export default class Home extends React.Component {
             elements.push(<div key={i} name="" className={'alert alert-' + components.get(i).classes} role='alert'>{components.get(i).name}: {components.get(i).response}</div>);
         }
 
-        return <div className='componentContainer' style={{padding: '10px'}}>{elements}<div id="dtInputFrom"></div></div>;
+        return <div className='componentContainer' style={{padding: '10px'}}>{elements}</div>;
     }
 
 };

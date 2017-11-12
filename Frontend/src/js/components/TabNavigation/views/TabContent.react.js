@@ -3,6 +3,7 @@
 import React from 'react';
 
 import Home from '../../Home/views/Home.react.js';
+import PersonProfile from '../../PersonProfile/views/PersonProfile.react';
 
 export default class TabContent extends React.Component {
 
@@ -13,7 +14,9 @@ export default class TabContent extends React.Component {
             if ( this.props.state.tabs.get('tabs').get(i).selected ) {
                 let tabtype;
 
-                if (this.props.state.tabs.get('tabs').get(i).tabtype == 'HOME') tabtype = <Home {...this.props}/>;
+                if (this.props.state.tabs.get('tabs').get(i).tabtype == 'HOME') tabtype = <Home {...this.props}/>
+                else tabtype = <PersonProfile {...this.props}/>;
+
                 tabContent = <div className='tabContent'>{tabtype}</div>;
             }
         }
