@@ -218,7 +218,7 @@ body{
 }
 
 .dropdownItem:hover {
-    background-color: #86BFA0;
-    border: solid 1px #429366;
+    background-color: #D3F0E0;
+    border: solid 1px #86BFA0;
     border-radius: 1px;
 }

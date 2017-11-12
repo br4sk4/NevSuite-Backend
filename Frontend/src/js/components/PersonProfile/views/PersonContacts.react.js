@@ -10,7 +10,7 @@ export default class PersonContacts extends React.Component {
             textAlign: "right",
             paddingTop: "5px",
             paddingRight: "5px",
-            width: "150px",
+            width: "175px",
             float: "left"
         };
 

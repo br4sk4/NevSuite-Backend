@@ -12,12 +12,12 @@ export default class PersonalInformation extends React.Component {
             textAlign: "right",
             paddingTop: "5px",
             paddingRight: "5px",
-            width: "150px",
+            width: "175px",
             float: "left"
         };
 
         return (
-            <div className="panel panel-success" style={{width: "800px"}}>
+            <div className="panel panel-success" style={{width: "800px", margin: "0 auto"}}>
                 <div className="panel-heading"><strong>Persönliche Kontaktinformationen</strong></div>
                 <div className="panel-body">
                     <div className="row" style={{paddingTop: "10px"}}>
