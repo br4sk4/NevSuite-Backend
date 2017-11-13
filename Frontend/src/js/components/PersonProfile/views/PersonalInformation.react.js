@@ -3,6 +3,7 @@
  */
 import React from 'react';
 
+import InputField from '../../../widgets/base/InputField.react.js';
 import ComboBox from '../../../widgets/base/ComboBox.react.js';
 import PersonContacts from './PersonContacts.react.js';
 
@@ -27,15 +28,11 @@ export default class PersonalInformation extends React.Component {
                     </div>
                     <div className="row" style={{paddingTop: "10px"}}>
                         <div style={inputLabelContainerStyle}><label>Vorname:</label></div>
-                        <div className="input-group input-group-sm" style={{width: "500px", float: "center"}}>
-                            <input type="text" className="form-control" placeholder="Vorname" />
-                        </div>
+                        <InputField/>
                     </div>
                     <div className="row" style={{paddingTop: "10px"}}>
                         <div style={inputLabelContainerStyle}><label>Nachname:</label></div>
-                        <div className="input-group input-group-sm" style={{width: "500px", float: "center"}}>
-                            <input type="text" className="form-control" placeholder="Nachname" />
-                        </div>
+                        <InputField/>
                     </div>
                     <PersonContacts {...this.props}/>
                 </div>

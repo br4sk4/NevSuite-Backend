@@ -3,6 +3,7 @@
  */
 import React from 'react';
 
+import InputField from '../../../widgets/base/InputField.react.js';
 import ComboBox from '../../../widgets/base/ComboBox.react.js';
 import PersonContacts from './PersonContacts.react.js';
 
@@ -24,15 +25,11 @@ export default class BusinessInformation extends React.Component {
                     <form>
                         <div className="row" style={{paddingTop: "10px"}}>
                             <div style={inputLabelContainerStyle}><label>Kürzel:</label></div>
-                            <div className="input-group input-group-sm" style={{width: "500px"}}>
-                                <input type="text" className="form-control" placeholder="Kürzel"/>
-                            </div>
+                            <InputField/>
                         </div>
                         <div className="row" style={{paddingTop: "10px"}}>
                             <div style={inputLabelContainerStyle}><label>Eintrittsdatum:</label></div>
-                            <div className="input-group input-group-sm" style={{width: "500px"}}>
-                                <input type="text" className="form-control" placeholder="Eintrittsdatum"/>
-                            </div>
+                            <InputField/>
                         </div>
                         <div className="row" style={{paddingTop: "10px"}}>
                             <div style={inputLabelContainerStyle}><label>Firma:</label></div>
