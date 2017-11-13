@@ -62,12 +62,12 @@ export default class ComboBox extends React.Component {
 
         return (
             <div style={{width: "500px", float: "left"}} tabIndex="0" onBlur={() => {if ( this.state.showDropdownContent ) toggleDropdownContent();}}>
-                <div className="input-group input-group-sm" style={{width: "500px"}} >
-                    <span className="form-control" onClick={toggleDropdownContent}>
+                <div className="input-group input-group-sm" style={{width: "500px"}}>
+                    <span className="form-control" style={{cursor: "default"}} onClick={toggleDropdownContent}>
                         {this.state.selectedValue}
-                        <input type="hidden" name="selectedValue" value={this.state.selectedValue} />
+                        <input type="hidden" name="selectedValue" value={this.state.selectedValue}/>
                     </span>
-                    <span className="input-group-addon btn btn-default" onClick={toggleDropdownContent}><span className="glyphicon glyphicon-chevron-down" /></span>
+                    <span className="input-group-addon btn btn-default" style={{cursor: "default"}} onClick={toggleDropdownContent}><span className="glyphicon glyphicon-chevron-down" /></span>
                 </div>
                 {$dropdownList}
             </div>
