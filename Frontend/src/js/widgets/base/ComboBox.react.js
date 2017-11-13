@@ -42,18 +42,18 @@ export default class ComboBox extends React.Component {
                 );
             }
 
-            let $searchBox;
+            let $searchBox=[];
             if ( this.props.showSearchBox ) {
-                $searchBox = (
-                    <div className="input-group input-group-sm" style={{width: "500px", padding: "3px"}}>
-                        <span className="input-group-addon"><span className="glyphicon glyphicon-search"/></span>
-                        <input id="halo" className="form-control" type="text"/>
+                $searchBox.push(
+                    <div className="dropdownSearchbox" ref="searchbox" tabIndex="0">
+                        <input className="widget" type="text"/>
                     </div>
                 );
+                $searchBox.push(<div style={{height: "3px"}} />);
             }
 
             $dropdownList = (
-                <div className="dropdownContent" style={{width: "500px"}}>
+                <div className="dropdownContent">
                     {$searchBox}
                     {$dropdownItems}
                 </div>
@@ -61,15 +61,15 @@ export default class ComboBox extends React.Component {
         }
 
         return (
-            <div style={{width: "500px", float: "left"}} tabIndex="0" onBlur={() => {if ( this.state.showDropdownContent ) toggleDropdownContent();}}>
-                <div className="input-group input-group-sm" style={{width: "500px"}}>
-                    <span className="form-control" style={{cursor: "default"}} onClick={toggleDropdownContent}>
-                        {this.state.selectedValue}
+            <div style={{width: "500px", float: "left"}}>
+                <div className="widget" tabIndex="0" onBlur={() => {if ( this.state.showDropdownContent && !this.props.showSearchBox) toggleDropdownContent();}}>
+                    <div className="comboboxTextfield" onClick={toggleDropdownContent}>
+                        <span className="comboboxText">{this.state.selectedValue}</span>
                         <input type="hidden" name="selectedValue" value={this.state.selectedValue}/>
-                    </span>
-                    <span className="input-group-addon btn btn-default" style={{cursor: "default"}} onClick={toggleDropdownContent}><span className="glyphicon glyphicon-chevron-down" /></span>
+                    </div>
+                    <div className="comboboxButton" onClick={toggleDropdownContent}><span className="glyphicon glyphicon-chevron-down comboboxIcon" /></div>
+                    {$dropdownList}
                 </div>
-                {$dropdownList}
             </div>
         );
     }
