@@ -1,7 +1,7 @@
 /**
  * Created by Braska on 11.11.2017.
  */
-import React from 'react';
+import React from "react";
 
 export default class ComboBox extends React.Component {
 
@@ -9,7 +9,7 @@ export default class ComboBox extends React.Component {
         super(props);
         this.state = {
             showDropdownContent: false,
-            selectedValue: '',
+            selectedValue: "",
             selectedIndex: -1
         };
     }
@@ -61,7 +61,7 @@ export default class ComboBox extends React.Component {
         }
 
         return (
-            <div style={{width: "500px", float: "left"}}>
+            <div style={{width: this.props.width||"500px", float: "left"}}>
                 <div className="widget" tabIndex="0" onBlur={() => {if ( this.state.showDropdownContent && !this.props.showSearchBox) toggleDropdownContent();}}>
                     <div className="comboboxTextfield" onClick={toggleDropdownContent}>
                         <span className="comboboxText">{this.state.selectedValue}</span>

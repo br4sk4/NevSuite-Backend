@@ -14,7 +14,7 @@
 .widget:focus {
     border: solid 1px #429366;
     box-shadow: 0 0 6px #86BFA0;
-    outline: 0px solid transparent;
+    outline: 0 solid transparent;
 }
 
 .widget:active {
@@ -63,7 +63,8 @@
     border-radius: 1px;
     box-shadow: 0 16px 16px 0 rgba(0,0,0,0.2);
     position: absolute;
-    width: 498px;
+    left: 0;
+    right: 0;
     z-index: 5;
     overflow: visible;
     margin-top: 2px;
