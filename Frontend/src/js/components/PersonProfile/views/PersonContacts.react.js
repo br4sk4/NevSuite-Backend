@@ -8,29 +8,31 @@ export default class PersonContacts extends React.Component {
     render() {
         let inputLabelContainerStyle = {
             textAlign: "right",
-            paddingTop: "5px",
-            paddingRight: "5px",
-            width: "175px",
-            float: "left"
+            paddingTop: "6px",
+            fontSize: "12px"
         };
 
         return (
-            <div>
-                <div className="row" style={{paddingTop: "10px"}}>
-                    <div style={inputLabelContainerStyle}><label>Telefon:</label></div>
-                    <div className="input-group input-group-sm" style={{width: "500px"}}>
-                        <span className="input-group-addon"><span className="glyphicon glyphicon-earphone" /></span>
-                        <input type="text" className="form-control" placeholder="Telefon" />
+            <form className="form-horizontal">
+                <div className="form-group">
+                    <div className="col-sm-2" style={inputLabelContainerStyle}><label>Telefon:</label></div>
+                    <div className="col-sm-9">
+                        <div className="input-group input-group-sm" style={{width: "100%"}}>
+                            <span className="input-group-addon"><span className="glyphicon glyphicon-earphone" /></span>
+                            <input type="text" className="form-control" placeholder="Telefon" />
+                        </div>
                     </div>
                 </div>
-                <div className="row" style={{paddingTop: "10px"}}>
-                    <div style={inputLabelContainerStyle}><label>Mobil:</label></div>
-                    <div className="input-group input-group-sm" style={{width: "500px"}}>
-                        <span className="input-group-addon"><span className="glyphicon glyphicon-phone" /></span>
-                        <input type="text" className="form-control" placeholder="Mobil" />
+                <div className="form-group">
+                    <div className="col-sm-2" style={inputLabelContainerStyle}><label>Mobil:</label></div>
+                    <div className="col-sm-9">
+                        <div className="input-group input-group-sm" style={{width: "100%"}}>
+                            <span className="input-group-addon"><span className="glyphicon glyphicon-phone" /></span>
+                            <input type="text" className="form-control" placeholder="Mobil" />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
         );
     }
 

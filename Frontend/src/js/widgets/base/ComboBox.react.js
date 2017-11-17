@@ -9,8 +9,7 @@ export default class ComboBox extends React.Component {
         super(props);
         this.state = {
             showDropdownContent: false,
-            selectedValue: "",
-            selectedIndex: -1
+            selectedValue: ""
         };
     }
 
@@ -20,7 +19,6 @@ export default class ComboBox extends React.Component {
 
         let toggleDropdownContent = () => this.setState({
             showDropdownContent: !this.state.showDropdownContent,
-            selectedIndex: this.state.selectedIndex,
             selectedValue: this.state.selectedValue
         });
 
@@ -29,11 +27,9 @@ export default class ComboBox extends React.Component {
 
             let x;
             for (x = 0; x < this.props.data.length; ++x)  {
-                const index = x;
                 const value = this.props.data[x];
                 let handleChange = () => this.setState({
                     showDropdownContent: !this.state.showDropdownContent,
-                    selectedIndex: index,
                     selectedValue: value
                 });
 

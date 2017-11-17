@@ -12,28 +12,28 @@ export default class PersonalInformation extends React.Component {
     render() {
         let inputLabelContainerStyle = {
             textAlign: "right",
-            paddingTop: "5px",
-            paddingRight: "5px",
-            width: "175px",
-            float: "left"
+            paddingTop: "6px",
+            fontSize: "12px"
         };
 
         return (
-            <div className="panel panel-success" style={{width: "800px", margin: "0 auto"}}>
+            <div className="panel panel-success" style={{width: "1000px", margin: "0 auto"}}>
                 <div className="panel-heading"><strong>Persönliche Kontaktinformationen</strong></div>
                 <div className="panel-body">
-                    <div className="row" style={{paddingTop: "10px"}}>
-                        <div style={inputLabelContainerStyle}><label>Anrede:</label></div>
-                        <ComboBox data={['Herr', 'Frau']}/>
-                    </div>
-                    <div className="row" style={{paddingTop: "10px"}}>
-                        <div style={inputLabelContainerStyle}><label>Vorname:</label></div>
-                        <InputField/>
-                    </div>
-                    <div className="row" style={{paddingTop: "10px"}}>
-                        <div style={inputLabelContainerStyle}><label>Nachname:</label></div>
-                        <InputField/>
-                    </div>
+                    <form className="form-horizontal">
+                        <div className="form-group">
+                            <div className="col-sm-2" style={inputLabelContainerStyle}><label>Anrede:</label></div>
+                            <div className="col-sm-9"><ComboBox width="100%" data={['Herr', 'Frau']}/></div>
+                        </div>
+                        <div className="form-group">
+                            <div className="col-sm-2" style={inputLabelContainerStyle}><label>Vorname:</label></div>
+                            <div className="col-sm-9"><InputField width="100%"/></div>
+                        </div>
+                        <div className="form-group">
+                            <div className="col-sm-2" style={inputLabelContainerStyle}><label>Nachname:</label></div>
+                            <div className="col-sm-9"><InputField width="100%"/></div>
+                        </div>
+                    </form>
                     <PersonContacts {...this.props}/>
                 </div>
             </div>

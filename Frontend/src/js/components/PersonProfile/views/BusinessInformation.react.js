@@ -12,31 +12,29 @@ export default class BusinessInformation extends React.Component {
     render() {
         let inputLabelContainerStyle = {
             textAlign: "right",
-            paddingTop: "5px",
-            paddingRight: "5px",
-            width: "175px",
-            float: "left"
+            paddingTop: "6px",
+            fontSize: "12px"
         };
 
         return (
-            <div className="panel panel-info" style={{width: "800px", margin: "0 auto", marginTop: "15px"}}>
+            <div className="panel panel-info" style={{width: "1000px", margin: "0 auto", marginTop: "15px"}}>
                 <div className="panel-heading"><strong>Betriebliche Kontaktinformationen</strong></div>
                 <div className="panel-body">
-                    <form>
-                        <div className="row" style={{paddingTop: "10px"}}>
-                            <div style={inputLabelContainerStyle}><label>Kürzel:</label></div>
-                            <InputField/>
+                    <form className="form-horizontal">
+                        <div className="form-group">
+                            <div className="col-sm-2" style={inputLabelContainerStyle}><label>Kürzel:</label></div>
+                            <div className="col-sm-9"><InputField width="100%"/></div>
                         </div>
-                        <div className="row" style={{paddingTop: "10px"}}>
-                            <div style={inputLabelContainerStyle}><label>Eintrittsdatum:</label></div>
-                            <InputField/>
+                        <div className="form-group">
+                            <div className="col-sm-2" style={inputLabelContainerStyle}><label>Eintrittsdatum:</label></div>
+                            <div className="col-sm-9"><InputField width="100%"/></div>
                         </div>
-                        <div className="row" style={{paddingTop: "10px"}}>
-                            <div style={inputLabelContainerStyle}><label>Firma:</label></div>
-                            <ComboBox data={['Beta AG', 'ABC GmbH', 'XYZ GmbH']}/>
+                        <div className="form-group">
+                            <div className="col-sm-2" style={inputLabelContainerStyle}><label>Firma:</label></div>
+                            <div className="col-sm-9"><ComboBox width="100%" data={['Beta AG', 'ABC GmbH', 'XYZ GmbH']}/></div>
                         </div>
-                        <PersonContacts {...this.props}/>
                     </form>
+                    <PersonContacts {...this.props}/>
                 </div>
             </div>
         );
