@@ -8,7 +8,7 @@ import net.naffets.nevsuite.backend.timeseries.domain.entity.TimeseriesHead;
  * <br />
  * <br />
  */
-public class InvalidTimeseriesConfigException extends Exception {
+public class InvalidTimeseriesConfigException extends RuntimeException {
 
     protected TimeseriesHead timeseries;
 
