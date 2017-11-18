@@ -213,6 +213,14 @@ body{
     right: 14px;
 }
 
+.editModeIcon:hover {
+    color: #D3F0E0;
+}
+
+.editModeIcon:active {
+    color: #07412f;
+}
+
 .form-control {
     border-color: #bbbbbb;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25);

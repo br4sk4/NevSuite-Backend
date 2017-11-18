@@ -86,13 +86,15 @@ export default class PersonalInformation extends React.Component {
     }
 
     render() {
-        const switchEditModeIconClass = (this.state.editMode === true) ? "glyphicon glyphicon-eye-open editModeIcon" : "glyphicon glyphicon-pencil editModeIcon";
+        const modeIconClass = (this.state.editMode === true)
+            ? "editModeIcon glyphicon glyphicon-eye-open"
+            : "editModeIcon glyphicon glyphicon-pencil";
 
         return (
             <div className="panel panel-nevsuite">
                 <div className="panel-heading">
                     <strong>Persönliche Kontaktinformationen</strong>
-                    <div className={switchEditModeIconClass} onClick={this.toggleEditMode}/>
+                    <div className={modeIconClass} onClick={this.toggleEditMode}/>
                 </div>
                 {(this.state.editMode === true) ? this.renderEditForm() : this.renderViewForm()}
             </div>
