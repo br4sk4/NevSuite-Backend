@@ -3,14 +3,13 @@
  */
 import React from "react";
 
-import InputField from './InputField.react.js';
-
 export default class ComboBox extends React.Component {
 
     toggleDropdownContent;
     toggleItemFocus;
     toggleSearchBoxFocus;
     handleChange;
+    handleSearchBoxChange;
 
     constructor(props) {
         super(props);
@@ -19,7 +18,8 @@ export default class ComboBox extends React.Component {
             showDropdownContent: false,
             itemGotFocus: false,
             searchBoxGotFocus: false,
-            selectedValue: ""
+            selectedValue: "",
+            searchValue: ""
         };
 
         this.toggleDropdownContent = () => this.setState({
@@ -49,6 +49,14 @@ export default class ComboBox extends React.Component {
             searchBoxGotFocus: false,
             selectedValue: value
         });
+
+        this.handleSearchBoxChange = () => this.setState({
+            showDropdownContent: this.state.showDropdownContent,
+            itemGotFocus: this.state.itemGotFocus,
+            searchBoxGotFocus: this.state.searchBoxGotFocus,
+            selectedValue: this.state.selectedValue,
+            searchValue: event.target.value
+        });
     }
 
     render() {
@@ -70,15 +78,18 @@ export default class ComboBox extends React.Component {
                 );
             }
 
+            const listStart = ( this.props.showSearchBox ) ? {paddingTop: "28px"} : {paddingTop: "3px"};
             $dropdownList = (
-                <div className="dropdownItemList">{$dropdownItems}</div>
+                <div className="dropdownItemList" style={listStart}>{$dropdownItems}</div>
             );
 
             let $searchBox=[];
             if ( this.props.showSearchBox ) {
                 $searchBox.push(
                     <div key={1} className="dropdownSearchbox" ref="searchbox" tabIndex="0">
-                        <InputField itemSelection={this.state.itemGotFocus} toggleFocus={this.toggleSearchBoxFocus} toggleDropdown={this.toggleDropdownContent}/>
+                        <div style={{width: this.props.width||"100%", float: "left"}} onMouseDown={this.toggleSearchBoxFocus} onBlur={() => {if (!this.state.itemGotFocus) this.toggleDropdownContent();}}>
+                            <input className="widget inputField" type="text" defaultValue={this.state.searchValue} onChange={this.handleSearchBoxChange} />
+                        </div>
                     </div>
                 );
                 $searchBox.push(<div key={2} style={{height: "6px"}} />);

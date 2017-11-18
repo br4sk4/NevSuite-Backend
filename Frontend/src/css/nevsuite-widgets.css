@@ -30,6 +30,38 @@
     padding-top: 3px;
 }
 
+.switch {
+    position: relative;
+    background-color: lightgrey;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25);
+    border: solid 1px darkgrey;
+    border-radius: 22px;
+    width: 45px;
+    height: 22px;
+    font-size: 12px;
+}
+
+.switch.checked {
+    background-color: #429366;
+}
+
+.switchBullet {
+    position: absolute;
+    background-color: white;
+    border-radius: 20px;
+    border: solid 1px darkgrey;
+    width: 20px;
+    height: 20px;
+}
+
+.switchBullet.unchecked {
+    left: 0;
+}
+
+.switchBullet.checked {
+    right: 0;
+}
+
 .comboboxTextfield {
     background-color: white;
     border-right: solid 1px darkgrey;
@@ -88,14 +120,13 @@
 }
 
 .dropdownItemList {
-    padding-top: 3px;
     width: 100%;
     height: 100%;
 }
 
 .dropdownItemContainer {
     width: 100%;
-    height: 24px;
+    min-height: 24px;
     padding-left: 3px;
     padding-right: 3px;
 }
@@ -105,7 +136,6 @@
     background-color: white;
     border: solid 1px white;
     border-radius: 1px;
-    padding-top: 2px;
     padding-left: 3px;
     padding-right: 3px;
     font-size: 12px;
