@@ -189,6 +189,30 @@ body{
     background-color: #86BFA0;
 }
 
+.panel-nevsuite {
+    width: 1000px;
+    margin: 0 auto;
+    border-color: #429366;
+}
+
+.panel-nevsuite > .panel-heading {
+    position: relative;
+    background-color: #86BFA0;
+    color: #07412f;
+    border-color: #429366;
+}
+
+.panel-body {
+    background-color: whitesmoke;
+}
+
+.editModeIcon {
+    position: absolute;
+    font-size: 16px;
+    top: 14px;
+    right: 14px;
+}
+
 .form-control {
     border-color: #bbbbbb;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25);
