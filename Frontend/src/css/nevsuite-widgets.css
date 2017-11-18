@@ -74,9 +74,10 @@
     left: 0;
     right: 0;
     z-index: 5;
-    overflow: visible;
     margin-top: 2px;
-    padding-top: 3px;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .dropdownSearchbox {
@@ -84,6 +85,12 @@
     left: 3px;
     right: 3px;
     top: 3px;
+}
+
+.dropdownItemList {
+    padding-top: 3px;
+    width: 100%;
+    height: 100%;
 }
 
 .dropdownItemContainer {

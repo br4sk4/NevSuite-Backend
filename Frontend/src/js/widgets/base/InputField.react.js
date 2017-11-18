@@ -16,7 +16,7 @@ export default class InputField extends React.Component {
         let changeHandler = () => this.setState({value: event.target.value});
 
         return (
-            <div style={{width: this.props.width||"500px", float: "left"}}>
+            <div style={{width: this.props.width||"100%", float: "left"}} onMouseDown={this.props.toggleFocus} onBlur={() => {if (!this.props.itemSelection) this.props.toggleDropdown();}}>
                 <input className="widget inputField" type="text" defaultValue={this.state.value} onChange={changeHandler} />
             </div>
         );
