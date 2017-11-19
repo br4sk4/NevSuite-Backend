@@ -37,7 +37,7 @@ export default class BusinessInformation extends React.Component {
 
         return (
             <div className="panel-body">
-                <form className="form-horizontal">
+                <div className="form-horizontal">
                     <div className="form-group">
                         <div className="col-sm-2" style={inputLabelContainerStyle}><label>Kürzel:</label></div>
                         <div className="col-sm-9" style={valueLabel}>br4sk4</div>
@@ -50,7 +50,7 @@ export default class BusinessInformation extends React.Component {
                         <div className="col-sm-2" style={inputLabelContainerStyle}><label>Firma:</label></div>
                         <div className="col-sm-9" style={valueLabel}>NevSoft</div>
                     </div>
-                </form>
+                </div>
             </div>
         );
     }
@@ -97,8 +97,8 @@ export default class BusinessInformation extends React.Component {
                         <div className="col-sm-2" style={inputLabelContainerStyle}><label>Ausbilder:</label></div>
                         <div className="col-sm-9"><Switch/></div>
                     </div>
+                    <PersonContacts {...this.props}/>
                 </form>
-                <PersonContacts {...this.props}/>
             </div>
         );
     }

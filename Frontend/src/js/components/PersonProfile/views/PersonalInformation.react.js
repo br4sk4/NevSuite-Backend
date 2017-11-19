@@ -36,22 +36,20 @@ export default class PersonalInformation extends React.Component {
 
         return (
             <div className="panel-body">
-                <form className="form-horizontal">
-                    <form className="form-horizontal">
-                        <div className="form-group">
-                            <div className="col-sm-2" style={inputLabelContainerStyle}><label>Anrede:</label></div>
-                            <div className="col-sm-9" style={valueLabel}>---</div>
-                        </div>
-                        <div className="form-group">
-                            <div className="col-sm-2" style={inputLabelContainerStyle}><label>Vorname:</label></div>
-                            <div className="col-sm-9" style={valueLabel}>---</div>
-                        </div>
-                        <div className="form-group">
-                            <div className="col-sm-2" style={inputLabelContainerStyle}><label>Nachname:</label></div>
-                            <div className="col-sm-9" style={valueLabel}>---</div>
-                        </div>
-                    </form>
-                </form>
+                <div className="form-horizontal">
+                    <div className="form-group">
+                        <div className="col-sm-2" style={inputLabelContainerStyle}><label>Anrede:</label></div>
+                        <div className="col-sm-9" style={valueLabel}>---</div>
+                    </div>
+                    <div className="form-group">
+                        <div className="col-sm-2" style={inputLabelContainerStyle}><label>Vorname:</label></div>
+                        <div className="col-sm-9" style={valueLabel}>---</div>
+                    </div>
+                    <div className="form-group">
+                        <div className="col-sm-2" style={inputLabelContainerStyle}><label>Nachname:</label></div>
+                        <div className="col-sm-9" style={valueLabel}>---</div>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -66,7 +64,6 @@ export default class PersonalInformation extends React.Component {
         return (
             <div className="panel-body">
                 <form className="form-horizontal">
-
                     <div className="form-group">
                         <div className="col-sm-2" style={inputLabelContainerStyle}><label>Anrede:</label></div>
                         <div className="col-sm-9"><ComboBox width="100%" data={['Herr', 'Frau']}/></div>
@@ -79,8 +76,8 @@ export default class PersonalInformation extends React.Component {
                         <div className="col-sm-2" style={inputLabelContainerStyle}><label>Nachname:</label></div>
                         <div className="col-sm-9"><InputField width="100%"/></div>
                     </div>
+                    <PersonContacts {...this.props}/>
                 </form>
-                <PersonContacts {...this.props}/>
             </div>
         );
     }

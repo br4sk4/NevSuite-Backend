@@ -13,7 +13,7 @@ export default class PersonContacts extends React.Component {
         };
 
         return (
-            <form className="form-horizontal">
+            <div className="form-horizontal">
                 <div className="form-group">
                     <div className="col-sm-2" style={inputLabelContainerStyle}><label>Telefon:</label></div>
                     <div className="col-sm-9">
@@ -32,7 +32,7 @@ export default class PersonContacts extends React.Component {
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         );
     }
 
