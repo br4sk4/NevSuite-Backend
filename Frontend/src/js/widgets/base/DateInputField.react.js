@@ -8,12 +8,16 @@ export default class DateInputField extends React.Component {
     constructor(props) {
         super(props);
 
+        let date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth();
+
         this.state = {
             focus: false,
             showCalendar: false,
             viewMode: "month",
-            selectedYear: 2017,
-            selectedMonth: 0,
+            selectedYear: year,
+            selectedMonth: month,
             actDate: ""
         };
 
@@ -37,6 +41,10 @@ export default class DateInputField extends React.Component {
             let monthString = (month < 10 ) ? "0" + month : month;
             let dayString = (day < 10 ) ? "0" + day : day;
             return  dayString + "." + monthString + "." + year;
+        };
+
+        this.getDayOfWeekIndex = function(day) {
+            return (day === 0) ? 6 : day - 1;
         };
 
         this.onChange = this.onChange.bind(this);
@@ -77,11 +85,11 @@ export default class DateInputField extends React.Component {
             );
         });
 
-        let dayOfWeekIndex = new Date(
+        let dayOfWeekIndex = this.getDayOfWeekIndex(new Date(
             this.state.selectedYear,
-            this.state.selectedMonth + 1,
+            this.state.selectedMonth,
             1
-        ).getDay();
+        ).getDay());
         for (x = 0; x < dayOfWeekIndex; x++) {
             $dayTiles.push(
                 <div key={x} className="calendarEmptyTile glyphicon">
@@ -92,7 +100,7 @@ export default class DateInputField extends React.Component {
 
         let daysOfMonth = new Date(
             this.state.selectedYear,
-            this.state.selectedMonth + 2,
+            this.state.selectedMonth + 1,
             0
         ).getDate();
         for (x = 1; x <= daysOfMonth; x++) {
