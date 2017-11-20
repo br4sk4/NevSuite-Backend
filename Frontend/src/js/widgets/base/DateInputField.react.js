@@ -47,6 +47,101 @@ export default class DateInputField extends React.Component {
             return (day === 0) ? 6 : day - 1;
         };
 
+        this.toggleFocus = () => this.setState({
+            focus: !this.state.focus,
+            showCalendar: this.state.showCalendar,
+            viewMode: this.state.viewMode,
+            selectedYear: this.state.selectedYear,
+            selectedMonth: this.state.selectedMonth,
+            actDate: this.state.actDate
+        });
+
+        this.toggleCalendar = () => this.setState({
+            focus: this.state.focus,
+            showCalendar: !this.state.showCalendar,
+            viewMode: this.state.viewMode,
+            selectedYear: this.state.selectedYear,
+            selectedMonth: this.state.selectedMonth,
+            actDate: this.state.actDate
+        });
+
+        this.decrement = () => {
+            const year = (this.state.viewMode === "year")
+                ? this.state.selectedYear - 1
+                : (this.state.selectedMonth === 0)
+                    ? this.state.selectedYear - 1
+                    : this.state.selectedYear;
+
+            const month = (this.state.viewMode === "month")
+                ? ((this.state.selectedMonth === 0)
+                    ? 11
+                    : this.state.selectedMonth - 1)
+                : this.state.selectedMonth;
+
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: this.state.showCalendar,
+                viewMode: this.state.viewMode,
+                selectedYear: year,
+                selectedMonth: month,
+                actDate: this.state.actDate
+            });
+        };
+
+        this.increment = () => {
+            const year = (this.state.viewMode === "year")
+                ? this.state.selectedYear + 1
+                : (this.state.selectedMonth === 11)
+                    ? this.state.selectedYear + 1
+                    : this.state.selectedYear;
+
+            const month = (this.state.viewMode === "month")
+                ? ((this.state.selectedMonth === 11)
+                    ? 0
+                    : this.state.selectedMonth + 1)
+                : this.state.selectedMonth;
+
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: this.state.showCalendar,
+                viewMode: this.state.viewMode,
+                selectedYear: year,
+                selectedMonth: month,
+                actDate: this.state.actDate
+            });
+        };
+
+        this.setActualDate = (dateString) => this.setState({
+            focus: this.state.focus,
+            showCalendar: !this.state.showCalendar,
+            viewMode: this.state.viewMode,
+            selectedYear: this.state.selectedYear,
+            selectedMonth: this.state.selectedMonth,
+            actDate: dateString
+        });
+
+        this.switchToMonthView = (month) => {
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: this.state.showCalendar,
+                viewMode: "month",
+                selectedYear: this.state.selectedYear,
+                selectedMonth: month,
+                actDate: this.state.actDate
+            });
+        };
+
+        this.switchToYearView = (year) => {
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: this.state.showCalendar,
+                viewMode: "year",
+                selectedYear: year,
+                selectedMonth: this.state.selectedMonth,
+                actDate: this.state.actDate
+            });
+        };
+
         this.onChange = this.onChange.bind(this);
     }
 
@@ -65,15 +160,6 @@ export default class DateInputField extends React.Component {
     renderMonthView() {
         let x;
         let $dayTiles = [];
-
-        let setActualDate = (dateString) => this.setState({
-            focus: this.state.focus,
-            showCalendar: !this.state.showCalendar,
-            viewMode: this.state.viewMode,
-            selectedYear: this.state.selectedYear,
-            selectedMonth: this.state.selectedMonth,
-            actDate: dateString
-        });
 
         this.days.forEach(function(value) {
             $dayTiles.push(
@@ -112,7 +198,7 @@ export default class DateInputField extends React.Component {
 
             $dayTiles.push(
                 <div key={x + 10} className="calendarNumberButton glyphicon">
-                    <span style={{display: "block", cursor: "default", textAlign: "center"}} onClick={() => {setActualDate(dateString)}}>{x}</span>
+                    <span style={{display: "block", cursor: "default", textAlign: "center"}} onClick={() => {this.setActualDate(dateString)}}>{x}</span>
                 </div>
             );
         }
@@ -124,21 +210,10 @@ export default class DateInputField extends React.Component {
         let x;
         let $monthTiles = [];
 
-        let switchToMonthView = (month) => {
-            this.setState({
-                focus: this.state.focus,
-                showCalendar: this.state.showCalendar,
-                viewMode: "month",
-                selectedYear: this.state.selectedYear,
-                selectedMonth: month,
-                actDate: this.state.actDate
-            });
-        };
-
         for (x = 0; x <= 11; x++) {
             const month = x;
             $monthTiles.push(
-                <div key={x} className="calendarTextButton glyphicon" onClick={() => {switchToMonthView(month)}}>
+                <div key={x} className="calendarTextButton glyphicon" onClick={() => {this.switchToMonthView(month)}}>
                     <span style={{display: "block", cursor: "default", textAlign: "center"}}>{this.months[x].shortName}</span>
                 </div>
             );
@@ -148,82 +223,7 @@ export default class DateInputField extends React.Component {
     }
 
     render() {
-        let $dropdownContent;
-
-        let toggleFocus = () => this.setState({
-            focus: !this.state.focus,
-            showCalendar: this.state.showCalendar,
-            viewMode: this.state.viewMode,
-            selectedYear: this.state.selectedYear,
-            selectedMonth: this.state.selectedMonth,
-            actDate: this.state.actDate
-        });
-
-        let toggleCalendar = () => this.setState({
-            focus: this.state.focus,
-            showCalendar: !this.state.showCalendar,
-            viewMode: this.state.viewMode,
-            selectedYear: this.state.selectedYear,
-            selectedMonth: this.state.selectedMonth,
-            actDate: this.state.actDate
-        });
-
-        let decrement = () => {
-            const year = (this.state.viewMode === "year")
-                ? this.state.selectedYear - 1
-                : (this.state.selectedMonth === 0)
-                    ? this.state.selectedYear - 1
-                    : this.state.selectedYear;
-
-            const month = (this.state.viewMode === "month")
-                ? ((this.state.selectedMonth === 0)
-                    ? 11
-                    : this.state.selectedMonth - 1)
-                : this.state.selectedMonth;
-
-            this.setState({
-                focus: this.state.focus,
-                showCalendar: this.state.showCalendar,
-                viewMode: this.state.viewMode,
-                selectedYear: year,
-                selectedMonth: month,
-                actDate: this.state.actDate
-            });
-        };
-
-        let increment = () => {
-            const year = (this.state.viewMode === "year")
-                ? this.state.selectedYear + 1
-                : (this.state.selectedMonth === 11)
-                    ? this.state.selectedYear + 1
-                    : this.state.selectedYear;
-
-            const month = (this.state.viewMode === "month")
-                ? ((this.state.selectedMonth === 11)
-                    ? 0
-                    : this.state.selectedMonth + 1)
-                : this.state.selectedMonth;
-
-            this.setState({
-                focus: this.state.focus,
-                showCalendar: this.state.showCalendar,
-                viewMode: this.state.viewMode,
-                selectedYear: year,
-                selectedMonth: month,
-                actDate: this.state.actDate
-            });
-        };
-
-        let switchToYearView = (year) => {
-            this.setState({
-                focus: this.state.focus,
-                showCalendar: this.state.showCalendar,
-                viewMode: "year",
-                selectedYear: year,
-                selectedMonth: this.state.selectedMonth,
-                actDate: this.state.actDate
-            });
-        };
+        let $calendarContent;
 
         let $view = (this.state.viewMode === "month") ? this.renderMonthView() : this.renderYearView();
         let displayText = (this.state.viewMode === "month")
@@ -233,13 +233,13 @@ export default class DateInputField extends React.Component {
         const widgetClass = (this.state.focus === false) ? "widget" : "widgetFocused";
         if ( this.state.showCalendar ) {
             const year = this.state.selectedYear;
-            $dropdownContent = (
+            $calendarContent = (
                 <div className="calendarContent">
-                    <div className="calendarPagerButton glyphicon glyphicon-chevron-left" onClick={decrement}/>
-                    <div className="calendarMainButton glyphicon" onClick={() => {switchToYearView(year)}}>
+                    <div className="calendarPagerButton glyphicon glyphicon-chevron-left" onClick={this.decrement}/>
+                    <div className="calendarMainButton glyphicon" onClick={() => {this.switchToYearView(year)}}>
                         <span style={{display: "block", cursor: "default", textAlign: "center"}}>{displayText}</span>
                     </div>
-                    <div className="calendarPagerButton glyphicon glyphicon-chevron-right" onClick={increment}/>
+                    <div className="calendarPagerButton glyphicon glyphicon-chevron-right" onClick={this.increment}/>
                     {$view}
                 </div>
             );
@@ -247,12 +247,12 @@ export default class DateInputField extends React.Component {
 
         return (
             <div style={{width: this.props.width||"100%", float: "left"}}>
-                <div className={widgetClass} tabIndex="0" onBlur={() => {if (this.state.showCalendar) toggleCalendar()}}>
-                    <input className="dateInputField" type="text" value={this.state.actDate} onFocus={toggleFocus} onBlur={toggleFocus} onChange={this.onChange}/>
-                    <div className="dateInputButton" onClick={toggleCalendar}>
+                <div className={widgetClass} tabIndex="0" onBlur={() => {if (this.state.showCalendar) this.toggleCalendar()}}>
+                    <input className="dateInputField" type="text" value={this.state.actDate} onFocus={this.toggleFocus} onBlur={this.toggleFocus} onChange={this.onChange}/>
+                    <div className="dateInputButton" onClick={this.toggleCalendar}>
                         <span className="glyphicon glyphicon-calendar comboboxIcon"/>
                     </div>
-                    {$dropdownContent}
+                    {$calendarContent}
                 </div>
             </div>
         );
