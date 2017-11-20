@@ -5,52 +5,19 @@ import React from "react";
 
 export default class DateInputField extends React.Component {
 
+    months;
+
     constructor(props) {
         super(props);
+
         this.state = {
             focus: false,
             showCalendar: false,
+            viewMode: "month",
             selectedIndex: 0
-        }
-    }
-
-    render() {
-        let $dropdownContent;
-
-        let toggleFocus = () => this.setState({
-            focus: !this.state.focus,
-            showCalendar: this.state.showCalendar,
-            selectedIndex: this.state.selectedIndex
-        });
-
-        let toggleCalendar = () => this.setState({
-            focus: this.state.focus,
-            showCalendar: !this.state.showCalendar,
-            selectedIndex: this.state.selectedIndex
-        });
-
-        let decrement = () => {
-            const newIndex = (this.state.selectedIndex === 0) ? 11 : this.state.selectedIndex - 1;
-            this.setState({
-                focus: this.state.focus,
-                showCalendar: this.state.showCalendar,
-                selectedIndex: newIndex
-            });
         };
 
-        let increment = () => {
-            const newIndex = (this.state.selectedIndex === 11) ? 0 : this.state.selectedIndex + 1;
-            this.setState({
-                focus: this.state.focus,
-                showCalendar: this.state.showCalendar,
-                selectedIndex: newIndex
-            });
-        };
-
-        let x;
-        let $days = [];
-        let dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-        let months = [
+        this.months = [
             {shortName: 'Jan', fullName: 'Januar'},
             {shortName: 'Feb', fullName: 'Februar'},
             {shortName: 'Mär', fullName: 'März'},
@@ -64,26 +31,106 @@ export default class DateInputField extends React.Component {
             {shortName: 'Nov', fullName: 'November'},
             {shortName: 'Dez', fullName: 'Dezember'}];
 
-        dayNames.forEach(function(value) {
-            $days.push(<div key={value} className="calendarDayName glyphicon"><span style={{display: "block", cursor: "default"}}><center><strong>{value}</strong></center></span></div>);
+        this.dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    }
+
+    renderMonthView() {
+        let x;
+        let $dayTiles = [];
+
+        this.dayNames.forEach(function(value) {
+            $dayTiles.push(<div key={value} className="calendarDayName glyphicon"><span style={{display: "block", cursor: "default"}}><center><strong>{value}</strong></center></span></div>);
         });
 
         for (x = 1; x <= 42; x++) {
-            $days.push(<div key={x} className="calendarNumberButton glyphicon"><span style={{display: "block", cursor: "default"}}><center>{x}</center></span></div>);
+            $dayTiles.push(<div key={x} className="calendarNumberButton glyphicon"><span style={{display: "block", cursor: "default"}}><center>{x}</center></span></div>);
         }
 
+        return $dayTiles;
+    }
+
+    renderYearView() {
+        let x;
+        let $monthTiles = [];
+
+        let switchToMonthView = () => {
+            const newIndex = 0;
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: this.state.showCalendar,
+                viewMode: "month",
+                selectedIndex: newIndex
+            });
+        };
+
+        for (x = 0; x <= 11; x++) {
+            $monthTiles.push(<div key={x} className="calendarTextButton glyphicon" onClick={switchToMonthView}><span style={{display: "block", cursor: "default"}}><center>{this.months[x].shortName}</center></span></div>);
+        }
+
+        return $monthTiles;
+    }
+
+    render() {
+        let $dropdownContent;
+
+        let toggleFocus = () => this.setState({
+            focus: !this.state.focus,
+            showCalendar: this.state.showCalendar,
+            viewMode: this.state.viewMode,
+            selectedIndex: this.state.selectedIndex
+        });
+
+        let toggleCalendar = () => this.setState({
+            focus: this.state.focus,
+            showCalendar: !this.state.showCalendar,
+            viewMode: this.state.viewMode,
+            selectedIndex: this.state.selectedIndex
+        });
+
+        let decrement = () => {
+            const newIndex = (this.state.selectedIndex === 0) ? 11 : this.state.selectedIndex - 1;
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: this.state.showCalendar,
+                viewMode: this.state.viewMode,
+                selectedIndex: newIndex
+            });
+        };
+
+        let increment = () => {
+            const newIndex = (this.state.selectedIndex === 11) ? 0 : this.state.selectedIndex + 1;
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: this.state.showCalendar,
+                viewMode: this.state.viewMode,
+                selectedIndex: newIndex
+            });
+        };
+
+        let switchToYearView = () => {
+            const newIndex = 2017;
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: this.state.showCalendar,
+                viewMode: "year",
+                selectedIndex: newIndex
+            });
+        };
+
+        let $view = (this.state.viewMode === "month") ? this.renderMonthView() : this.renderYearView();
+        let displayText = (this.state.viewMode === "month") ? this.months[this.state.selectedIndex].fullName : this.state.selectedIndex;
+
+        const widgetClass = (this.state.focus === false) ? "widget" : "widgetFocused";
         if ( this.state.showCalendar ) {
             $dropdownContent = (
                 <div className="calendarContent">
                     <div className="calendarPagerButton glyphicon glyphicon-chevron-left" onClick={decrement}/>
-                    <div className="calendarMainButton glyphicon"><span style={{display: "block", cursor: "default"}}><center>{months[this.state.selectedIndex].fullName}</center></span></div>
+                    <div className="calendarMainButton glyphicon" onClick={switchToYearView}><span style={{display: "block", cursor: "default"}}><center>{displayText}</center></span></div>
                     <div className="calendarPagerButton glyphicon glyphicon-chevron-right" onClick={increment}/>
-                    {$days}
+                    {$view}
                 </div>
             );
         }
-
-        const widgetClass = (this.state.focus === false) ? "widget" : "widgetFocused";
 
         return (
             <div style={{width: this.props.width||"100%", float: "left"}}>

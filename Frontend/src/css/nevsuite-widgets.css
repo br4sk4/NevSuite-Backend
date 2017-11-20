@@ -242,6 +242,21 @@
     color: black;
 }
 
+.calendarTextButton {
+    float: left;
+    font-family: Arial, serif;
+    font-size: 14px;
+    width: 70px;
+    height: 40px;
+    margin-left: 2px;
+    margin-top: 2px;
+    padding-top: 12px;
+    border: solid transparent 1px;
+    border-radius: 2px;
+    background: white;
+    color: black;
+}
+
 .calendarMainButton {
     float: left;
     font-family: Arial, serif;
@@ -259,7 +274,8 @@
 
 .calendarMainButton:hover,
 .calendarPagerButton:hover,
-.calendarNumberButton:hover {
+.calendarNumberButton:hover,
+.calendarTextButton:hover {
     border: solid 1px #86BFA0;
     background: #D3F0E0;
     color: #07412f;
@@ -267,7 +283,8 @@
 
 .calendarMainButton:active,
 .calendarPagerButton:active,
-.calendarNumberButton:active {
+.calendarNumberButton:active,
+.calendarTextButton:active {
     border: solid 1px #429366;
     background: #86BFA0;
     color: #07412f;
