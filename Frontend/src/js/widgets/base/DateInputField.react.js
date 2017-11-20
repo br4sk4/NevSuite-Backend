@@ -42,8 +42,8 @@ export default class DateInputField extends React.Component {
         this.dayNames.forEach(function(value) {
             $dayTiles.push(
                 <div key={value} className="calendarDayName glyphicon">
-                    <span style={{display: "block", cursor: "default"}}>
-                        <center><strong>{value}</strong></center>
+                    <span style={{display: "block", cursor: "default", textAlign: "center"}}>
+                        <strong>{value}</strong>
                     </span>
                 </div>
             );
@@ -52,7 +52,7 @@ export default class DateInputField extends React.Component {
         for (x = 1; x <= 42; x++) {
             $dayTiles.push(
                 <div key={x} className="calendarNumberButton glyphicon">
-                    <span style={{display: "block", cursor: "default"}}><center>{x}</center></span>
+                    <span style={{display: "block", cursor: "default", textAlign: "center"}}>{x}</span>
                 </div>
             );
         }
@@ -78,9 +78,7 @@ export default class DateInputField extends React.Component {
             const month = x;
             $monthTiles.push(
                 <div key={x} className="calendarTextButton glyphicon" onClick={() => {switchToMonthView(month)}}>
-                    <span style={{display: "block", cursor: "default"}}>
-                        <center>{this.months[x].shortName}</center>
-                    </span>
+                    <span style={{display: "block", cursor: "default", textAlign: "center"}}>{this.months[x].shortName}</span>
                 </div>
             );
         }
@@ -173,7 +171,7 @@ export default class DateInputField extends React.Component {
                 <div className="calendarContent">
                     <div className="calendarPagerButton glyphicon glyphicon-chevron-left" onClick={decrement}/>
                     <div className="calendarMainButton glyphicon" onClick={() => {switchToYearView(year)}}>
-                        <span style={{display: "block", cursor: "default"}}><center>{displayText}</center></span>
+                        <span style={{display: "block", cursor: "default", textAlign: "center"}}>{displayText}</span>
                     </div>
                     <div className="calendarPagerButton glyphicon glyphicon-chevron-right" onClick={increment}/>
                     {$view}
