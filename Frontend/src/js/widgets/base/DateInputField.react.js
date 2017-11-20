@@ -40,11 +40,21 @@ export default class DateInputField extends React.Component {
         let $dayTiles = [];
 
         this.dayNames.forEach(function(value) {
-            $dayTiles.push(<div key={value} className="calendarDayName glyphicon"><span style={{display: "block", cursor: "default"}}><center><strong>{value}</strong></center></span></div>);
+            $dayTiles.push(
+                <div key={value} className="calendarDayName glyphicon">
+                    <span style={{display: "block", cursor: "default"}}>
+                        <center><strong>{value}</strong></center>
+                    </span>
+                </div>
+            );
         });
 
         for (x = 1; x <= 42; x++) {
-            $dayTiles.push(<div key={x} className="calendarNumberButton glyphicon"><span style={{display: "block", cursor: "default"}}><center>{x}</center></span></div>);
+            $dayTiles.push(
+                <div key={x} className="calendarNumberButton glyphicon">
+                    <span style={{display: "block", cursor: "default"}}><center>{x}</center></span>
+                </div>
+            );
         }
 
         return $dayTiles;
@@ -66,7 +76,13 @@ export default class DateInputField extends React.Component {
 
         for (x = 0; x <= 11; x++) {
             const month = x;
-            $monthTiles.push(<div key={x} className="calendarTextButton glyphicon" onClick={() => {switchToMonthView(month)}}><span style={{display: "block", cursor: "default"}}><center>{this.months[x].shortName}</center></span></div>);
+            $monthTiles.push(
+                <div key={x} className="calendarTextButton glyphicon" onClick={() => {switchToMonthView(month)}}>
+                    <span style={{display: "block", cursor: "default"}}>
+                        <center>{this.months[x].shortName}</center>
+                    </span>
+                </div>
+            );
         }
 
         return $monthTiles;
@@ -92,8 +108,18 @@ export default class DateInputField extends React.Component {
         });
 
         let decrement = () => {
-            const year = (this.state.viewMode === "year") ? this.state.selectedYear - 1 : (this.state.selectedMonth === 0) ? this.state.selectedYear - 1 : this.state.selectedYear;
-            const month = (this.state.viewMode === "month") ? ((this.state.selectedMonth === 0) ? 11 : this.state.selectedMonth - 1) : this.state.selectedMonth;
+            const year = (this.state.viewMode === "year")
+                ? this.state.selectedYear - 1
+                : (this.state.selectedMonth === 0)
+                    ? this.state.selectedYear - 1
+                    : this.state.selectedYear;
+
+            const month = (this.state.viewMode === "month")
+                ? ((this.state.selectedMonth === 0)
+                    ? 11
+                    : this.state.selectedMonth - 1)
+                : this.state.selectedMonth;
+
             this.setState({
                 focus: this.state.focus,
                 showCalendar: this.state.showCalendar,
@@ -104,8 +130,18 @@ export default class DateInputField extends React.Component {
         };
 
         let increment = () => {
-            const year = (this.state.viewMode === "year") ? this.state.selectedYear + 1 : (this.state.selectedMonth === 11) ? this.state.selectedYear + 1 : this.state.selectedYear;
-            const month = (this.state.viewMode === "month") ? ((this.state.selectedMonth === 11) ? 0 : this.state.selectedMonth + 1) : this.state.selectedMonth;
+            const year = (this.state.viewMode === "year")
+                ? this.state.selectedYear + 1
+                : (this.state.selectedMonth === 11)
+                    ? this.state.selectedYear + 1
+                    : this.state.selectedYear;
+
+            const month = (this.state.viewMode === "month")
+                ? ((this.state.selectedMonth === 11)
+                    ? 0
+                    : this.state.selectedMonth + 1)
+                : this.state.selectedMonth;
+
             this.setState({
                 focus: this.state.focus,
                 showCalendar: this.state.showCalendar,
@@ -126,7 +162,9 @@ export default class DateInputField extends React.Component {
         };
 
         let $view = (this.state.viewMode === "month") ? this.renderMonthView() : this.renderYearView();
-        let displayText = (this.state.viewMode === "month") ? this.months[this.state.selectedMonth].fullName + ", " + this.state.selectedYear : this.state.selectedYear;
+        let displayText = (this.state.viewMode === "month")
+            ? this.months[this.state.selectedMonth].fullName + ", " + this.state.selectedYear
+            : this.state.selectedYear;
 
         const widgetClass = (this.state.focus === false) ? "widget" : "widgetFocused";
         if ( this.state.showCalendar ) {
@@ -134,7 +172,9 @@ export default class DateInputField extends React.Component {
             $dropdownContent = (
                 <div className="calendarContent">
                     <div className="calendarPagerButton glyphicon glyphicon-chevron-left" onClick={decrement}/>
-                    <div className="calendarMainButton glyphicon" onClick={() => {switchToYearView(year)}}><span style={{display: "block", cursor: "default"}}><center>{displayText}</center></span></div>
+                    <div className="calendarMainButton glyphicon" onClick={() => {switchToYearView(year)}}>
+                        <span style={{display: "block", cursor: "default"}}><center>{displayText}</center></span>
+                    </div>
                     <div className="calendarPagerButton glyphicon glyphicon-chevron-right" onClick={increment}/>
                     {$view}
                 </div>
@@ -145,7 +185,9 @@ export default class DateInputField extends React.Component {
             <div style={{width: this.props.width||"100%", float: "left"}}>
                 <div className={widgetClass} tabIndex="0" onBlur={() => {if (this.state.showCalendar) toggleCalendar()}}>
                     <input className="dateInputField" type="text" onFocus={toggleFocus} onBlur={toggleFocus}/>
-                    <div className="dateInputButton" onClick={toggleCalendar}><span className="glyphicon glyphicon-calendar comboboxIcon"/></div>
+                    <div className="dateInputButton" onClick={toggleCalendar}>
+                        <span className="glyphicon glyphicon-calendar comboboxIcon"/>
+                    </div>
                     {$dropdownContent}
                 </div>
             </div>
