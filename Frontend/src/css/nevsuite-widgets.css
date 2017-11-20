@@ -1,4 +1,5 @@
-.widget {
+.widget,
+.widgetFocused {
     position: relative;
     background-color: white;
     border: solid 1px darkgrey;
@@ -7,21 +8,18 @@
     height: 28px;
 }
 
-.widget:hover {
+.widgetFocused {
     border: solid 1px #429366;
     box-shadow: 0 0 6px #86BFA0;
     outline: 0 solid transparent;
 }
 
-.widget:focus {
-    border: solid 1px #429366;
-    box-shadow: 0 0 6px #86BFA0;
-    outline: 0 solid transparent;
-}
-
+.widget:hover,
+.widget:focus,
 .widget:active {
     border: solid 1px #429366;
     box-shadow: 0 0 6px #86BFA0;
+    outline: 0 solid transparent;
 }
 
 .inputField {
@@ -161,4 +159,116 @@
     border: solid 1px #86BFA0;
     border-radius: 1px;
     cursor: default;
+}
+
+.dateInputField {
+    position: absolute;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25);
+    background-color: transparent;
+    border: 0 solid transparent;
+    font-size: 12px;
+    padding-left: 6px;
+    padding-top: 3px;
+    width: 100%;
+    height: 26px;
+}
+
+.dateInputField:hover,
+.dateInputField:active,
+.dateInputField:focus {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25);
+    background-color: transparent;
+    border: 0 solid transparent;
+    outline: 0 solid transparent;
+}
+
+.dateInputButton {
+    position: absolute;
+    background-color: transparent;
+    border: 0 solid transparent;
+    outline: 0 solid transparent;
+    border-left: 1px solid darkgrey;
+    color: darkgrey;
+    font-size: 12px;
+    width: 29px;
+    height: 100%;
+    top: 0;
+    right: 0;
+    padding: 6px 8px;
+}
+
+.calendarContent {
+    background: white;
+    border: 1px solid #429366;
+    border-radius: 2px;
+    box-shadow: 0 16px 16px 0 rgba(0,0,0,0.2);
+    position: absolute;
+    width: 222px;
+    height: 253px;
+    top: 28px;
+    padding-left: 1px;
+    right: 0;
+    z-index: 5;
+    overflow: hidden;
+}
+
+.calendarPagerButton {
+    float: left;
+    width: 30px;
+    height: 30px;
+    margin-left: 1px;
+    margin-top: 1px;
+    padding-top: 7px;
+    padding-left: 6px;
+    border: solid darkgrey 1px;
+    border-radius: 2px;
+    background: white;
+    color: black;
+}
+
+.calendarDayName,
+.calendarNumberButton {
+    float: left;
+    font-family: Arial, serif;
+    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    margin-left: 1px;
+    margin-top: 1px;
+    padding-top: 8px;
+    border: solid transparent 1px;
+    border-radius: 2px;
+    background: white;
+    color: black;
+}
+
+.calendarMainButton {
+    float: left;
+    font-family: Arial, serif;
+    font-size: 14px;
+    width: 154px;
+    height: 30px;
+    margin-left: 1px;
+    margin-top: 1px;
+    padding-top: 8px;
+    border: solid darkgrey 1px;
+    border-radius: 2px;
+    background: white;
+    color: black;
+}
+
+.calendarMainButton:hover,
+.calendarPagerButton:hover,
+.calendarNumberButton:hover {
+    border: solid 1px #86BFA0;
+    background: #D3F0E0;
+    color: #07412f;
+}
+
+.calendarMainButton:active,
+.calendarPagerButton:active,
+.calendarNumberButton:active {
+    border: solid 1px #429366;
+    background: #86BFA0;
+    color: #07412f;
 }

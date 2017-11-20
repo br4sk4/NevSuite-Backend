@@ -5,6 +5,7 @@ import React from 'react';
 
 import Switch from '../../../widgets/base/Switch.react.js';
 import InputField from '../../../widgets/base/InputField.react.js';
+import DateInputField from '../../../widgets/base/DateInputField.react.js';
 import ComboBox from '../../../widgets/base/ComboBox.react.js';
 import PersonContacts from './PersonContacts.react.js';
 
@@ -82,12 +83,12 @@ export default class BusinessInformation extends React.Component {
                         <div className="col-sm-9"><InputField/></div>
                     </div>
                     <div className="form-group">
-                        <div className="col-sm-2" style={inputLabelContainerStyle}><label>Eintrittsdatum:</label></div>
-                        <div className="col-sm-9"><InputField/></div>
-                    </div>
-                    <div className="form-group">
                         <div className="col-sm-2" style={inputLabelContainerStyle}><label>Firma:</label></div>
                         <div className="col-sm-9"><ComboBox showSearchBox data={comboboxData}/></div>
+                    </div>
+                    <div className="form-group">
+                        <div className="col-sm-2" style={inputLabelContainerStyle}><label>Eintrittsdatum:</label></div>
+                        <div className="col-sm-9"><DateInputField width="224px"/></div>
                     </div>
                     <div className="form-group">
                         <div className="col-sm-2" style={inputLabelContainerStyle}><label>Führungskraft:</label></div>
