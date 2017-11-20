@@ -6,6 +6,7 @@ import React from "react";
 export default class DateInputField extends React.Component {
 
     months;
+    days;
 
     constructor(props) {
         super(props);
@@ -15,7 +16,8 @@ export default class DateInputField extends React.Component {
             showCalendar: false,
             viewMode: "month",
             selectedYear: 2017,
-            selectedMonth: 0
+            selectedMonth: 0,
+            actDate: ""
         };
 
         this.months = [
@@ -32,14 +34,50 @@ export default class DateInputField extends React.Component {
             {shortName: 'Nov', fullName: 'November'},
             {shortName: 'Dez', fullName: 'Dezember'}];
 
-        this.dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+        this.days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+
+        this.onChange = this.onChange.bind(this);
+    }
+
+    onChange(e) {
+        const dateString = e.target.value;
+        this.setState({
+            focus: this.state.focus,
+            showCalendar: this.state.showCalendar,
+            viewMode: this.state.viewMode,
+            selectedYear: this.state.selectedYear,
+            selectedMonth: this.state.selectedMonth,
+            actDate: dateString
+        });
     }
 
     renderMonthView() {
         let x;
         let $dayTiles = [];
 
-        this.dayNames.forEach(function(value) {
+        let monthNumber = (this.state.selectedMonth) < 10 ? "0" + (this.state.selectedMonth + 1) : (this.state.selectedMonth + 1);
+        let date = new Date(this.state.selectedYear + "-" + monthNumber + "-01");
+        let daysOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        let dayOfWeekIndex = (date.getDay() === 0 ) ? 6 : date.getDay() - 1;
+
+        let setDate = (date) => {
+            let day = (date.getDate() < 10) ? ("0" + date.getDate()) : date.getDate();
+            let month = ((date.getMonth() + 1) < 10) ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+            const dateString = day
+                    + "." + month
+                    + "." + date.getFullYear();
+
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: !this.state.showCalendar,
+                viewMode: this.state.viewMode,
+                selectedYear: this.state.selectedYear,
+                selectedMonth: this.state.selectedMonth,
+                actDate: dateString
+            });
+        };
+
+        this.days.forEach(function(value) {
             $dayTiles.push(
                 <div key={value} className="calendarDayName glyphicon">
                     <span style={{display: "block", cursor: "default", textAlign: "center"}}>
@@ -49,10 +87,24 @@ export default class DateInputField extends React.Component {
             );
         });
 
-        for (x = 1; x <= 42; x++) {
+        for (x = 0; x < dayOfWeekIndex; x++) {
             $dayTiles.push(
-                <div key={x} className="calendarNumberButton glyphicon">
-                    <span style={{display: "block", cursor: "default", textAlign: "center"}}>{x}</span>
+                <div key={x} className="calendarEmptyTile glyphicon">
+                    <span style={{display: "block", cursor: "default"}}/>
+                </div>
+            );
+        }
+
+        for (x = 1; x <= daysOfMonth; x++) {
+            const newDate = new Date(
+                this.state.selectedYear,
+                this.state.selectedMonth,
+                x
+            );
+
+            $dayTiles.push(
+                <div key={x + 10} className="calendarNumberButton glyphicon">
+                    <span style={{display: "block", cursor: "default", textAlign: "center"}} onClick={() => {setDate(newDate)}}>{x}</span>
                 </div>
             );
         }
@@ -70,7 +122,8 @@ export default class DateInputField extends React.Component {
                 showCalendar: this.state.showCalendar,
                 viewMode: "month",
                 selectedYear: this.state.selectedYear,
-                selectedMonth: month
+                selectedMonth: month,
+                actDate: this.state.actDate
             });
         };
 
@@ -94,7 +147,8 @@ export default class DateInputField extends React.Component {
             showCalendar: this.state.showCalendar,
             viewMode: this.state.viewMode,
             selectedYear: this.state.selectedYear,
-            selectedMonth: this.state.selectedMonth
+            selectedMonth: this.state.selectedMonth,
+            actDate: this.state.actDate
         });
 
         let toggleCalendar = () => this.setState({
@@ -102,7 +156,8 @@ export default class DateInputField extends React.Component {
             showCalendar: !this.state.showCalendar,
             viewMode: this.state.viewMode,
             selectedYear: this.state.selectedYear,
-            selectedMonth: this.state.selectedMonth
+            selectedMonth: this.state.selectedMonth,
+            actDate: this.state.actDate
         });
 
         let decrement = () => {
@@ -123,7 +178,8 @@ export default class DateInputField extends React.Component {
                 showCalendar: this.state.showCalendar,
                 viewMode: this.state.viewMode,
                 selectedYear: year,
-                selectedMonth: month
+                selectedMonth: month,
+                actDate: this.state.actDate
             });
         };
 
@@ -145,7 +201,8 @@ export default class DateInputField extends React.Component {
                 showCalendar: this.state.showCalendar,
                 viewMode: this.state.viewMode,
                 selectedYear: year,
-                selectedMonth: month
+                selectedMonth: month,
+                actDate: this.state.actDate
             });
         };
 
@@ -155,7 +212,8 @@ export default class DateInputField extends React.Component {
                 showCalendar: this.state.showCalendar,
                 viewMode: "year",
                 selectedYear: year,
-                selectedMonth: this.state.selectedMonth
+                selectedMonth: this.state.selectedMonth,
+                actDate: this.state.actDate
             });
         };
 
@@ -182,7 +240,7 @@ export default class DateInputField extends React.Component {
         return (
             <div style={{width: this.props.width||"100%", float: "left"}}>
                 <div className={widgetClass} tabIndex="0" onBlur={() => {if (this.state.showCalendar) toggleCalendar()}}>
-                    <input className="dateInputField" type="text" onFocus={toggleFocus} onBlur={toggleFocus}/>
+                    <input className="dateInputField" type="text" value={this.state.actDate} onFocus={toggleFocus} onBlur={toggleFocus} onChange={this.onChange}/>
                     <div className="dateInputButton" onClick={toggleCalendar}>
                         <span className="glyphicon glyphicon-calendar comboboxIcon"/>
                     </div>

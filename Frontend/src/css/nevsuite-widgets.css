@@ -226,6 +226,18 @@
     color: black;
 }
 
+.calendarEmptyTile {
+    float: left;
+    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    margin-left: 1px;
+    margin-top: 1px;
+    border: solid transparent 1px;
+    background: white;
+    color: white;
+}
+
 .calendarDayName,
 .calendarNumberButton {
     float: left;
