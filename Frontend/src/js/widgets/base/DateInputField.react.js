@@ -5,9 +5,6 @@ import React from "react";
 
 export default class DateInputField extends React.Component {
 
-    months;
-    days;
-
     constructor(props) {
         super(props);
 
@@ -36,6 +33,12 @@ export default class DateInputField extends React.Component {
 
         this.days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
+        this.formatDate = function(year, month, day) {
+            let monthString = (month < 10 ) ? "0" + month : month;
+            let dayString = (day < 10 ) ? "0" + day : day;
+            return  dayString + "." + monthString + "." + year;
+        };
+
         this.onChange = this.onChange.bind(this);
     }
 
@@ -55,27 +58,14 @@ export default class DateInputField extends React.Component {
         let x;
         let $dayTiles = [];
 
-        let monthNumber = (this.state.selectedMonth) < 10 ? "0" + (this.state.selectedMonth + 1) : (this.state.selectedMonth + 1);
-        let date = new Date(this.state.selectedYear + "-" + monthNumber + "-01");
-        let daysOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-        let dayOfWeekIndex = (date.getDay() === 0 ) ? 6 : date.getDay() - 1;
-
-        let setDate = (date) => {
-            let day = (date.getDate() < 10) ? ("0" + date.getDate()) : date.getDate();
-            let month = ((date.getMonth() + 1) < 10) ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
-            const dateString = day
-                    + "." + month
-                    + "." + date.getFullYear();
-
-            this.setState({
-                focus: this.state.focus,
-                showCalendar: !this.state.showCalendar,
-                viewMode: this.state.viewMode,
-                selectedYear: this.state.selectedYear,
-                selectedMonth: this.state.selectedMonth,
-                actDate: dateString
-            });
-        };
+        let setActualDate = (dateString) => this.setState({
+            focus: this.state.focus,
+            showCalendar: !this.state.showCalendar,
+            viewMode: this.state.viewMode,
+            selectedYear: this.state.selectedYear,
+            selectedMonth: this.state.selectedMonth,
+            actDate: dateString
+        });
 
         this.days.forEach(function(value) {
             $dayTiles.push(
@@ -87,6 +77,11 @@ export default class DateInputField extends React.Component {
             );
         });
 
+        let dayOfWeekIndex = new Date(
+            this.state.selectedYear,
+            this.state.selectedMonth + 1,
+            1
+        ).getDay();
         for (x = 0; x < dayOfWeekIndex; x++) {
             $dayTiles.push(
                 <div key={x} className="calendarEmptyTile glyphicon">
@@ -95,16 +90,21 @@ export default class DateInputField extends React.Component {
             );
         }
 
+        let daysOfMonth = new Date(
+            this.state.selectedYear,
+            this.state.selectedMonth + 2,
+            0
+        ).getDate();
         for (x = 1; x <= daysOfMonth; x++) {
-            const newDate = new Date(
+            const dateString = this.formatDate(
                 this.state.selectedYear,
-                this.state.selectedMonth,
+                this.state.selectedMonth + 1,
                 x
             );
 
             $dayTiles.push(
                 <div key={x + 10} className="calendarNumberButton glyphicon">
-                    <span style={{display: "block", cursor: "default", textAlign: "center"}} onClick={() => {setDate(newDate)}}>{x}</span>
+                    <span style={{display: "block", cursor: "default", textAlign: "center"}} onClick={() => {setActualDate(dateString)}}>{x}</span>
                 </div>
             );
         }
