@@ -47,6 +47,8 @@ public class TimeseriesDataProviderService<T> extends TimeseriesDataProviderBase
         timeseriesDocumentRepository.findAll().stream()
                 .map(doc -> new ValueMapDocumentBuilder().fromJson(doc.getValueMap()).getValueMap())
                 .forEach(valueList -> valueList.stream()
+                        .filter(valueDto -> Instant.parse(valueDto.getTimestamp()).compareTo(interval.getTimestampFrom()) > 0
+                                && Instant.parse(valueDto.getTimestamp()).compareTo(interval.getTimestampTo()) <= 0)
                         .sorted(Comparator.comparing(TimeseriesValueDTO::getTimestamp))
                         .forEach(value -> map.put(
                                 Instant.parse(value.getTimestamp()),

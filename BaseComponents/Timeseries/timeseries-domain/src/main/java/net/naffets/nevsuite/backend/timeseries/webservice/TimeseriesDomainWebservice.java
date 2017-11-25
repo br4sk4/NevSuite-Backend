@@ -11,6 +11,7 @@ import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDataProv
 import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
  * @author br4sk4 / created on 22.10.2017
  */
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/DomainService")
 public class TimeseriesDomainWebservice {
 
@@ -62,14 +64,20 @@ public class TimeseriesDomainWebservice {
                 .toJson();
     }
 
-    @RequestMapping(value = "/timeseries", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public String testPersistentTimeseries() {
+    @RequestMapping(value = "/timeseries/{timestampFrom}/{timestampTo}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String loadValueMap(@PathVariable(name = "timestampFrom") String timestampFrom, @PathVariable(name = "timestampTo") String timestampTo) {
         dataProviderService.setValuePlugin(new BigDecimalPlugin());
+        TimeseriesHead head = domainService.findAllTimeseriesHeads().stream()
+                .findFirst()
+                .orElse(new TimeseriesHead());
+        if (head.getIdentifier() == null) head.setIdentifier("memory:" + head.getPrimaryKey());
+
         Instant measurementTimestamp = Instant.now();
         TimeseriesBuilder timeseries = new TimeseriesAssembler<BigDecimal>().assembleTimeseries(
-                domainService.findAllTimeseriesHeads().stream().findFirst().orElse(null),
-                dataProviderService.load(new TimeseriesInterval(Instant.parse("2017-01-01T00:00:00Z"), Instant.parse("2017-01-02T00:00:00Z"))));
+                head,
+                dataProviderService.load(new TimeseriesInterval(Instant.parse(timestampFrom), Instant.parse(timestampTo))));
         System.out.println("ReadOperation: " + (Instant.now().toEpochMilli() - measurementTimestamp.toEpochMilli()) + " ms");
+
         return timeseries
                 .setPrettyPrintingEnabled(true)
                 .toJson();
