@@ -58,6 +58,7 @@
                                     <arguments>
                                         <argument>--config</argument>
                                         <argument>webpack.js</argument>
+                                        <argument>--optimize-minimize</argument>
                                     </arguments>
                                 </configuration>
                                 <goals>
@@ -134,6 +135,7 @@
                                         <argument>node_modules\.bin\webpack</argument>
                                         <argument>--config</argument>
                                         <argument>webpack.js</argument>
+                                        <argument>--optimize-minimize</argument>
                                     </arguments>
                                 </configuration>
                                 <goals>
