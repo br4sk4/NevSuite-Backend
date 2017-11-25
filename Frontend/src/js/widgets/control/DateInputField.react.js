@@ -111,14 +111,18 @@ export default class DateInputField extends React.Component {
             });
         };
 
-        this.setActualDate = (dateString) => this.setState({
-            focus: this.state.focus,
-            showCalendar: !this.state.showCalendar,
-            viewMode: this.state.viewMode,
-            selectedYear: this.state.selectedYear,
-            selectedMonth: this.state.selectedMonth,
-            actDate: dateString
-        });
+        this.setActualDate = function(dateString) {
+            debugger;
+            this.props.dateChanged(dateString);
+            this.setState({
+                focus: this.state.focus,
+                showCalendar: !this.state.showCalendar,
+                viewMode: this.state.viewMode,
+                selectedYear: this.state.selectedYear,
+                selectedMonth: this.state.selectedMonth,
+                actDate: dateString
+            });
+        }
 
         this.switchToMonthView = (month) => {
             this.setState({
@@ -248,7 +252,7 @@ export default class DateInputField extends React.Component {
         return (
             <div style={{width: this.props.width||"100%", float: "left"}}>
                 <div className={widgetClass} tabIndex="0" onBlur={() => {if (this.state.showCalendar) this.toggleCalendar()}}>
-                    <input className="dateInputField" type="text" value={this.state.actDate} onFocus={this.toggleFocus} onBlur={this.toggleFocus} onChange={this.onChange}/>
+                    <input className="dateInputField" type="text" value={(this.state.actDate !== "") ? this.state.actDate : this.props.value} onFocus={this.toggleFocus} onBlur={this.toggleFocus} onChange={this.onChange}/>
                     <div className="dateInputButton" onClick={this.toggleCalendar}>
                         <span className="glyphicon glyphicon-calendar comboboxIcon"/>
                     </div>

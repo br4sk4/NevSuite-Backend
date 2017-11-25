@@ -107,7 +107,7 @@ export default class ComboBox extends React.Component {
             <div style={{width: this.props.width||"100%", float: "left"}}>
                 <div className="widget" tabIndex="0" onBlur={() => {if ( this.state.showDropdownContent && !this.state.searchBoxGotFocus) this.toggleDropdownContent();}}>
                     <div className="comboboxTextfield" onMouseDown={this.toggleDropdownContent}>
-                        <span className="comboboxText">{this.state.selectedValue}</span>
+                        <span className="comboboxText">{(this.state.selectedValue !== "") ? this.state.selectedValue : this.props.value}</span>
                         <input type="hidden" name="selectedValue" value={this.state.selectedValue}/>
                     </div>
                     <div className="comboboxButton" onMouseDown={this.toggleDropdownContent}><span className="glyphicon glyphicon-chevron-down comboboxIcon" /></div>
