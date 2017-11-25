@@ -3,10 +3,10 @@
  */
 import React from 'react';
 
-import Switch from '../../../widgets/base/Switch.react.js';
-import InputField from '../../../widgets/base/InputField.react.js';
-import DateInputField from '../../../widgets/base/DateInputField.react.js';
-import ComboBox from '../../../widgets/base/ComboBox.react.js';
+import Switch from '../../../widgets/control/Switch.react.js';
+import InputField from '../../../widgets/control/InputField.react.js';
+import DateInputField from '../../../widgets/control/DateInputField.react.js';
+import ComboBox from '../../../widgets/control/ComboBox.react.js';
 import PersonContacts from './PersonContacts.react.js';
 
 export default class BusinessInformation extends React.Component {

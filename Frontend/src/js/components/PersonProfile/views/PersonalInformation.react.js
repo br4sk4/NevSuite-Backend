@@ -3,8 +3,8 @@
  */
 import React from 'react';
 
-import InputField from '../../../widgets/base/InputField.react.js';
-import ComboBox from '../../../widgets/base/ComboBox.react.js';
+import InputField from '../../../widgets/control/InputField.react.js';
+import ComboBox from '../../../widgets/control/ComboBox.react.js';
 import PersonContacts from './PersonContacts.react.js';
 
 export default class PersonalInformation extends React.Component {
