@@ -28,26 +28,30 @@ export default class SimpleLineChart extends React.Component {
         let timestampTo = date.split('.')[2] + "-" + date.split('.')[1] + "-" + (dayTo < 10 ? "0" + dayTo : dayTo) + "T00:00:00Z";
 
         let setState = (xData, yData) => {
-            debugger;
             this.setState({
                 xData : xData,
-                yData : yData
+                yData : yData,
+                actDate: this.props.date
             })
         };
 
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 data = JSON.parse(this.responseText);
-                xData.push('00:00');
-                yData.push(data.timeseries.valueMap[0].value);
-                data.timeseries.valueMap.forEach(function(tuple) {
-                    let time = tuple.timestamp.split('T')[1].split('Z')[0];
-                    xData.push(time.split(':')[0] + ':' + time.split(':')[1]);
-                    yData.push(tuple.value);
-                });
-                setState(xData, yData);
+                if ( data.timeseries.valueMap.length > 0 ) {
+                    xData.push('00:00');
+                    yData.push(data.timeseries.valueMap[0].value);
+                    data.timeseries.valueMap.forEach(function (tuple) {
+                        let time = tuple.timestamp.split('T')[1].split('Z')[0];
+                        xData.push(time.split(':')[0] + ':' + time.split(':')[1]);
+                        yData.push(tuple.value);
+                    });
+                    setState(xData, yData);
+                } else {
+                    setState([], []);
+                }
             } else if (this.readyState == 4) {
-                data = [];
+                data = {};
             }
         };
         xhttp.open("GET", "http://localhost:8080/timeseries/DomainService/timeseries/" + timestampFrom + "/" + timestampTo, true);
@@ -61,11 +65,11 @@ export default class SimpleLineChart extends React.Component {
             data: {
                 labels: this.state.xData,
                 datasets: [{
-                    label: "Timeseries",
+                    label: 'Timeseries',
                     backgroundColor: 'rgba(134, 191, 160, 0.3)',
                     borderColor: 'rgb(66, 147, 102)',
                     data: this.state.yData,
-                    steppedLine: true,
+                    steppedLine: false,
                     lineTension: 0,
                     pointRadius: 0
                 }]
@@ -80,7 +84,7 @@ export default class SimpleLineChart extends React.Component {
                 scales: {
                     yAxes: [{
                         ticks: {
-                            max: 100,
+                            max: 200,
                             min: 0,
                             stepSize: 10
                         }

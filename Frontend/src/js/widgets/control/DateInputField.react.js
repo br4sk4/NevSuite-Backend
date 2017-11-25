@@ -112,8 +112,9 @@ export default class DateInputField extends React.Component {
         };
 
         this.setActualDate = function(dateString) {
-            debugger;
-            this.props.dateChanged(dateString);
+            if ( this.props.dateChanged !== undefined ) {
+                this.props.dateChanged(dateString);
+            }
             this.setState({
                 focus: this.state.focus,
                 showCalendar: !this.state.showCalendar,

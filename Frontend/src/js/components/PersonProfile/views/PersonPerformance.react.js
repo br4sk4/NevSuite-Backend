@@ -17,7 +17,6 @@ export default class PersonalInformation extends React.Component {
         };
 
         this.dateChanged = function(newDate) {
-            debugger;
             this.setState({
                 date: newDate
             });
