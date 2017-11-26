@@ -2,7 +2,7 @@ package net.naffets.nevsuite.test.unit.timeseries.lang.util;
 
 import net.naffets.nevsuite.backend.timeseries.domain.basictype.TimeseriesBlocksize;
 import net.naffets.nevsuite.backend.timeseries.domain.basictype.TimeseriesRastertype;
-import net.naffets.nevsuite.backend.timeseries.lang.util.TimeseriesRasterblockungHelper;
+import net.naffets.nevsuite.backend.timeseries.lang.util.TimeseriesDocumentSizeHelper;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -12,14 +12,14 @@ import static org.junit.Assert.assertTrue;
  * @author br4sk4
  * created on 03L7.2015
  */
-public class TimeseriesBlockValueCountTest {
+public class TimeseriesDocumentSizeHelperTest {
 
     @Test
     public void testMinuteSec1() {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -32,7 +32,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -45,7 +45,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -58,7 +58,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -71,7 +71,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -84,7 +84,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -97,7 +97,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -110,7 +110,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR6;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -122,7 +122,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR12;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -135,7 +135,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MINUTE;
         TimeseriesRastertype rasterType = TimeseriesRastertype.DAY1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -148,7 +148,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -161,7 +161,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -174,7 +174,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -187,7 +187,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -200,7 +200,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -213,7 +213,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -226,7 +226,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -239,7 +239,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR6;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -252,7 +252,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR12;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -265,7 +265,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.HOUR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.DAY1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -278,7 +278,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -291,7 +291,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -304,7 +304,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -317,7 +317,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -330,7 +330,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -342,7 +342,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -355,7 +355,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -368,7 +368,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR6;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -380,7 +380,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR12;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -393,7 +393,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.DAY;
         TimeseriesRastertype rasterType = TimeseriesRastertype.DAY1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -406,7 +406,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -418,7 +418,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -431,7 +431,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -444,7 +444,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -457,7 +457,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -470,7 +470,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -483,7 +483,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -496,7 +496,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR6;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -509,7 +509,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR12;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -522,7 +522,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.MONTH;
         TimeseriesRastertype rasterType = TimeseriesRastertype.DAY1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -535,7 +535,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -548,7 +548,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -561,7 +561,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.SEC30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -574,7 +574,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -587,7 +587,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN15;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -600,7 +600,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.MIN30;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -613,7 +613,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -626,7 +626,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR6;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -639,7 +639,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.HOUR12;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
@@ -652,7 +652,7 @@ public class TimeseriesBlockValueCountTest {
         TimeseriesBlocksize blockSize = TimeseriesBlocksize.YEAR;
         TimeseriesRastertype rasterType = TimeseriesRastertype.DAY1;
 
-        Long valueCount = TimeseriesRasterblockungHelper.getRasterblockungValueCount(
+        Long valueCount = TimeseriesDocumentSizeHelper.getRasterblockungValueCount(
                 rasterType,
                 blockSize
         );
