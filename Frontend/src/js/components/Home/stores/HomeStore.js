@@ -7,7 +7,6 @@ import NevSuiteAppDispatcher from '../../../nevsuite.app.dispatcher.js';
 import ComponentInfo from './ComponentInfo.js';
 import HomeActionTypes from './HomeActionTypes.js';
 import HomeActions from './HomeActions.js';
-import Home from '../views/Home.react.js';
 
 class HomeStore extends ReduceStore {
 
@@ -17,16 +16,16 @@ class HomeStore extends ReduceStore {
 
     createComponent(name, url) {
         let response = '';
-        let classes = 'info home';
+        let classes = 'info';
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                classes = 'success home';
+                classes = 'success';
                 response = this.responseText;
                 HomeActions.addComponentInfo(name, classes, response);
             } else if (this.readyState == 4) {
-                classes = 'danger home';
-                response = this.status + ' (' + this.statusText + ')';
+                classes = 'danger';
+                response = 'Not Available!';
                 HomeActions.addComponentInfo(name, classes, response);
             }
         };

@@ -192,3 +192,8 @@ body{
     border-color: #429366;
     box-shadow: 0 0 6px #86BFA0;
 }
+
+.componentInfoBubble {
+    padding-left: 14px;
+    font-size: 14px;
+}
