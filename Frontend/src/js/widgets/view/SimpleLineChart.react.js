@@ -13,21 +13,8 @@ export default class SimpleLineChart extends React.Component {
             xData: [],
             actDate: this.props.date
         };
-    }
 
-    readTimeseries() {
-        let xhttp = new XMLHttpRequest();
-
-        let data = '';
-        let xData = [];
-        let yData = [];
-
-        let date = (this.props.date !== "" && this.props.date !== undefined) ? this.props.date : "01.01.2017";
-        let dayTo = parseInt(date.split('.')[0]) + 1;
-        let timestampFrom = date.split('.')[2] + "-" + date.split('.')[1] + "-" + date.split('.')[0] + "T00:00:00Z";
-        let timestampTo = date.split('.')[2] + "-" + date.split('.')[1] + "-" + (dayTo < 10 ? "0" + dayTo : dayTo) + "T00:00:00Z";
-
-        let setState = (xData, yData) => {
+        let setData = (xData, yData) => {
             this.setState({
                 xData : xData,
                 yData : yData,
@@ -35,9 +22,21 @@ export default class SimpleLineChart extends React.Component {
             })
         };
 
-        xhttp.onreadystatechange = function() {
+        this.formatTimestamp = function(date) {
+            let yearString = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let monthString = (month < 10 ) ? "0" + month : month;
+            let day = date.getDate();
+            let dayString = (day < 10 ) ? "0" + day : day;
+            return  yearString + "-" + monthString + "-" + dayString + "T00:00:00Z";
+        };
+
+        this.processResponse = function() {
+            let xData = [];
+            let yData = [];
+
             if (this.readyState == 4 && this.status == 200) {
-                data = JSON.parse(this.responseText);
+                const data = JSON.parse(this.responseText);
                 if ( data.timeseries.valueMap.length > 0 ) {
                     xData.push('00:00');
                     yData.push(data.timeseries.valueMap[0].value);
@@ -46,14 +45,27 @@ export default class SimpleLineChart extends React.Component {
                         xData.push(time.split(':')[0] + ':' + time.split(':')[1]);
                         yData.push(tuple.value);
                     });
-                    setState(xData, yData);
+                    setData(xData, yData);
                 } else {
-                    setState([], []);
+                    setData(xData, yData);
                 }
             } else if (this.readyState == 4) {
-                data = {};
+                setData(xData, yData);
             }
         };
+    }
+
+    readTimeseries() {
+        let xhttp = new XMLHttpRequest();
+
+        let dateString = (this.props.date !== "" && this.props.date !== undefined) ? this.props.date : "01.01.2017";
+        let actDate = new Date(dateString.split('.')[2], parseInt(dateString.split('.')[1]) - 1, dateString.split('.')[0]);
+        let nextDate = new Date(dateString.split('.')[2], parseInt(dateString.split('.')[1]) - 1, parseInt(dateString.split('.')[0]) + 1);
+
+        const timestampFrom = this.formatTimestamp(actDate);
+        const timestampTo = this.formatTimestamp(nextDate);
+
+        xhttp.onreadystatechange = this.processResponse;
         xhttp.open("GET", "http://localhost:8080/timeseries/DomainService/timeseries/" + timestampFrom + "/" + timestampTo, true);
         xhttp.send();
     }
