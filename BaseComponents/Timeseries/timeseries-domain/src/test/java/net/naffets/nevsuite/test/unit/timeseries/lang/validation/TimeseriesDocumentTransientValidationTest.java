@@ -12,7 +12,7 @@ import org.junit.Ignore;
  * created on 03.07.2015
  */
 @Ignore
-public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
+public class TimeseriesDocumentTransientValidationTest extends TestCase {
 
     private TimeseriesHeadFactory factory;
 
@@ -30,12 +30,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC1,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -50,12 +50,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC15,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -70,12 +70,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC30,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -90,12 +90,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN1,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -112,7 +112,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN15,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
@@ -120,7 +120,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
             return;
         }
 
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
+        fail("Transient TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -136,7 +136,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN30,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
@@ -144,7 +144,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
             return;
         }
 
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
+        fail("Transient TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -160,7 +160,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR1,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
@@ -168,7 +168,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
             return;
         }
 
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
+        fail("Transient TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -184,7 +184,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR6,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
@@ -192,7 +192,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
             return;
         }
 
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
+        fail("Transient TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -208,7 +208,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR12,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
@@ -216,7 +216,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
             return;
         }
 
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
+        fail("Transient TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -232,7 +232,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.DAY1,
                     TimeseriesBlocksize.MINUTE,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
@@ -240,7 +240,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
             return;
         }
 
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
+        fail("Transient TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -254,12 +254,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC1,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -274,12 +274,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC15,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -294,12 +294,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC30,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -314,12 +314,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN1,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -334,12 +334,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN15,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -354,12 +354,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN30,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -374,12 +374,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR1,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -396,7 +396,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR6,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
@@ -404,7 +404,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
             return;
         }
 
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
+        fail("Transient TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -420,7 +420,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR12,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
@@ -428,7 +428,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
             return;
         }
 
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
+        fail("Transient TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -444,7 +444,7 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.DAY1,
                     TimeseriesBlocksize.HOUR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
@@ -452,31 +452,27 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
             return;
         }
 
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
+        fail("Transient TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
     public void testRasterBlockungDaySec1() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC1,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -490,12 +486,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC15,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -510,12 +506,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC30,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -530,12 +526,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN1,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -550,12 +546,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN15,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -570,12 +566,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN30,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -590,12 +586,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR1,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -610,12 +606,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR6,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -630,12 +626,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR12,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -650,109 +646,93 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.DAY1,
                     TimeseriesBlocksize.DAY,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
 
     public void testRasterBlockungMonthSec1() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC1,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
     public void testRasterBlockungMonthSec15() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC15,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
     public void testRasterBlockungMonthSec30() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC30,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
     public void testRasterBlockungMonthMin1() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN1,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -766,12 +746,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN15,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -786,12 +766,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN30,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -806,12 +786,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR1,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -826,12 +806,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR6,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -846,12 +826,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR12,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -866,157 +846,133 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.DAY1,
                     TimeseriesBlocksize.MONTH,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
 
     public void testRasterBlockungYearSec1() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC1,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
     public void testRasterBlockungYearSec15() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC15,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
     public void testRasterBlockungYearSec30() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.SEC30,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
     public void testRasterBlockungYearMin1() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN1,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
     public void testRasterBlockungYearMin15() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN15,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
     public void testRasterBlockungYearMin30() {
 
-        TimeseriesHead ts;
-
         try {
 
-            ts = factory.createTimeseriesHead(
+            factory.createTimeseriesHead(
                     "123",
                     TimeseriesType.SOURCE,
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.MIN30,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            return;
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
-
-        fail("Persistent TimeseriesHead with RasterBlockung: " + ts.getBlocksize().toString() + ":" + ts.getRastertype().toString() + " is invalid and may be created!");
 
     }
 
@@ -1030,12 +986,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR1,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -1050,12 +1006,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR6,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -1070,12 +1026,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.HOUR12,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
@@ -1090,12 +1046,12 @@ public class TimeseriesRasterblockungPersistentValidationTest extends TestCase {
                     TimeseriesDerivationType.NONE,
                     TimeseriesRastertype.DAY1,
                     TimeseriesBlocksize.YEAR,
-                    TimeseriesPersistence.PERSISTENT,
+                    TimeseriesPersistence.TRANSIENT,
                     TimeseriesPeriodicity.PERIODIC
             );
 
         } catch (InvalidTimeseriesConfigException e) {
-            fail("Persistent TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
+            fail("Transient TimeseriesHead with RasterBlockung: " + e.getTimeseries().getBlocksize().toString() + ":" + e.getTimeseries().getRastertype().toString() + " is valid and cannot be created!");
         }
 
     }
