@@ -12,8 +12,15 @@ export default class PersonalInformation extends React.Component {
     constructor(props) {
         super(props);
 
+        this.formatDate = function(year, month, day) {
+            let monthString = (month < 10 ) ? "0" + month : month;
+            let dayString = (day < 10 ) ? "0" + day : day;
+            return  dayString + "." + monthString + "." + year;
+        };
+
+        const today = new Date();
         this.state = {
-            date: "01.01.2017"
+            date: this.formatDate(today.getFullYear(), today.getMonth() + 1, today.getDate())
         };
 
         this.dateChanged = function(newDate) {
@@ -41,7 +48,7 @@ export default class PersonalInformation extends React.Component {
                         <div className="form-group">
                             <div className="col-sm-12">
                                 <div className="col-sm-1" style={inputLabelContainerStyle}><label>Datum:</label></div>
-                                <div className="col-sm-5"><DateInputField value={date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear()} dateChanged={(newDate) => this.dateChanged(newDate)} /></div>
+                                <div className="col-sm-5"><DateInputField value={this.state.date} dateChanged={(newDate) => this.dateChanged(newDate)} /></div>
                                 <div className="col-sm-1" style={inputLabelContainerStyle}><label>Raster:</label></div>
                                 <div className="col-sm-5"><ComboBox data={["Tag", "Monat", "Jahr"]} value="Tag" /></div>
                             </div>

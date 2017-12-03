@@ -66,7 +66,7 @@ export default class SimpleLineChart extends React.Component {
         const timestampTo = this.formatTimestamp(nextDate);
 
         const host = ( window.location.hostname != "" ) ? window.location.hostname + ':8080' : 'localhost:8080';
-        const url = 'http://' + host + '/timeseries/DomainService/timeseries/';
+        const url = 'http://' + host + '/timeseries/DomainService/timeseries/7e6ea77e-b652-11e7-abc4-cec278b6b50a/';
 
         xhttp.onreadystatechange = this.processResponse;
         xhttp.open("GET", url + timestampFrom + "/" + timestampTo, true);
