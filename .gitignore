@@ -1,14 +1,7 @@
-BaseComponents/Timeseries/timeseries-api/target
-BaseComponents/Timeseries/timeseries-core/target
-BaseComponents/Timeseries/timeseries-domain/target
-BaseComponents/Timeseries/timeseries-domain/src/gen/*
-Framework/Backend/backend-api/target
-Framework/Backend/backend-domain/target
-Framework/Backend/backend-domain/src/gen/*
 Frontend/src/js/nevsuite.bundle.js
 Frontend/src/node_modules/
-Frontend/target/
 Server/tomcat/
 .tomcat
 .idea
 *.iml
+**/target
