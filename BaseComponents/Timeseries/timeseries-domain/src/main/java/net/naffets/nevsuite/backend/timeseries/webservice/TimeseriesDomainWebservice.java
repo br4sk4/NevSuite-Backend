@@ -11,14 +11,12 @@ import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDataProv
 import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +47,10 @@ public class TimeseriesDomainWebservice {
                 .build()).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "/timeseriesHead/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(
+            value = "/timeseriesHead/{id}",
+            method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     public String findTimeseriesHead(@PathVariable(name = "id") String id) {
         TimeseriesHead timeseriesHead = domainService.findTimeseriesHeadByPrimaryKey(id);
         return new TimeseriesHeadBuilder()
@@ -64,13 +65,37 @@ public class TimeseriesDomainWebservice {
                 .toJson();
     }
 
-    @RequestMapping(value = "/timeseries/{timestampFrom}/{timestampTo}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public String loadValueMap(@PathVariable(name = "timestampFrom") String timestampFrom, @PathVariable(name = "timestampTo") String timestampTo) {
-        dataProviderService.setValuePlugin(new BigDecimalPlugin());
-        TimeseriesHead head = domainService.findAllTimeseriesHeads().stream()
-                .findFirst()
+    @RequestMapping(
+            value = "/timeseriesHead",
+            method = RequestMethod.PUT,
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
+    public String saveTimeseriesHead(@RequestBody String dto) {
+        TimeseriesHead timeseriesHead = domainService.saveTimeseriesHead(new TimeseriesHeadBuilder().fromJson(dto));
+        return new TimeseriesHeadBuilder()
+                .withPrimaryKey(timeseriesHead.getPrimaryKey())
+                .withIdentifier(timeseriesHead.getIdentifier())
+                .withType(timeseriesHead.getType().toString())
+                .withDerivationType(timeseriesHead.getDerivationType().toString())
+                .withPersistence(timeseriesHead.getPersistence().toString())
+                .withPeriodicity(timeseriesHead.getPeriodicity().toString())
+                .withBlockSize(timeseriesHead.getBlocksize().toString())
+                .withRasterType(timeseriesHead.getRastertype().toString())
+                .toJson();
+    }
+
+    @RequestMapping(value = "/timeseries/{headId}/{timestampFrom}/{timestampTo}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String loadValueMap(
+            @PathVariable(name = "headId") String headId,
+            @PathVariable(name = "timestampFrom") String timestampFrom,
+            @PathVariable(name = "timestampTo") String timestampTo) {
+        TimeseriesHead head = Optional.ofNullable(domainService.findTimeseriesHeadByPrimaryKey(headId))
                 .orElse(new TimeseriesHead());
         if (head.getIdentifier() == null) head.setIdentifier("memory:" + head.getPrimaryKey());
+
+        dataProviderService.setValuePlugin(new BigDecimalPlugin());
+        dataProviderService.setTimeseriesIdentifier(head.getIdentifier());
 
         Instant measurementTimestamp = Instant.now();
         TimeseriesBuilder timeseries = new TimeseriesAssembler<BigDecimal>().assembleTimeseries(

@@ -22,6 +22,8 @@ import java.util.LinkedHashMap;
 @Service
 public class TimeseriesDataProviderService<T> extends TimeseriesDataProviderBase<T> {
 
+    private String timeseriesIdentifier = "";
+
     @Autowired
     TimeseriesDocumentRepository timeseriesDocumentRepository;
 
@@ -41,10 +43,14 @@ public class TimeseriesDataProviderService<T> extends TimeseriesDataProviderBase
         this.valuePlugin = valuePlugin;
     }
 
+    public void setTimeseriesIdentifier(String timeseriesIdentifier) {
+        this.timeseriesIdentifier = timeseriesIdentifier;
+    }
+
     @Override
     public HashMap<Instant, T> load(TimeseriesInterval interval) {
         LinkedHashMap<Instant, T> map = new LinkedHashMap<>();
-        timeseriesDocumentRepository.findAll().stream()
+        timeseriesDocumentRepository.findByTimeseriesIdentifier(timeseriesIdentifier).stream()
                 .map(doc -> new ValueMapDocumentBuilder().fromJson(doc.getValueMap()).getValueMap())
                 .forEach(valueList -> valueList.stream()
                         .filter(valueDto -> Instant.parse(valueDto.getTimestamp()).compareTo(interval.getTimestampFrom()) > 0

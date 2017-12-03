@@ -50,9 +50,7 @@ public class TimeseriesHead<DTO extends DataTransferObject> extends AbstractEnti
                           TimeseriesBlocksize blockSize,
                           TimeseriesPersistence persistence,
                           TimeseriesPeriodicity periodicity) {
-
         super();
-
         this.identifier = identifier;
         this.type = type;
         this.derivationType = derivationType;
