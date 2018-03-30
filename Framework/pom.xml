@@ -6,8 +6,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>MicroServices</artifactId>
-        <groupId>net.naffets.nevsuite.microservices</groupId>
+        <artifactId>NevSuite</artifactId>
+        <groupId>net.naffets.nevsuite</groupId>
         <version>0.11</version>
     </parent>
 
@@ -15,9 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
-
         <module>Backend</module>
-
     </modules>
 
 </project>

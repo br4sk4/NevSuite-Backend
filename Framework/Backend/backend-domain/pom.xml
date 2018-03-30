@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.naffets.nevsuite.microservices</groupId>
+        <groupId>net.naffets.nevsuite</groupId>
         <artifactId>Backend</artifactId>
         <version>0.11</version>
     </parent>
@@ -20,7 +20,6 @@
     </properties>
 
     <build>
-
         <finalName>backend</finalName>
         <plugins>
             <plugin>
@@ -98,49 +97,32 @@
     </profiles>
 
     <dependencies>
-
         <dependency>
-            <groupId>net.naffets.nevsuite.microservices</groupId>
+            <groupId>net.naffets.nevsuite</groupId>
             <artifactId>backend-api</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>net.naffets.nevsuite.contrib</groupId>
             <artifactId>oracle-jdbc</artifactId>
             <scope>runtime</scope>
         </dependency>
-
     </dependencies>
 
 </project>

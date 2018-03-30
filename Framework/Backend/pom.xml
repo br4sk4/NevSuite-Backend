@@ -7,7 +7,7 @@
 
     <parent>
         <artifactId>Framework</artifactId>
-        <groupId>net.naffets.nevsuite.microservices</groupId>
+        <groupId>net.naffets.nevsuite</groupId>
         <version>0.11</version>
     </parent>
 
@@ -15,24 +15,18 @@
     <packaging>pom</packaging>
 
     <modules>
-
         <module>backend-api</module>
         <module>backend-domain</module>
-
     </modules>
 
     <dependencyManagement>
-
         <dependencies>
-
             <dependency>
-                <groupId>net.naffets.nevsuite.microservices</groupId>
+                <groupId>net.naffets.nevsuite</groupId>
                 <artifactId>backend-api</artifactId>
-                <version>0.11</version>
+                <version>${nevsuite.version}</version>
             </dependency>
-
         </dependencies>
-
     </dependencyManagement>
 
 </project>

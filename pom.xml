@@ -11,22 +11,16 @@
         <version>1.5.7.RELEASE</version>
     </parent>
 
-    <groupId>net.naffets.nevsuite.microservices</groupId>
-    <artifactId>MicroServices</artifactId>
+    <groupId>net.naffets.nevsuite</groupId>
+    <artifactId>NevSuite</artifactId>
     <version>0.11</version>
-
     <packaging>pom</packaging>
-
     <name>NevSuite</name>
-    <description>MicroService-Project for NevSuite</description>
+    <description>Parent POM Project for the NevSuite-Backend-Microservices</description>
 
     <modules>
-
-        <module>Server</module>
-        <module>Frontend</module>
         <module>Framework</module>
         <module>BaseComponents</module>
-
     </modules>
 
     <build>
@@ -43,55 +37,31 @@
         </plugins>
     </build>
 
+    <properties>
+        <nevsuite.version>0.11</nevsuite.version>
+        <moxy.version>2.5.0</moxy.version>
+        <jscience.version>4.3.1</jscience.version>
+        <oracle.version>0.11</oracle.version>
+    </properties>
+
     <dependencyManagement>
-
         <dependencies>
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>2.6.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>2.6.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.moxy</artifactId>
-                <version>2.5.0</version>
+                <version>${moxy.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.jscience</groupId>
                 <artifactId>jscience</artifactId>
-                <version>4.3.1</version>
+                <version>${jscience.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>net.naffets.nevsuite.contrib</groupId>
                 <artifactId>oracle-jdbc</artifactId>
-                <version>0.11</version>
+                <version>${oracle.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.8.2</version>
-                <scope>test</scope>
-            </dependency>
-
         </dependencies>
-
     </dependencyManagement>
 
 </project>
