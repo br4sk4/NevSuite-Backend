@@ -43,7 +43,7 @@ public class SampleEntity extends AbstractEntityBean implements EntityBean {
 
             @Override
             public String getTypeDiscriminator() {
-                return SampleEntity.class.getSimpleName().toUpperCase();
+                return SampleEntity.class.getSimpleName();
             }
         };
     }

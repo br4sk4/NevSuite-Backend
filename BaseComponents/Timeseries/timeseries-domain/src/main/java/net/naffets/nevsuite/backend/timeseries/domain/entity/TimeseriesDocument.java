@@ -1,14 +1,14 @@
 package net.naffets.nevsuite.backend.timeseries.domain.entity;
 
-import net.naffets.nevsuite.backend.framework.core.api.DataTransferObject;
-import net.naffets.nevsuite.backend.framework.core.api.Reference;
-import net.naffets.nevsuite.backend.framework.core.base.AbstractEntityBean;
+import lombok.*;
 import net.naffets.nevsuite.backend.timeseries.domain.valueobject.Interval;
+import net.naffets.nevsuite.framework.core.api.Reference;
+import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
+import net.naffets.nevsuite.framework.core.base.AbstractReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.Instant;
 
 /**
  * @author br4sk4
@@ -17,7 +17,10 @@ import java.time.Instant;
 @Entity
 @Table(name = "t_meta_timeseries_document")
 @AttributeOverride(name = "primaryKey", column = @Column(name = "tdoc_id"))
-public class TimeseriesDocument<DTO extends DataTransferObject> extends AbstractEntityBean<DTO> implements Serializable {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Setter
+public class TimeseriesDocument extends AbstractEntityBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,54 +41,33 @@ public class TimeseriesDocument<DTO extends DataTransferObject> extends Abstract
     @Column(name = "tdoc_valuemap")
     protected String valueMap;
 
-    public String getTimeseriesIdentifier() {
-        return timeseriesIdentifier;
-    }
-
-    public void setTimeseriesIdentifier(String timeseriesIdentifier) {
+    @Builder
+    public TimeseriesDocument(
+            String primaryKey,
+            String timeseriesIdentifier,
+            Timestamp version,
+            Interval interval,
+            String valueMap) {
+        super(primaryKey);
         this.timeseriesIdentifier = timeseriesIdentifier;
-    }
-
-    public Timestamp getVersion() {
-        return version;
-    }
-
-    public void setVersion(Timestamp version) {
         this.version = version;
-    }
-
-    public Instant getInstantVersion() {
-        return this.version != null ? version.toInstant() : null;
-    }
-
-    public void setInstantVersion(Instant version) {
-        this.version = version != null ? Timestamp.from(version) : null;
-    }
-
-    public Interval getInterval() {
-        return interval;
-    }
-
-    public void setInterval(Interval interval) {
         this.interval = interval;
-    }
-
-    public String getValueMap() {
-        return valueMap;
-    }
-
-    public void setValueMap(String valueMap) {
         this.valueMap = valueMap;
     }
 
     @Override
-    public DTO asDTO() {
-        return null;
-    }
-
-    @Override
     public Reference asReference() {
-        return null;
+        return new AbstractReference(this) {
+            @Override
+            public String getRepresentableName() {
+                return timeseriesIdentifier + " : " + interval.getInstantFrom() + " - " + interval.getInstantTo();
+            }
+
+            @Override
+            public String getTypeDiscriminator() {
+                return this.getClass().getSimpleName();
+            }
+        };
     }
 
 }

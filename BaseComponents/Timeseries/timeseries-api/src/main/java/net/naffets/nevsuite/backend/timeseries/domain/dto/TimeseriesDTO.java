@@ -1,6 +1,8 @@
 package net.naffets.nevsuite.backend.timeseries.domain.dto;
 
-import net.naffets.nevsuite.backend.framework.core.api.DataTransferObject;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import net.naffets.nevsuite.framework.core.api.DataTransferObject;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -11,30 +13,21 @@ import java.util.List;
  * @author br4sk4 / created on 22.10.2017
  */
 @XmlType(propOrder = {
-        "reference",
+        "identifier",
         "valueMap"
 })
 @XmlRootElement(name = "timeseries")
+@NoArgsConstructor
 public class TimeseriesDTO implements Serializable, DataTransferObject {
 
     private final static long serialVersionUID = 1L;
 
-    private TimeseriesReferenceDTO reference;
-    private List<TimeseriesValueDTO> valueMap;
-
-    public TimeseriesReferenceDTO getReference() {
-        return reference;
-    }
-
-    public void setReference(TimeseriesReferenceDTO reference) {
-        this.reference = reference;
-    }
-
-    public List<TimeseriesValueDTO> getValueMap() {
-        return valueMap;
-    }
-
-    public void setValueMap(List<TimeseriesValueDTO> valueMap) {
+    @Builder
+    public TimeseriesDTO(String identifier, List<TimeseriesValueDTO> valueMap) {
+        this.identifier = identifier;
         this.valueMap = valueMap;
     }
+
+    public String identifier;
+    public List<TimeseriesValueDTO> valueMap;
 }

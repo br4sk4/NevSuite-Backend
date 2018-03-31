@@ -1,4 +1,4 @@
-package net.naffets.nevsuite.framework.lang.util;
+package net.naffets.nevsuite.backend.timeseries.lang.util;
 
 import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;

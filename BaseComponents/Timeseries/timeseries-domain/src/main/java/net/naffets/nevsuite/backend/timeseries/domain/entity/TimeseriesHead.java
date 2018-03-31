@@ -1,9 +1,10 @@
 package net.naffets.nevsuite.backend.timeseries.domain.entity;
 
-import net.naffets.nevsuite.backend.framework.core.api.DataTransferObject;
-import net.naffets.nevsuite.backend.framework.core.api.Reference;
-import net.naffets.nevsuite.backend.framework.core.base.AbstractEntityBean;
+import lombok.*;
 import net.naffets.nevsuite.backend.timeseries.domain.basictype.*;
+import net.naffets.nevsuite.framework.core.api.Reference;
+import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
+import net.naffets.nevsuite.framework.core.base.AbstractReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,7 +16,10 @@ import java.io.Serializable;
 @Entity
 @Table(name = "t_meta_timeseries_head")
 @AttributeOverride(name = "primaryKey", column = @Column(name = "mets_id"))
-public class TimeseriesHead<DTO extends DataTransferObject> extends AbstractEntityBean<DTO> implements Serializable {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Setter
+public class TimeseriesHead extends AbstractEntityBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,17 +44,17 @@ public class TimeseriesHead<DTO extends DataTransferObject> extends AbstractEnti
     @Column(name = "mets_rastertype")
     protected TimeseriesRastertype rasterType;
 
-    public TimeseriesHead() {
-    }
-
-    public TimeseriesHead(String identifier,
-                          TimeseriesType type,
-                          TimeseriesDerivationType derivationType,
-                          TimeseriesRastertype rasterType,
-                          TimeseriesBlocksize blockSize,
-                          TimeseriesPersistence persistence,
-                          TimeseriesPeriodicity periodicity) {
-        super();
+    @Builder
+    public TimeseriesHead(
+            String primaryKey,
+            String identifier,
+            TimeseriesType type,
+            TimeseriesDerivationType derivationType,
+            TimeseriesRastertype rasterType,
+            TimeseriesBlocksize blockSize,
+            TimeseriesPersistence persistence,
+            TimeseriesPeriodicity periodicity) {
+        super(primaryKey);
         this.identifier = identifier;
         this.type = type;
         this.derivationType = derivationType;
@@ -58,71 +62,20 @@ public class TimeseriesHead<DTO extends DataTransferObject> extends AbstractEnti
         this.blockSize = blockSize;
         this.persistence = persistence;
         this.periodicity = periodicity;
-    }
-
-    public void setBlockSize(TimeseriesBlocksize blockSize) {
-        this.blockSize = blockSize;
-    }
-
-    public void setRasterType(TimeseriesRastertype rasterType) {
-        this.rasterType = rasterType;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-    }
-
-    public TimeseriesType getType() {
-        return type;
-    }
-
-    public void setType(TimeseriesType type) {
-        this.type = type;
-    }
-
-    public TimeseriesDerivationType getDerivationType() {
-        return derivationType;
-    }
-
-    public void setDerivationType(TimeseriesDerivationType derivationType) {
-        this.derivationType = derivationType;
-    }
-
-    public TimeseriesBlocksize getBlocksize() {
-        return blockSize;
-    }
-
-    public TimeseriesRastertype getRastertype() {
-        return rasterType;
-    }
-
-    public TimeseriesPersistence getPersistence() {
-        return persistence;
-    }
-
-    public void setPersistence(TimeseriesPersistence persistence) {
-        this.persistence = persistence;
-    }
-
-    public TimeseriesPeriodicity getPeriodicity() {
-        return periodicity;
-    }
-
-    public void setPeriodicity(TimeseriesPeriodicity periodicity) {
-        this.periodicity = periodicity;
-    }
-
-    @Override
-    public DTO asDTO() {
-        return null;
     }
 
     @Override
     public Reference asReference() {
-        return null;
+        return new AbstractReference(this) {
+            @Override
+            public String getRepresentableName() {
+                return identifier;
+            }
+
+            @Override
+            public String getTypeDiscriminator() {
+                return this.getClass().getSimpleName();
+            }
+        };
     }
 }

@@ -1,10 +1,10 @@
 package net.naffets.nevsuite.backend.timeseries.lang.persistence;
 
-import net.naffets.nevsuite.backend.framework.core.api.DataTransferObject;
+import com.google.gson.Gson;
+import lombok.Builder;
 import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesValueDTO;
+import net.naffets.nevsuite.framework.core.api.DataTransferObject;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,21 +12,23 @@ import java.util.List;
 /**
  * @author br4sk4 / created on 22.10.2017
  */
-@XmlType(propOrder = {
-        "valueMap"
-})
-@XmlRootElement(name = "document")
 public class ValueMapDocument implements Serializable, DataTransferObject {
 
     private final static long serialVersionUID = 1L;
 
-    private List<TimeseriesValueDTO> valueMap = new LinkedList<>();
-
-    public List<TimeseriesValueDTO> getValueMap() {
-        return valueMap;
+    @Builder
+    public ValueMapDocument(List<TimeseriesValueDTO> valueMap) {
+        this.valueMap = valueMap != null ? valueMap : new LinkedList<>();
     }
 
-    public void setValueMap(List<TimeseriesValueDTO> valueMap) {
-        this.valueMap = valueMap;
+    public List<TimeseriesValueDTO> valueMap;
+
+    public static String toJson(ValueMapDocument valueMapDocument) {
+        return new Gson().toJson(valueMapDocument);
     }
+
+    public static ValueMapDocument fromJson(String json) {
+        return new Gson().fromJson(json, ValueMapDocument.class);
+    }
+
 }

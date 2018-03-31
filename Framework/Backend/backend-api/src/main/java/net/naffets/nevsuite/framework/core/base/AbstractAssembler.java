@@ -2,7 +2,6 @@ package net.naffets.nevsuite.framework.core.base;
 
 import net.naffets.nevsuite.framework.core.api.Assembler;
 import net.naffets.nevsuite.framework.core.api.DataTransferObject;
-import net.naffets.nevsuite.framework.domain.dto.ReferenceDTO;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -25,8 +24,8 @@ public abstract class AbstractAssembler<ENTITY, DTO extends DataTransferObject> 
 
     private Boolean prettyPrintingEnabled = false;
     private Boolean compressionEnabled = false;
-    private final String jsonMediaType = "application/json";
-    private final String xmlMediaType = "application/xml";
+    protected final String jsonMediaType = "application/json";
+    protected final String xmlMediaType = "application/xml";
 
     public AbstractAssembler<ENTITY, DTO> setPrettyPrintingEnabled(Boolean prettyPrintingEnabled) {
         this.prettyPrintingEnabled = prettyPrintingEnabled;
@@ -49,6 +48,10 @@ public abstract class AbstractAssembler<ENTITY, DTO extends DataTransferObject> 
         return this.marshal(entity, jsonMediaType);
     }
 
+    public String toJson(DTO dto) {
+        return this.marshal(dto, jsonMediaType);
+    }
+
     public DTO fromJson(String json, Class<DTO> dtoClass) {
         return this.unmarshal(json, dtoClass, jsonMediaType);
     }
@@ -57,12 +60,20 @@ public abstract class AbstractAssembler<ENTITY, DTO extends DataTransferObject> 
         return this.marshal(entity, xmlMediaType);
     }
 
+    public String toXml(DTO dto) {
+        return this.marshal(dto, xmlMediaType);
+    }
+
     public DTO fromXml(String xml, Class<DTO> dtoClass) {
         return this.unmarshal(xml, dtoClass, xmlMediaType);
     }
 
-    private String marshal(ENTITY entity, String mediaType) {
+    protected String marshal(ENTITY entity, String mediaType) {
         DTO dto = this.toDTO(entity);
+        return this.marshal(dto, mediaType);
+    }
+
+    protected String marshal(DTO dto, String mediaType) {
         try {
             JAXBContext jaxbContext = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(new Class[]{dto.getClass()}, new Properties());
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();

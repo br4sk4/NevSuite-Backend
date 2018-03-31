@@ -6,7 +6,10 @@ import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
 import net.naffets.nevsuite.framework.core.base.AbstractReference;
 import org.springframework.util.DigestUtils;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * @author br4sk4 / created on 12.10.2017
@@ -44,7 +47,7 @@ public class User extends AbstractEntityBean {
 
             @Override
             public String getTypeDiscriminator() {
-                return this.getClass().getSimpleName().toUpperCase();
+                return this.getClass().getSimpleName();
             }
         };
     }

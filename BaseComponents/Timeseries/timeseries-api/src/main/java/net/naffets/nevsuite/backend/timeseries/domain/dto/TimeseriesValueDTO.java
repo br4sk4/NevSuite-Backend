@@ -1,6 +1,11 @@
 package net.naffets.nevsuite.backend.timeseries.domain.dto;
 
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import net.naffets.nevsuite.framework.core.api.DataTransferObject;
+
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 
 /**
  * @author br4sk4 / created on 22.10.2017
@@ -11,44 +16,25 @@ import javax.xml.bind.annotation.XmlType;
         "value",
         "status"
 })
-public class TimeseriesValueDTO {
+@NoArgsConstructor
+public class TimeseriesValueDTO implements Serializable, DataTransferObject {
 
     private final static long serialVersionUID = 1L;
 
-    private String timestamp;
-    private String version;
-    private String value;
-    private String status;
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
+    @Builder
+    public TimeseriesValueDTO(
+            String timestamp,
+            String version,
+            String value,
+            String status) {
         this.timestamp = timestamp;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
         this.version = version;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
         this.value = value;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
         this.status = status;
     }
+
+    public String timestamp;
+    public String version;
+    public String value;
+    public String status;
 }

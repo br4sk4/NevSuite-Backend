@@ -1,8 +1,8 @@
 package net.naffets.nevsuite.backend.timeseries.core.timeseries;
 
-import net.naffets.nevsuite.backend.framework.lang.util.MeasurementUnitSystem;
 import net.naffets.nevsuite.backend.timeseries.core.valueplugin.CompactType;
 import net.naffets.nevsuite.backend.timeseries.core.valueplugin.SpreadType;
+import net.naffets.nevsuite.backend.timeseries.lang.util.MeasurementUnitSystem;
 import org.jscience.economics.money.Money;
 
 import javax.measure.quantity.Dimensionless;
@@ -98,8 +98,7 @@ public enum TimeseriesUnit {
         else if (unit.equals(MeasurementUnitSystem.GIGA_WATT_HOUR)) return TimeseriesUnit.GIGA_WATT_HOUR;
         else if (unit.equals(MeasurementUnitSystem.EURO)) return TimeseriesUnit.EURO;
         else if (unit.equals(MeasurementUnitSystem.EURO_CENT)) return TimeseriesUnit.EURO_CENT;
-        else if (unit.equals(MeasurementUnitSystem.EURO_CENT_PER_KILO_WATT_HOUR))
-            return TimeseriesUnit.EURO_CENT_PER_KILO_WATT_HOUR;
+        else if (unit.equals(MeasurementUnitSystem.EURO_CENT_PER_KILO_WATT_HOUR)) return TimeseriesUnit.EURO_CENT_PER_KILO_WATT_HOUR;
         else if (unit.equals(MeasurementUnitSystem.EURO_PER_KILO_WATT)) return TimeseriesUnit.EURO_PER_KILO_WATT;
         else if (unit.equals(MeasurementUnitSystem.EURO_PER_MEGA_WATT)) return TimeseriesUnit.EURO_PER_MEGA_WATT;
         else if (unit.equals(MeasurementUnitSystem.BURN_VALUE)) return TimeseriesUnit.BURN_VALUE;

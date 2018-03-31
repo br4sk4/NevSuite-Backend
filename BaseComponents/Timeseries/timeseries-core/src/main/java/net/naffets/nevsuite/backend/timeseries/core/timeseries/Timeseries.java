@@ -114,6 +114,10 @@ public class Timeseries<T> {
         return this.interval.getPeriodicIntervalSet(this.period);
     }
 
+    public HashMap<Instant, T> getValueMap() {
+        return this.dataProvider.getValueMap();
+    }
+
     public HashMap<Instant, T> getValueMap(TimeseriesInterval interval) {
         HashMap<Instant, T> valueMap = this.dataProvider.getValueMap(interval);
         Set<Instant> intervalSet = this.interval.getPeriodicIntervalSet(this.period);

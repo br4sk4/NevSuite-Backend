@@ -36,10 +36,6 @@
             <artifactId>org.eclipse.persistence.moxy</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jscience</groupId>
-            <artifactId>jscience</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
             <scope>test</scope>

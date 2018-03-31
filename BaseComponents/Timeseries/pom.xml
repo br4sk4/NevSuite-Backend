@@ -7,7 +7,7 @@
 
     <parent>
         <artifactId>BaseComponents</artifactId>
-        <groupId>net.naffets.nevsuite.microservices</groupId>
+        <groupId>net.naffets.nevsuite</groupId>
         <version>0.11</version>
     </parent>
 
@@ -21,31 +21,23 @@
     </modules>
 
     <dependencyManagement>
-
         <dependencies>
-
             <dependency>
-                <groupId>net.naffets.nevsuite.microservices</groupId>
+                <groupId>net.naffets.nevsuite</groupId>
                 <artifactId>backend-api</artifactId>
-                <version>0.11</version>
+                <version>${nevsuite.version}</version>
             </dependency>
-
             <dependency>
-                <groupId>net.naffets.nevsuite.microservices</groupId>
+                <groupId>net.naffets.nevsuite</groupId>
                 <artifactId>timeseries-api</artifactId>
-                <version>0.11</version>
+                <version>${nevsuite.version}</version>
             </dependency>
-
             <dependency>
-                <groupId>net.naffets.nevsuite.microservices</groupId>
+                <groupId>net.naffets.nevsuite</groupId>
                 <artifactId>timeseries-core</artifactId>
-                <version>0.11</version>
+                <version>${nevsuite.version}</version>
             </dependency>
-
         </dependencies>
-
     </dependencyManagement>
-
-
 
 </project>

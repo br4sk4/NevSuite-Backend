@@ -41,22 +41,22 @@ public class TimeseriesDomainService {
 
     public TimeseriesHead saveTimeseriesHead(TimeseriesHeadDTO dto) {
         TimeseriesHead timeseriesHead;
-        if ( Optional.ofNullable(dto.getPrimaryKey()).isPresent() ) {
+        if ( Optional.ofNullable(dto.primaryKey).isPresent() ) {
             final Optional<TimeseriesHead> persistentTimeseriesHead = Optional.ofNullable(
-                    this.timeseriesHeadRepository.findOne(dto.getPrimaryKey())
+                    this.timeseriesHeadRepository.findOne(dto.primaryKey)
             );
-            timeseriesHead = persistentTimeseriesHead.orElseGet(TimeseriesHead::new);
+            timeseriesHead = persistentTimeseriesHead.orElseGet(TimeseriesHead.builder()::build);
         } else {
-            timeseriesHead = new TimeseriesHead();
+            timeseriesHead = TimeseriesHead.builder().build();
         }
 
-        timeseriesHead.setIdentifier(dto.getIdentifier());
-        timeseriesHead.setType(TimeseriesType.valueOf(dto.getType()));
-        timeseriesHead.setDerivationType(TimeseriesDerivationType.valueOf(dto.getDerivationType()));
-        timeseriesHead.setPersistence(TimeseriesPersistence.valueOf(dto.getPersistence()));
-        timeseriesHead.setPeriodicity(TimeseriesPeriodicity.valueOf(dto.getPeriodicity()));
-        timeseriesHead.setBlockSize(TimeseriesBlocksize.valueOf(dto.getBlockSize()));
-        timeseriesHead.setRasterType(TimeseriesRastertype.valueOf(dto.getRasterType()));
+        timeseriesHead.setIdentifier(dto.identifier);
+        timeseriesHead.setType(TimeseriesType.valueOf(dto.type));
+        timeseriesHead.setDerivationType(TimeseriesDerivationType.valueOf(dto.derivationType));
+        timeseriesHead.setPersistence(TimeseriesPersistence.valueOf(dto.persistence));
+        timeseriesHead.setPeriodicity(TimeseriesPeriodicity.valueOf(dto.periodicity));
+        timeseriesHead.setBlockSize(TimeseriesBlocksize.valueOf(dto.blockSize));
+        timeseriesHead.setRasterType(TimeseriesRastertype.valueOf(dto.rasterType));
 
         return this.timeseriesHeadRepository.save(timeseriesHead);
     }

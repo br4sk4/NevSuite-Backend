@@ -37,6 +37,11 @@ public abstract class TimeseriesDataProviderBase<T> implements TimeseriesDataPro
 
     public abstract HashMap<Instant, T> load(TimeseriesInterval interval);
 
+    @Override
+    public HashMap<Instant, T> getValueMap() {
+        return this.valueMap;
+    }
+
     public HashMap<Instant, T> getValueMap(TimeseriesInterval interval) {
         HashMap<Instant, T> valueMap = new HashMap<>();
         Set<Instant> keySet = this.valueMap.keySet();

@@ -1,5 +1,8 @@
 package net.naffets.nevsuite.backend.timeseries.domain.valueobject;
 
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Embeddable;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -9,6 +12,7 @@ import java.time.Instant;
  * created on 23.12.2016
  */
 @Embeddable
+@NoArgsConstructor
 public class Interval {
 
     private static final long serialVersionUID = 1L;
@@ -16,9 +20,7 @@ public class Interval {
     private Timestamp timestampFrom;
     private Timestamp timestampTo;
 
-    public Interval() {
-    }
-
+    @Builder
     public Interval(Instant timestampFrom, Instant timestampTo) {
         this.timestampFrom = timestampFrom != null ? Timestamp.from(timestampFrom) : null;
         this.timestampTo = timestampTo != null ? Timestamp.from(timestampTo) : null;

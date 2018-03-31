@@ -15,6 +15,8 @@ public interface TimeseriesDataProvider<T> {
 
     HashMap<Instant, T> load(TimeseriesInterval interval);
 
+    HashMap<Instant, T> getValueMap();
+
     HashMap<Instant, T> getValueMap(TimeseriesInterval interval);
 
     T getValue(Instant timestamp);

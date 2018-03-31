@@ -5,9 +5,8 @@ import net.naffets.nevsuite.backend.timeseries.core.dataprovider.TimeseriesDataP
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesInterval;
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesPeriod;
 import net.naffets.nevsuite.backend.timeseries.core.valueplugin.ValuePlugin;
-import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesValueDTO;
 import net.naffets.nevsuite.backend.timeseries.domain.repository.persistent.TimeseriesDocumentRepository;
-import net.naffets.nevsuite.backend.timeseries.lang.persistence.ValueMapDocumentBuilder;
+import net.naffets.nevsuite.backend.timeseries.lang.persistence.ValueMapDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,16 +50,17 @@ public class TimeseriesDataProviderService<T> extends TimeseriesDataProviderBase
     public HashMap<Instant, T> load(TimeseriesInterval interval) {
         LinkedHashMap<Instant, T> map = new LinkedHashMap<>();
         timeseriesDocumentRepository.findByTimeseriesIdentifier(timeseriesIdentifier).stream()
-                .map(doc -> new ValueMapDocumentBuilder().fromJson(doc.getValueMap()).getValueMap())
+                .map(doc -> ValueMapDocument.fromJson(doc.getValueMap()).valueMap)
                 .forEach(valueList -> valueList.stream()
-                        .filter(valueDto -> Instant.parse(valueDto.getTimestamp()).compareTo(interval.getTimestampFrom()) > 0
-                                && Instant.parse(valueDto.getTimestamp()).compareTo(interval.getTimestampTo()) <= 0)
-                        .sorted(Comparator.comparing(TimeseriesValueDTO::getTimestamp))
-                        .forEach(value -> map.put(
-                                Instant.parse(value.getTimestamp()),
-                                valuePlugin.create(value.getValue()))));
+                        .filter(valueDto -> Instant.parse(valueDto.timestamp).compareTo(interval.getTimestampFrom()) > 0
+                                && Instant.parse(valueDto.timestamp).compareTo(interval.getTimestampTo()) <= 0)
+                        .sorted(Comparator.comparing(timeseriesValueDTO -> timeseriesValueDTO.timestamp))
+                        .forEach(timeseriesValueDTO -> map.put(
+                                Instant.parse(timeseriesValueDTO.timestamp),
+                                valuePlugin.create(timeseriesValueDTO.value))));
 
-        return map;
+        this.valueMap = map;
+        return this.valueMap;
     }
 
     @SuppressWarnings("CloneDoesntCallSuperClone")

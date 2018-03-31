@@ -7,7 +7,7 @@
 
     <parent>
         <artifactId>Timeseries</artifactId>
-        <groupId>net.naffets.nevsuite.microservices</groupId>
+        <groupId>net.naffets.nevsuite</groupId>
         <version>0.11</version>
     </parent>
 
@@ -15,17 +15,19 @@
     <packaging>jar</packaging>
 
     <dependencies>
-
         <dependency>
-            <groupId>net.naffets.nevsuite.microservices</groupId>
+            <groupId>net.naffets.nevsuite</groupId>
             <artifactId>backend-api</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>net.naffets.nevsuite.microservices</groupId>
-            <artifactId>timeseries-core</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

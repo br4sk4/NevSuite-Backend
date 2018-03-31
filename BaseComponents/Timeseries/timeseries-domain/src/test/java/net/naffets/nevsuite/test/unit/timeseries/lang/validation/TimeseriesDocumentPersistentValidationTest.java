@@ -1,10 +1,6 @@
 package net.naffets.nevsuite.test.unit.timeseries.lang.validation;
 
 import junit.framework.TestCase;
-import net.naffets.nevsuite.backend.timeseries.domain.basictype.*;
-import net.naffets.nevsuite.backend.timeseries.domain.entity.TimeseriesHead;
-import net.naffets.nevsuite.backend.timeseries.domain.factory.TimeseriesHeadFactory;
-import net.naffets.nevsuite.backend.timeseries.lang.exception.InvalidTimeseriesConfigException;
 import org.junit.Ignore;
 
 /**
@@ -14,6 +10,7 @@ import org.junit.Ignore;
 @Ignore
 public class TimeseriesDocumentPersistentValidationTest extends TestCase {
 
+    /*
     private TimeseriesHeadFactory factory;
 
     public void setUp() {
@@ -1099,5 +1096,6 @@ public class TimeseriesDocumentPersistentValidationTest extends TestCase {
         }
 
     }
+    */
 
 }
