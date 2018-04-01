@@ -15,21 +15,39 @@ public class TimeseriesInterval {
     protected ZoneId zoneId;
     protected Instant timestampFrom;
     protected Instant timestampTo;
+    protected TimeseriesAlignment alignment;
 
     public TimeseriesInterval(Instant timestampFrom, Instant timestampTo) {
         this.zoneId = ZoneId.of("UTC");
+        this.alignment = TimeseriesAlignment.EXACT;
+        this.timestampFrom = timestampFrom;
+        this.timestampTo = timestampTo;
+    }
+
+    public TimeseriesInterval(Instant timestampFrom, Instant timestampTo, TimeseriesAlignment alignment) {
+        this.zoneId = ZoneId.of("UTC");
+        this.alignment = alignment;
         this.timestampFrom = timestampFrom;
         this.timestampTo = timestampTo;
     }
 
     public TimeseriesInterval(Instant timestampFrom, Instant timestampTo, ZoneId zoneId) {
         this.zoneId = zoneId;
+        this.alignment = TimeseriesAlignment.EXACT;
+        this.timestampFrom = timestampFrom;
+        this.timestampTo = timestampTo;
+    }
+
+    public TimeseriesInterval(Instant timestampFrom, Instant timestampTo, ZoneId zoneId, TimeseriesAlignment alignment) {
+        this.zoneId = zoneId;
+        this.alignment = alignment;
         this.timestampFrom = timestampFrom;
         this.timestampTo = timestampTo;
     }
 
     protected TimeseriesInterval(TimeseriesInterval interval) {
         this.zoneId = interval.zoneId;
+        this.alignment = interval.alignment;
         this.timestampFrom = interval.timestampFrom;
         this.timestampTo = interval.timestampTo;
     }
@@ -57,10 +75,19 @@ public class TimeseriesInterval {
     public Set<Instant> getPeriodicIntervalSet(TimeseriesPeriod period) {
         Set<Instant> intervalSet = new TreeSet<>();
         Instant timestamp = this.getTimestampFrom();
+        Instant timestampTo = this.getTimestampTo();
 
-        while (timestamp.compareTo(this.getTimestampTo()) < 0) {
+        timestamp = TimeseriesAlignment.RIGHT.equals(this.alignment)
+                ? timestamp.plusSeconds(period.toSeconds(this.getTimestampFrom()))
+                : timestamp;
+
+        timestampTo = TimeseriesAlignment.LEFT.equals(this.alignment)
+                ? timestampTo.minusSeconds(period.toSeconds(this.getTimestampTo()))
+                : timestampTo;
+
+        while (timestamp.compareTo(timestampTo) <= 0) {
             intervalSet.add(timestamp);
-            timestamp = timestamp.plusSeconds(period.toSeconds(this.getZonedTimestampFrom()));
+            timestamp = timestamp.plusSeconds(period.toSeconds(this.getTimestampFrom()));
         }
 
         return intervalSet;
@@ -71,7 +98,7 @@ public class TimeseriesInterval {
         else if (this.timestampFrom.compareTo(interval.timestampFrom) < 0 && this.timestampTo.compareTo(interval.timestampTo) > 0)
             return new TimeseriesInterval(interval);
         else {
-            TimeseriesInterval newInterval = new TimeseriesInterval(null, null, this.zoneId);
+            TimeseriesInterval newInterval = new TimeseriesInterval(null, null, this.zoneId, this.alignment);
             newInterval.timestampFrom = (this.timestampFrom.compareTo(interval.timestampFrom) <= 0) ? this.timestampFrom : interval.timestampFrom;
             newInterval.timestampTo = (this.timestampTo.compareTo(interval.timestampTo) >= 0) ? this.timestampTo : interval.timestampTo;
             return newInterval;
