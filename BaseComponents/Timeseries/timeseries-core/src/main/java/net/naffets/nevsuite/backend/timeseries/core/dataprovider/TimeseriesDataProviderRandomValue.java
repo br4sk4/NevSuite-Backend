@@ -71,15 +71,12 @@ public class TimeseriesDataProviderRandomValue<T> extends TimeseriesDataProvider
 
     public HashMap<Instant, T> load(TimeseriesInterval interval) {
         this.valueMap = new HashMap<>();
-        Instant timestamp = Instant.from(interval.getTimestampFrom());
 
         double lower = (this.minValue > 0) ? this.minValue : 0.0;
         double upper = (this.maxValue > 0) ? this.maxValue - lower : 10.0;
 
-        while (timestamp.compareTo(interval.getTimestampTo()) < 0) {
-            this.valueMap.put(timestamp, valuePlugin.create(((Math.random() * (upper)) + lower)));
-            timestamp = timestamp.plusSeconds(this.period.toSeconds(interval.getZonedTimestampFrom()));
-        }
+        interval.getPeriodicIntervalSet(this.period)
+                .forEach(timestamp -> this.valueMap.put(timestamp, valuePlugin.create(((Math.random() * (upper)) + lower))));
 
         return this.valueMap;
     }

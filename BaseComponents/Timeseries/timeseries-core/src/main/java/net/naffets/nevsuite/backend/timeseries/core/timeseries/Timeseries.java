@@ -6,8 +6,6 @@ import net.naffets.nevsuite.backend.timeseries.core.valueplugin.ValuePlugin;
 import javax.measure.converter.UnitConverter;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author br4sk4
@@ -52,11 +50,9 @@ public class Timeseries<T> {
         this.interval = interval;
         this.period = period;
         this.unit = unit;
-
     }
 
     protected Timeseries(Timeseries<T> timeseries) {
-
         this.uuid = timeseries.uuid;
         this.valuePlugin = timeseries.valuePlugin;
         this.dataProvider = timeseries.dataProvider.clone();
@@ -64,21 +60,19 @@ public class Timeseries<T> {
         this.interval = timeseries.interval;
         this.period = timeseries.period;
         this.unit = timeseries.unit;
-
     }
 
     protected Timeseries(
             Timeseries<T> timeseries,
+            TimeseriesPeriod period,
             HashMap<Instant, T> valueMap) {
-
         this.uuid = timeseries.uuid;
         this.valuePlugin = timeseries.valuePlugin;
-        this.dataProvider = timeseries.dataProvider.clone(valueMap);
+        this.dataProvider = timeseries.dataProvider.clone(valueMap, period);
 
         this.interval = timeseries.interval;
         this.period = timeseries.period;
         this.unit = timeseries.unit;
-
     }
 
     public void save() {
@@ -137,7 +131,6 @@ public class Timeseries<T> {
     }
 
     public Timeseries<T> add(Timeseries<T> timeseries) {
-
         if (timeseries == null || !this.unit.isCompatible(timeseries.getUnit())) return timeseries;
 
         Timeseries<T> newTimeseries = this.clone();
@@ -152,7 +145,6 @@ public class Timeseries<T> {
     }
 
     public Timeseries<T> subtract(Timeseries<T> timeseries) {
-
         if (timeseries == null || !this.unit.isCompatible(timeseries.getUnit())) return timeseries;
 
         Timeseries<T> newTimeseries = this.clone();
@@ -167,7 +159,6 @@ public class Timeseries<T> {
     }
 
     public Timeseries<T> multiply(Timeseries<T> timeseries) {
-
         if (timeseries == null) return null;
 
         Timeseries<T> newTimeseries = this.clone();
@@ -183,7 +174,6 @@ public class Timeseries<T> {
     }
 
     public Timeseries<T> divide(Timeseries<T> timeseries) {
-
         if (timeseries == null) return null;
 
         Timeseries<T> newTimeseries = this.clone();
@@ -199,7 +189,6 @@ public class Timeseries<T> {
     }
 
     public Timeseries<T> min(Timeseries<T> timeseries) {
-
         if (timeseries == null || !this.unit.isCompatible(timeseries.getUnit())) return timeseries;
 
         Timeseries<T> newTimeseries = this.clone();
@@ -211,11 +200,9 @@ public class Timeseries<T> {
         keySet.forEach(timestamp -> newTimeseries.setValue(timestamp, this.valuePlugin.min(newTimeseries.getValue(timestamp), valueMap.get(timestamp))));
 
         return newTimeseries;
-
     }
 
     public Timeseries<T> max(Timeseries<T> timeseries) {
-
         if (timeseries == null || !this.unit.isCompatible(timeseries.getUnit())) return timeseries;
 
         Timeseries<T> newTimeseries = this.clone();
@@ -227,7 +214,6 @@ public class Timeseries<T> {
         keySet.forEach(timestamp -> newTimeseries.setValue(timestamp, this.valuePlugin.max(newTimeseries.getValue(timestamp), valueMap.get(timestamp))));
 
         return newTimeseries;
-
     }
 
     public Timeseries<T> toUnit(TimeseriesUnit unit) {
@@ -259,11 +245,10 @@ public class Timeseries<T> {
         if (this.period.compareTo(period) > 0) return spread(period);
         else if (this.period.compareTo(period) < 0) return compact(period);
         else return this.clone();
-
     }
 
     protected Timeseries<T> spread(TimeseriesPeriod period) {
-        Timeseries<T> newTimeseries = this.clone(new HashMap<>());
+        Timeseries<T> newTimeseries = this.clone(new HashMap<>(), period);
         Long newValueCount = this.period.toSeconds(this.interval.getZonedTimestampFrom()) / period.toSeconds(this.interval.getZonedTimestampFrom());
 
         Set<Instant> keySet = this.getValueMap(this.interval).keySet();
@@ -280,40 +265,25 @@ public class Timeseries<T> {
         });
 
         newTimeseries.period = period;
-
         return newTimeseries;
     }
 
     protected Timeseries<T> compact(TimeseriesPeriod period) {
-        Timeseries<T> newTimeseries = this.clone(new HashMap<>());
-        Long newValueCount = period.toSeconds(this.interval.getZonedTimestampFrom()) / this.period.toSeconds(this.interval.getZonedTimestampFrom());
+        Timeseries<T> newTimeseries = this.clone(new HashMap<>(), period);
 
-        List<Instant> keySet = new ArrayList<>(new TreeSet<>(this.getValueMap(this.interval).keySet()));
-        Stream.iterate(keySet, l -> l.subList(newValueCount.intValue(), l.size()))
-                .limit(keySet.size() / newValueCount + Math.min(keySet.size() % newValueCount, 1))
-                .map(l -> l.get(0))
-                .collect(Collectors.toSet())
-                .forEach(timestamp -> {
-                    Instant newTimestamp = null;
-
-                    LinkedList<T> compactedValues = new LinkedList<>();
-                    for (int index = 1; index <= newValueCount; index++) {
-                        if (index == 1) {
-                            newTimestamp = timestamp;
-                            compactedValues.addLast(this.getValue(timestamp));
-                        } else if (index == newValueCount) {
-                            compactedValues.addLast(this.getValue(timestamp));
-                            newTimeseries.setValue(newTimestamp, this.valuePlugin.compact(compactedValues, this.unit.getCompactType()));
-                            compactedValues = new LinkedList<>();
-                        } else {
-                            compactedValues.addLast(this.getValue(timestamp));
-                        }
-
-                    }
-                });
+        HashMap<Instant, T> valueMap = this.getValueMap();
+        TimeseriesCompactionSpliterator spliterator = new TimeseriesCompactionSpliterator(this.interval.getPeriodicIntervalSet(this.period), this.interval, this.period, period);
+        TimeseriesCompactionSpliterator subSpliterator;
+        while ((subSpliterator = spliterator.trySplit()) != null) {
+            List<T> values = new ArrayList<>();
+            subSpliterator.forEachRemaining(instant -> values.add(valueMap.get(instant)));
+            Instant timestamp = TimeseriesAlignment.LEFT.equals(this.interval.alignment)
+                    ? subSpliterator.getInstants().get(0)
+                    : subSpliterator.getInstants().get(subSpliterator.getInstants().size() - 1);
+            newTimeseries.setValue(timestamp, this.valuePlugin.compact(values, this.unit.getCompactType()));
+        }
 
         newTimeseries.period = period;
-
         return newTimeseries;
     }
 
@@ -322,8 +292,8 @@ public class Timeseries<T> {
         return new Timeseries<>(this);
     }
 
-    protected Timeseries<T> clone(HashMap<Instant, T> valueMap) {
-        return new Timeseries<>(this, valueMap);
+    protected Timeseries<T> clone(HashMap<Instant, T> valueMap, TimeseriesPeriod period) {
+        return new Timeseries<>(this, period, valueMap);
     }
 
 }

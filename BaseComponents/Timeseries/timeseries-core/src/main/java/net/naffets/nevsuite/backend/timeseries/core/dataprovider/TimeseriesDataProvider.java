@@ -1,6 +1,7 @@
 package net.naffets.nevsuite.backend.timeseries.core.dataprovider;
 
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesInterval;
+import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesPeriod;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -25,6 +26,6 @@ public interface TimeseriesDataProvider<T> {
 
     TimeseriesDataProvider<T> clone();
 
-    TimeseriesDataProvider<T> clone(HashMap<Instant, T> valueMap);
+    TimeseriesDataProvider<T> clone(HashMap<Instant, T> valueMap, TimeseriesPeriod period);
 
 }

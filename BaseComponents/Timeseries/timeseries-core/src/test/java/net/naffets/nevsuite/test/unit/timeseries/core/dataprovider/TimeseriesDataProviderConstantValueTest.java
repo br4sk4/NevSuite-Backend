@@ -3,6 +3,7 @@ package net.naffets.nevsuite.test.unit.timeseries.core.dataprovider;
 import net.naffets.nevsuite.backend.timeseries.core.dataprovider.TimeseriesDataProvider;
 import net.naffets.nevsuite.backend.timeseries.core.dataprovider.TimeseriesDataProviderConstantValue;
 import net.naffets.nevsuite.backend.timeseries.core.datatype.ValueStatusPair;
+import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesAlignment;
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesInterval;
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesPeriod;
 import net.naffets.nevsuite.backend.timeseries.core.valueplugin.LongPlugin;
@@ -42,7 +43,7 @@ public class TimeseriesDataProviderConstantValueTest {
         );
 
         Long measureTimestamp = System.currentTimeMillis();
-        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant()));
+        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant(), TimeseriesAlignment.LEFT));
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
 
         if (this.logger.isInfoEnabled())
@@ -91,7 +92,7 @@ public class TimeseriesDataProviderConstantValueTest {
         );
 
         Long measureTimestamp = System.currentTimeMillis();
-        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant()));
+        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant(), TimeseriesAlignment.LEFT));
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
 
         if (this.logger.isInfoEnabled())
@@ -130,7 +131,7 @@ public class TimeseriesDataProviderConstantValueTest {
         );
 
         Long measureTimestamp = System.currentTimeMillis();
-        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant()));
+        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant(), TimeseriesAlignment.LEFT));
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
 
         if (this.logger.isInfoEnabled())

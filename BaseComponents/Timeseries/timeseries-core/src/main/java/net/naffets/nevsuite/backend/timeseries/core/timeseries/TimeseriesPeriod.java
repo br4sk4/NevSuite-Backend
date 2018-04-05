@@ -196,7 +196,7 @@ public enum TimeseriesPeriod {
             case MONTH6:
                 return Period.ofMonths(6);
             case YEAR1:
-                return Period.ofYears(12);
+                return Period.ofYears(1);
             default:
                 return Duration.ZERO;
         }

@@ -19,7 +19,7 @@ public class TimeseriesInterval {
 
     public TimeseriesInterval(Instant timestampFrom, Instant timestampTo) {
         this.zoneId = ZoneId.of("UTC");
-        this.alignment = TimeseriesAlignment.EXACT;
+        this.alignment = TimeseriesAlignment.RIGHT;
         this.timestampFrom = timestampFrom;
         this.timestampTo = timestampTo;
     }
@@ -33,7 +33,7 @@ public class TimeseriesInterval {
 
     public TimeseriesInterval(Instant timestampFrom, Instant timestampTo, ZoneId zoneId) {
         this.zoneId = zoneId;
-        this.alignment = TimeseriesAlignment.EXACT;
+        this.alignment = TimeseriesAlignment.RIGHT;
         this.timestampFrom = timestampFrom;
         this.timestampTo = timestampTo;
     }
@@ -74,20 +74,20 @@ public class TimeseriesInterval {
 
     public Set<Instant> getPeriodicIntervalSet(TimeseriesPeriod period) {
         Set<Instant> intervalSet = new TreeSet<>();
-        Instant timestamp = this.getTimestampFrom();
-        Instant timestampTo = this.getTimestampTo();
+        ZonedDateTime timestamp = ZonedDateTime.ofInstant(this.getTimestampFrom(), ZoneId.systemDefault());
+        ZonedDateTime timestampTo = ZonedDateTime.ofInstant(this.getTimestampTo(), ZoneId.systemDefault());
 
         timestamp = TimeseriesAlignment.RIGHT.equals(this.alignment)
-                ? timestamp.plusSeconds(period.toSeconds(this.getTimestampFrom()))
+                ? timestamp.plusSeconds(period.toSeconds(this.getZonedTimestampFrom()))
                 : timestamp;
 
         timestampTo = TimeseriesAlignment.LEFT.equals(this.alignment)
-                ? timestampTo.minusSeconds(period.toSeconds(this.getTimestampTo()))
+                ? timestampTo.minusSeconds(period.toSeconds(this.getZonedTimestampTo()))
                 : timestampTo;
 
         while (timestamp.compareTo(timestampTo) <= 0) {
-            intervalSet.add(timestamp);
-            timestamp = timestamp.plusSeconds(period.toSeconds(this.getTimestampFrom()));
+            intervalSet.add(timestamp.toInstant());
+            timestamp = timestamp.plusSeconds(period.toSeconds(this.getZonedTimestampTo()));
         }
 
         return intervalSet;

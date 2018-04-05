@@ -6,7 +6,6 @@ import net.naffets.nevsuite.backend.timeseries.core.valueplugin.ValuePlugin;
 
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * @author br4sk4
@@ -44,10 +43,9 @@ public abstract class TimeseriesDataProviderBase<T> implements TimeseriesDataPro
 
     public HashMap<Instant, T> getValueMap(TimeseriesInterval interval) {
         HashMap<Instant, T> valueMap = new HashMap<>();
-        Set<Instant> keySet = this.valueMap.keySet();
 
-        keySet.stream().filter(instant -> instant.compareTo(interval.getTimestampFrom()) >= 0 && instant.compareTo(interval.getTimestampTo()) < 0)
-                .forEach((Instant timestamp) -> valueMap.put(timestamp, this.valueMap.get(timestamp)));
+        interval.getPeriodicIntervalSet(this.period)
+                .forEach(timestamp -> valueMap.put(timestamp, this.valueMap.get(timestamp)));
 
         return valueMap;
     }
@@ -62,9 +60,10 @@ public abstract class TimeseriesDataProviderBase<T> implements TimeseriesDataPro
 
     public abstract TimeseriesDataProvider<T> clone();
 
-    public TimeseriesDataProvider<T> clone(HashMap<Instant, T> valueMap) {
+    public TimeseriesDataProvider<T> clone(HashMap<Instant, T> valueMap, TimeseriesPeriod period) {
         TimeseriesDataProviderBase<T> dataProvider = (TimeseriesDataProviderBase<T>) this.clone();
         dataProvider.valueMap = valueMap;
+        dataProvider.period = period;
         return dataProvider;
     }
 }

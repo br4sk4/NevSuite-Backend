@@ -31,12 +31,9 @@ public class TimeseriesDataProviderConstantValue<T> extends TimeseriesDataProvid
 
     public HashMap<Instant, T> load(TimeseriesInterval interval) {
         this.valueMap = new HashMap<>();
-        Instant timestamp = interval.getTimestampFrom();
 
-        while (timestamp.compareTo(interval.getTimestampTo()) < 0) {
-            this.valueMap.put(timestamp, constantValue);
-            timestamp = timestamp.plusSeconds(this.period.toSeconds(interval.getZonedTimestampFrom()));
-        }
+        interval.getPeriodicIntervalSet(this.period)
+                .forEach(timestamp -> this.valueMap.put(timestamp, constantValue));
 
         return this.valueMap;
     }
