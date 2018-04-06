@@ -3,7 +3,6 @@ package net.naffets.nevsuite.test.unit.timeseries.core.dataprovider;
 import net.naffets.nevsuite.backend.timeseries.core.dataprovider.TimeseriesDataProvider;
 import net.naffets.nevsuite.backend.timeseries.core.dataprovider.TimeseriesDataProviderRandomValue;
 import net.naffets.nevsuite.backend.timeseries.core.datatype.ValueStatusPair;
-import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesAlignment;
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesInterval;
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesPeriod;
 import net.naffets.nevsuite.backend.timeseries.core.valueplugin.LongPlugin;
@@ -42,7 +41,7 @@ public class TimeseriesDataProviderRandomValueTest {
         );
 
         Long measureTimestamp = System.currentTimeMillis();
-        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant(), TimeseriesAlignment.LEFT));
+        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant()));
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
 
         if (this.logger.isInfoEnabled())
@@ -50,7 +49,7 @@ public class TimeseriesDataProviderRandomValueTest {
 
         int loop = 0;
         SortedSet<Instant> keySet = new TreeSet<>(intervalMap.keySet());
-        Instant checkTimestamp = Instant.from(timestampFrom);
+        Instant checkTimestamp = Instant.from(timestampFrom).plus(Duration.ofMinutes(15));
 
         assertEquals(96, keySet.size());
 
@@ -90,7 +89,7 @@ public class TimeseriesDataProviderRandomValueTest {
         );
 
         Long measureTimestamp = System.currentTimeMillis();
-        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant(), TimeseriesAlignment.LEFT));
+        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant()));
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
 
         if (this.logger.isInfoEnabled())
@@ -98,7 +97,7 @@ public class TimeseriesDataProviderRandomValueTest {
 
         int loop = 0;
         SortedSet<Instant> keySet = new TreeSet<>(intervalMap.keySet());
-        Instant checkTimestamp = Instant.from(timestampFrom);
+        Instant checkTimestamp = Instant.from(timestampFrom).plus(Duration.ofMinutes(15));
 
         assertEquals(2976, keySet.size());
 
@@ -128,7 +127,7 @@ public class TimeseriesDataProviderRandomValueTest {
         );
 
         Long measureTimestamp = System.currentTimeMillis();
-        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant(), TimeseriesAlignment.LEFT));
+        HashMap<Instant, ValueStatusPair<Long, byte[]>> intervalMap = dataProvider.load(new TimeseriesInterval(timestampFrom.toInstant(), timestampTo.toInstant()));
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
 
         if (this.logger.isInfoEnabled())
@@ -136,7 +135,7 @@ public class TimeseriesDataProviderRandomValueTest {
 
         int loop = 0;
         SortedSet<Instant> keySet = new TreeSet<>(intervalMap.keySet());
-        Instant checkTimestamp = Instant.from(timestampFrom);
+        Instant checkTimestamp = Instant.from(timestampFrom).plus(Duration.ofMinutes(15));
 
         assertEquals(35136, keySet.size());
 

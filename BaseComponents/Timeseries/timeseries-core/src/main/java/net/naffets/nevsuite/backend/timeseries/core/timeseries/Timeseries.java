@@ -6,6 +6,7 @@ import net.naffets.nevsuite.backend.timeseries.core.valueplugin.ValuePlugin;
 import javax.measure.converter.UnitConverter;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author br4sk4
@@ -224,10 +225,10 @@ public class Timeseries<T> {
 
         if (this.unit.isTimeintegralOf(unit)) {
             UnitConverter uc = this.unit.extractBaseunit().getConverterTo(unit.toMeasurementUnit());
-            keySet.forEach(timestamp -> newTimeseries.setValue(timestamp, this.valuePlugin.create(uc.convert(this.valuePlugin.doubleValue(valueMap.get(timestamp)) / this.period.getTimeintegralFactor(this.unit.extractTimeunit(), timestamp.atZone(this.interval.zoneId))))));
+            keySet.forEach(timestamp -> newTimeseries.setValue(timestamp, this.valuePlugin.create(uc.convert(this.valuePlugin.doubleValue(valueMap.get(timestamp)) * this.period.getTimeintegralFactor(this.unit.extractTimeunit(), timestamp.atZone(this.interval.zoneId))))));
         } else if (unit.isTimeintegralOf(this.unit)) {
             UnitConverter uc = this.unit.toMeasurementUnit().getConverterTo(unit.extractBaseunit());
-            keySet.forEach(timestamp -> newTimeseries.setValue(timestamp, this.valuePlugin.create(uc.convert(this.valuePlugin.doubleValue(valueMap.get(timestamp)) * this.period.getTimeintegralFactor(unit.extractTimeunit(), timestamp.atZone(this.interval.zoneId))))));
+            keySet.forEach(timestamp -> newTimeseries.setValue(timestamp, this.valuePlugin.create(uc.convert(this.valuePlugin.doubleValue(valueMap.get(timestamp)) / this.period.getTimeintegralFactor(unit.extractTimeunit(), timestamp.atZone(this.interval.zoneId))))));
         } else if (this.unit.isCompatible(unit)) {
             UnitConverter uc = this.unit.toMeasurementUnit().getConverterTo(unit.toMeasurementUnit());
             keySet.forEach(timestamp -> newTimeseries.setValue(timestamp, this.valuePlugin.create(uc.convert(this.valuePlugin.doubleValue(valueMap.get(timestamp))))));
@@ -239,7 +240,6 @@ public class Timeseries<T> {
     }
 
     public Timeseries<T> toPeriod(TimeseriesPeriod period) {
-
         if (period == null) return this;
 
         if (this.period.compareTo(period) > 0) return spread(period);
@@ -251,11 +251,19 @@ public class Timeseries<T> {
         Timeseries<T> newTimeseries = this.clone(new HashMap<>(), period);
         Long newValueCount = this.period.toSeconds(this.interval.getZonedTimestampFrom()) / period.toSeconds(this.interval.getZonedTimestampFrom());
 
-        Set<Instant> keySet = this.getValueMap(this.interval).keySet();
+        Set<Instant> keySet = this.getValueMap(this.interval).keySet().stream().sorted().collect(Collectors.toSet());
         keySet.forEach(timestamp -> {
             List<T> spreadedValues = this.valuePlugin.spread(this.getValue(timestamp), newValueCount, this.unit.getSpreadType());
             Instant newTimestamp = timestamp;
             int index = 0;
+
+            if (this.period.compareTo(TimeseriesPeriod.DAY1) < 0) {
+                newTimestamp = newTimestamp.minusSeconds(this.period.toSeconds(timestamp));
+            }
+
+            if (period.compareTo(TimeseriesPeriod.DAY1) < 0) {
+                newTimestamp = newTimestamp.plusSeconds(period.toSeconds(timestamp));
+            }
 
             for (T value : spreadedValues) {
                 newTimestamp = (index == 0) ? newTimestamp : newTimestamp.plus(period.toTemporalAmount());
@@ -277,9 +285,9 @@ public class Timeseries<T> {
         while ((subSpliterator = spliterator.trySplit()) != null) {
             List<T> values = new ArrayList<>();
             subSpliterator.forEachRemaining(instant -> values.add(valueMap.get(instant)));
-            Instant timestamp = TimeseriesAlignment.LEFT.equals(this.interval.alignment)
-                    ? subSpliterator.getInstants().get(0)
-                    : subSpliterator.getInstants().get(subSpliterator.getInstants().size() - 1);
+            Instant timestamp = period.compareTo(TimeseriesPeriod.DAY1) < 0
+                    ? subSpliterator.getInstants().get(subSpliterator.getInstants().size() - 1)
+                    : subSpliterator.getInstants().get(0).minusSeconds(this.period.toSeconds(subSpliterator.getInstants().get(0)));
             newTimeseries.setValue(timestamp, this.valuePlugin.compact(values, this.unit.getCompactType()));
         }
 

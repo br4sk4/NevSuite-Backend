@@ -1,6 +1,5 @@
 package net.naffets.nevsuite.test.unit.timeseries.core.timeseries;
 
-import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesAlignment;
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesInterval;
 import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesPeriod;
 import org.junit.Test;
@@ -19,91 +18,91 @@ import static org.junit.Assert.*;
 public class TimeseriesIntervalTest {
 
     @Test
-    public void testGetIntervalSetDayRegularAtCET() {
+    public void testGetIntervalSetDayRegularWithQuarterHourPeriodAtCET() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertEquals(96, interval.getPeriodicIntervalSet(TimeseriesPeriod.MIN15).size());
     }
 
     @Test
-    public void testGetIntervalSetDayRegularAtUTC() {
+    public void testGetIntervalSetDayRegularWithQuarterHourPeriodAtUTC() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("UTC")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("UTC"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("UTC"));
 
         assertEquals(96, interval.getPeriodicIntervalSet(TimeseriesPeriod.MIN15).size());
     }
 
     @Test
-    public void testGetIntervalSetDayMissingHourAtCET() {
+    public void testGetIntervalSetDayMissingHourWithQuarterHourPeriodAtCET() {
         Instant timestampFrom = ZonedDateTime.of(2016, 3, 27, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertEquals(92, interval.getPeriodicIntervalSet(TimeseriesPeriod.MIN15).size());
     }
 
     @Test
-    public void testGetIntervalSetDayMissingHourAtUTC() {
+    public void testGetIntervalSetDayMissingHourWithQuarterHourPeriodAtUTC() {
         Instant timestampFrom = ZonedDateTime.of(2016, 3, 27, 0, 0, 0, 0, ZoneId.of("UTC")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("UTC")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("UTC"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("UTC"));
 
         assertEquals(96, interval.getPeriodicIntervalSet(TimeseriesPeriod.MIN15).size());
     }
 
     @Test
-    public void testGetIntervalSetDayAdditionalHourAtCET() {
+    public void testGetIntervalSetDayAdditionalHourWithQuarterHourPeriodAtCET() {
         Instant timestampFrom = ZonedDateTime.of(2016, 10, 30, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertEquals(100, interval.getPeriodicIntervalSet(TimeseriesPeriod.MIN15).size());
     }
 
     @Test
-    public void testGetIntervalSetDayAdditionalHourAtUTC() {
+    public void testGetIntervalSetDayAdditionalWithQuarterHourPeriodHourAtUTC() {
         Instant timestampFrom = ZonedDateTime.of(2016, 10, 30, 0, 0, 0, 0, ZoneId.of("UTC")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("UTC")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("UTC"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("UTC"));
 
         assertEquals(96, interval.getPeriodicIntervalSet(TimeseriesPeriod.MIN15).size());
     }
 
     @Test
-    public void testGetIntervalSetMonth28Days() {
+    public void testGetIntervalSetMonth28DaysWithDayPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2015, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2015, 3, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertEquals(28, interval.getPeriodicIntervalSet(TimeseriesPeriod.DAY1).size());
     }
 
     @Test
-    public void testGetIntervalSetMonth29Days() {
+    public void testGetIntervalSetMonth29DaysWithDayPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 3, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertEquals(29, interval.getPeriodicIntervalSet(TimeseriesPeriod.DAY1).size());
     }
 
     @Test
-    public void testGetIntervalSetMonth30Days() {
+    public void testGetIntervalSetMonth30DaysWithDayPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 4, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 5, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertEquals(30, interval.getPeriodicIntervalSet(TimeseriesPeriod.DAY1).size());
     }
 
     @Test
-    public void testGetIntervalSetMonth31Days() {
+    public void testGetIntervalSetMonth31DaysWithDayPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertEquals(31, interval.getPeriodicIntervalSet(TimeseriesPeriod.DAY1).size());
     }
@@ -114,11 +113,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertTrue(intervalOne.overlaps(intervalTwo));
         assertTrue(intervalTwo.overlaps(intervalOne));
@@ -130,11 +129,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2015, 12, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 3, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertTrue(intervalTwo.overlaps(intervalOne));
         assertFalse(intervalOne.overlaps(intervalTwo));
@@ -146,11 +145,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2015, 12, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 1, 15, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertTrue(intervalTwo.overlaps(intervalOne));
         assertTrue(intervalOne.overlaps(intervalTwo));
@@ -162,11 +161,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2016, 1, 15, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 3, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertTrue(intervalTwo.overlaps(intervalOne));
         assertTrue(intervalOne.overlaps(intervalTwo));
@@ -178,11 +177,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2015, 12, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         assertFalse(intervalTwo.overlaps(intervalOne));
         assertFalse(intervalOne.overlaps(intervalTwo));
@@ -194,11 +193,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         TimeseriesInterval intervalThree = intervalOne.join(intervalTwo);
 
@@ -212,11 +211,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2015, 12, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 3, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         TimeseriesInterval intervalThree = intervalOne.join(intervalTwo);
 
@@ -230,11 +229,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2015, 12, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 1, 15, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         TimeseriesInterval intervalThree = intervalOne.join(intervalTwo);
 
@@ -248,11 +247,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2016, 1, 15, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 3, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         TimeseriesInterval intervalThree = intervalOne.join(intervalTwo);
 
@@ -266,11 +265,11 @@ public class TimeseriesIntervalTest {
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalOne = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         timestampFrom = ZonedDateTime.of(2015, 12, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT);
+        TimeseriesInterval intervalTwo = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
         TimeseriesInterval intervalThree = intervalOne.join(intervalTwo);
 
@@ -279,12 +278,12 @@ public class TimeseriesIntervalTest {
     }
 
     @Test
-    public void testRightAlignedPeriodicIntervalIntervalSetSEC1() {
+    public void testPeriodicIntervalIntervalSetSEC1() {
         Instant timestampFrom, timestampTo;
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 1, 1, 0, 1, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT).getPeriodicIntervalSet(TimeseriesPeriod.SEC1);
+        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")).getPeriodicIntervalSet(TimeseriesPeriod.SEC1);
 
         assertEquals(60, periodicIntervalSet.size());
 
@@ -300,12 +299,12 @@ public class TimeseriesIntervalTest {
     }
 
     @Test
-    public void testRightAlignedPeriodicIntervalIntervalSetMIN15() {
+    public void testPeriodicIntervalIntervalSetMIN15() {
         Instant timestampFrom, timestampTo;
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT).getPeriodicIntervalSet(TimeseriesPeriod.MIN15);
+        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")).getPeriodicIntervalSet(TimeseriesPeriod.MIN15);
 
         assertEquals(96, periodicIntervalSet.size());
 
@@ -321,12 +320,12 @@ public class TimeseriesIntervalTest {
     }
 
     @Test
-    public void testRightAlignedPeriodicIntervalIntervalSetHOUR1() {
+    public void testPeriodicIntervalIntervalSetHOUR1() {
         Instant timestampFrom, timestampTo;
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT).getPeriodicIntervalSet(TimeseriesPeriod.HOUR1);
+        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")).getPeriodicIntervalSet(TimeseriesPeriod.HOUR1);
 
         assertEquals(24, periodicIntervalSet.size());
 
@@ -342,96 +341,12 @@ public class TimeseriesIntervalTest {
     }
 
     @Test
-    public void testRightAlignedPeriodicIntervalIntervalSetDAY1() {
+    public void testPeriodicIntervalIntervalSetDAY1() {
         Instant timestampFrom, timestampTo;
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.RIGHT).getPeriodicIntervalSet(TimeseriesPeriod.DAY1);
-
-        assertEquals(31, periodicIntervalSet.size());
-
-        periodicIntervalSet.stream()
-                .sorted(Instant::compareTo)
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-
-        periodicIntervalSet.stream()
-                .filter(timestamp -> timestamp.equals(timestampTo))
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-    }
-
-    @Test
-    public void testLeftAlignedPeriodicIntervalIntervalSetSEC1() {
-        Instant timestampFrom, timestampTo;
-
-        timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        timestampTo = ZonedDateTime.of(2016, 1, 1, 0, 1, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.LEFT).getPeriodicIntervalSet(TimeseriesPeriod.SEC1);
-
-        assertEquals(60, periodicIntervalSet.size());
-
-        periodicIntervalSet.stream()
-                .sorted(Instant::compareTo)
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-
-        periodicIntervalSet.stream()
-                .filter(timestamp -> timestamp.equals(timestampTo))
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 1, 0, 0, 59, 0, ZoneId.of("CET")).toInstant(), timestamp));
-    }
-
-    @Test
-    public void testLeftAlignedPeriodicIntervalIntervalSetMIN15() {
-        Instant timestampFrom, timestampTo;
-
-        timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.LEFT).getPeriodicIntervalSet(TimeseriesPeriod.MIN15);
-
-        assertEquals(96, periodicIntervalSet.size());
-
-        periodicIntervalSet.stream()
-                .sorted(Instant::compareTo)
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-
-        periodicIntervalSet.stream()
-                .filter(timestamp -> timestamp.equals(timestampTo))
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 1, 23, 45, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-    }
-
-    @Test
-    public void testLeftAlignedPeriodicIntervalIntervalSetHOUR1() {
-        Instant timestampFrom, timestampTo;
-
-        timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.LEFT).getPeriodicIntervalSet(TimeseriesPeriod.HOUR1);
-
-        assertEquals(24, periodicIntervalSet.size());
-
-        periodicIntervalSet.stream()
-                .sorted(Instant::compareTo)
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-
-        periodicIntervalSet.stream()
-                .filter(timestamp -> timestamp.equals(timestampTo))
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 1, 23, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-    }
-
-    @Test
-    public void testLeftAlignedPeriodicIntervalIntervalSetDAY1() {
-        Instant timestampFrom, timestampTo;
-
-        timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.LEFT).getPeriodicIntervalSet(TimeseriesPeriod.DAY1);
+        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")).getPeriodicIntervalSet(TimeseriesPeriod.DAY1);
 
         assertEquals(31, periodicIntervalSet.size());
 
@@ -447,14 +362,14 @@ public class TimeseriesIntervalTest {
     }
 
     @Test
-    public void testExactPeriodicIntervalIntervalSetSEC1() {
+    public void testPeriodicIntervalIntervalSetMONTH1() {
         Instant timestampFrom, timestampTo;
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        timestampTo = ZonedDateTime.of(2016, 1, 1, 0, 1, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.EXACT).getPeriodicIntervalSet(TimeseriesPeriod.SEC1);
+        timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")).getPeriodicIntervalSet(TimeseriesPeriod.MONTH1);
 
-        assertEquals(61, periodicIntervalSet.size());
+        assertEquals(12, periodicIntervalSet.size());
 
         periodicIntervalSet.stream()
                 .sorted(Instant::compareTo)
@@ -464,18 +379,18 @@ public class TimeseriesIntervalTest {
         periodicIntervalSet.stream()
                 .filter(timestamp -> timestamp.equals(timestampTo))
                 .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 1, 0, 1, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
+                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 12, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
     }
 
     @Test
-    public void testExactPeriodicIntervalIntervalSetMIN15() {
+    public void testPeriodicIntervalIntervalSetYEAR1() {
         Instant timestampFrom, timestampTo;
 
         timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.EXACT).getPeriodicIntervalSet(TimeseriesPeriod.MIN15);
+        timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")).getPeriodicIntervalSet(TimeseriesPeriod.YEAR1);
 
-        assertEquals(97, periodicIntervalSet.size());
+        assertEquals(1, periodicIntervalSet.size());
 
         periodicIntervalSet.stream()
                 .sorted(Instant::compareTo)
@@ -485,49 +400,7 @@ public class TimeseriesIntervalTest {
         periodicIntervalSet.stream()
                 .filter(timestamp -> timestamp.equals(timestampTo))
                 .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-    }
-
-    @Test
-    public void testExactPeriodicIntervalIntervalSetHOUR1() {
-        Instant timestampFrom, timestampTo;
-
-        timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.EXACT).getPeriodicIntervalSet(TimeseriesPeriod.HOUR1);
-
-        assertEquals(25, periodicIntervalSet.size());
-
-        periodicIntervalSet.stream()
-                .sorted(Instant::compareTo)
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-
-        periodicIntervalSet.stream()
-                .filter(timestamp -> timestamp.equals(timestampTo))
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-    }
-
-    @Test
-    public void testExactPeriodicIntervalIntervalSetDAY1() {
-        Instant timestampFrom, timestampTo;
-
-        timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Set<Instant> periodicIntervalSet = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"), TimeseriesAlignment.EXACT).getPeriodicIntervalSet(TimeseriesPeriod.DAY1);
-
-        assertEquals(32, periodicIntervalSet.size());
-
-        periodicIntervalSet.stream()
-                .sorted(Instant::compareTo)
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
-
-        periodicIntervalSet.stream()
-                .filter(timestamp -> timestamp.equals(timestampTo))
-                .findFirst()
-                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
+                .ifPresent(timestamp -> assertEquals(ZonedDateTime.of(2016, 12, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant(), timestamp));
     }
 
 }

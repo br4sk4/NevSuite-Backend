@@ -1,26 +1,16 @@
 package net.naffets.nevsuite.test.unit.timeseries.core.timeseries;
 
-import net.naffets.nevsuite.backend.timeseries.core.dataprovider.TimeseriesDataProvider;
 import net.naffets.nevsuite.backend.timeseries.core.dataprovider.TimeseriesDataProviderConstantValue;
-import net.naffets.nevsuite.backend.timeseries.core.datatype.ValueStatusPair;
-import net.naffets.nevsuite.backend.timeseries.core.timeseries.Timeseries;
-import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesInterval;
-import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesPeriod;
-import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesUnit;
-import net.naffets.nevsuite.backend.timeseries.core.valueplugin.DoublePlugin;
-import net.naffets.nevsuite.backend.timeseries.core.valueplugin.ValueStatusPairPlugin;
+import net.naffets.nevsuite.backend.timeseries.core.timeseries.*;
+import net.naffets.nevsuite.backend.timeseries.core.valueplugin.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.math.BigDecimal;
+import java.time.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author br4sk4
@@ -30,2251 +20,1629 @@ public class TimeseriesTest {
 
     private final Logger logger = LogManager.getLogger(Timeseries.class.getName());
 
-    private DTO initTest(
-            Instant timestampFrom,
-            Instant timestampTo,
-            Double firstValue,
-            Double otherValue) {
-
-        DTO dto = new DTO();
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(firstValue, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        dto.t1 = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo)
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(otherValue, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        dto.t2 = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo)
-        );
-
-        dto.t1.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        dto.t2.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        return dto;
-    }
-
-    private void doTest(
-            TimeseriesInterval interval,
-            Timeseries<ValueStatusPair<Double, byte[]>> timeseries,
-            Double checkValue,
-            Integer checkSize,
-            Boolean debug) {
-        SortedSet<Instant> keySet = new TreeSet<>(timeseries.getValueMap(interval).keySet());
-        Instant checkTimestamp = Instant.from(interval.getTimestampFrom());
-
-        assertEquals(checkSize.intValue(), keySet.size());
-
-        for (Instant timestamp : keySet) {
-            ValueStatusPair<Double, byte[]> vp = timeseries.getValue(timestamp);
-
-            StringBuilder sb = new StringBuilder();
-            StringBuilder statusHexString = new StringBuilder();
-            for (Byte b : vp.getStatus()) {
-                statusHexString.append(String.format("%02x", b));
-            }
-
-            sb.append(timeseries.getTimeseriesIdentifier())
-                    .append(checkTimestamp.plus(timeseries.getPeriod().toTemporalAmount()))
-                    .append(":")
-                    .append(vp.getValue())
-                    .append(timeseries.getUnit() != null && !timeseries.getUnit().equals(TimeseriesUnit.NONE) ? " " : "")
-                    .append(timeseries.getUnit() != null ? timeseries.getUnit().toMeasurementUnit().toString() : "")
-                    .append(":")
-                    .append(statusHexString.toString())
-                    .append("; ");
-
-            if (this.logger.isDebugEnabled() && debug) this.logger.debug(sb.toString());
-
-            assertEquals(checkTimestamp.toString(), timestamp.toString());
-            assertTrue(checkValue.equals(vp.getValue()));
-            assertEquals("0000000000000000", statusHexString.toString());
-            checkTimestamp = checkTimestamp.plus(timeseries.getPeriod().toTemporalAmount());
-        }
-    }
-
     @Test
-    public void testAddOperationDay() {
-
+    public void testAddOperationDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 1d, 1d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.add(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.add(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("AddOperation(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 2d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("2.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testAddOperationMonth() {
-
+    public void testAddOperationMonthWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 1d, 1d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.add(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.add(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("AddOperation(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 2d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("2.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testAddOperationYear() {
-
+    public void testAddOperationYearWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 1d, 1d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.add(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.add(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("AddOperation(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 2d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("2.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
     public void testAddOperationWithNullValue() {
-
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 1d, null);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(null, new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.add(dto.t2);
+        t1.load();
+        t2.load();
 
-        doTest(interval, timeseries, 1d, 96, false);
+        Timeseries<BigDecimal> timeseries = t1.add(t2);
+        BigDecimal expectedValue = new BigDecimal("1.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testSubtractOperationDay() {
-
+    public void testSubtractOperationDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 5d, 2d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.subtract(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.subtract(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("SubtractOperation(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 3d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("0.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testSubtractOperationMonth() {
-
+    public void testSubtractOperationMonthWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 5d, 2d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.subtract(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.subtract(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("SubtractOperation(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 3d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("0.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testSubtractOperationYear() {
-
+    public void testSubtractOperationYearWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 5d, 2d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.subtract(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.subtract(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("SubtractOperation(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 3d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("0.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
     public void testSubtractOperationWithNullValue() {
-
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 1d, null);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(null, new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.subtract(dto.t2);
+        t1.load();
+        t2.load();
 
-        doTest(interval, timeseries, 1d, 96, false);
+        Timeseries<BigDecimal> timeseries = t1.subtract(t2);
+        BigDecimal expectedValue = new BigDecimal("1.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMultiplyOperationDay() {
-
+    public void testMultiplyOperationDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 2d, 3d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("2.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.multiply(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.multiply(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("MultiplyOperation(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 6d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("6.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMultiplyOperationMonth() {
-
+    public void testMultiplyOperationMonthWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 2d, 3d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("2.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.multiply(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.multiply(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("MultiplyOperation(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 6d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("6.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMultiplyOperationYear() {
-
+    public void testMultiplyOperationYearWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 2d, 3d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("2.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.multiply(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.multiply(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("MultiplyOperation(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 6d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("6.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMultiplyOperationWithNullValue() {
-
+    public void testMyltiplyOperationWithNullValue() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 1d, null);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(null, new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.multiply(dto.t2);
+        t1.load();
+        t2.load();
 
-        doTest(interval, timeseries, 1d, 96, false);
+        Timeseries<BigDecimal> timeseries = t1.multiply(t2);
+        BigDecimal expectedValue = new BigDecimal("1.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testDivideDay() {
-
+    public void testDivideOperationDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 15d, 3d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("15.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.divide(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.divide(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("DivideOperation(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 5d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("5.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testDivideMonth() {
-
+    public void testDivideOperationMonthWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 15d, 3d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("15.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.divide(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.divide(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("DivideOperation(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 5d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("5.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testDivideYear() {
-
+    public void testDivideOperationYearWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 15d, 3d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("15.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.divide(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.divide(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("DivideOperation(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 5d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("5.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
     public void testDivideOperationWithNullValue() {
-
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 1d, null);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(null, new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.divide(dto.t2);
+        t1.load();
+        t2.load();
 
-        doTest(interval, timeseries, 1d, 96, false);
+        Timeseries<BigDecimal> timeseries = t1.divide(t2);
+        BigDecimal expectedValue = new BigDecimal("1.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMaxOperationDay() {
-
+    public void testMaxOperationDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 5d, 2d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("15.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.max(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.max(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("MaxOperation(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 5d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("15.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMaxOperationMonth() {
-
+    public void testMaxOperationMonthWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 5d, 2d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("15.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.max(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.max(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("MaxOperation(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 5d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("15.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMaxOperationYear() {
-
+    public void testMaxOperationYearWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 5d, 2d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("15.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.max(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.max(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("MaxOperation(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 5d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("15.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
     public void testMaxOperationWithNullValue() {
-
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 2d, null);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(null, new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.max(dto.t2);
+        t1.load();
+        t2.load();
 
-        doTest(interval, timeseries, 2d, 96, false);
+        Timeseries<BigDecimal> timeseries = t1.max(t2);
+        BigDecimal expectedValue = new BigDecimal("1.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMinOperationDay() {
-
+    public void testMinOperationDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 5d, 2d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("15.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.min(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.min(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("MinOperation(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 2d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("3.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMinOperationMonth() {
-
+    public void testMinOperationMonthWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 5d, 2d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("15.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.min(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.min(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("MinOperation(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 2d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("3.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testMinOperationYear() {
-
+    public void testMinOperationYearWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 5d, 2d);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("15.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(new BigDecimal("3.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        t2.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.min(dto.t2);
+        Timeseries<BigDecimal> timeseries = t1.min(t2);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("MinOperation(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 2d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("3.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
     public void testMinOperationWithNullValue() {
-
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        DTO dto = this.initTest(timestampFrom, timestampTo, 2d, null);
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+        Timeseries<BigDecimal> t2 = createTimeseries(null, new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries = dto.t1.min(dto.t2);
+        t1.load();
+        t2.load();
 
-        doTest(interval, timeseries, 2d, 96, false);
+        Timeseries<BigDecimal> timeseries = t1.min(t2);
+        BigDecimal expectedValue = new BigDecimal("1.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testUnitConversionDay() {
-
+    public void testCompactOperationDayWithQuarterHourPeriodToHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.MEGA_WATT_HOUR
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.HOUR1);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("UnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("CompactOperation(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 1000d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 1, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("4.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesPeriod.HOUR1, timeseries.getPeriod());
+        assertEquals(24, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testUnitConversionMonth() {
-
+    public void testCompactOperationMonthWithQuarterHourPeriodToHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.MEGA_WATT_HOUR
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.HOUR1);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("UnitConversion(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("CompactOperation(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 1000d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 1, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("4.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesPeriod.HOUR1, timeseries.getPeriod());
+        assertEquals(744, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testUnitConversionYear() {
-
+    public void testCompactOperationYearWithQuarterHourPeriodToHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.MEGA_WATT_HOUR
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toUnit(TimeseriesUnit.MEGA_WATT_HOUR);
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.HOUR1);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("UnitConversion(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("CompactOperation(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 1d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 1, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("4.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesPeriod.HOUR1, timeseries.getPeriod());
+        assertEquals(8784, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testGasBurnValueUnitConversionDay() {
-
+    public void testCompactOperationRegularDayWithQuarterHourPeriodToDayPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> burnValueTimeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> volumeTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        t1.load();
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.DAY1);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(10d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
+        Double expectedValue = new BigDecimal("96.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampFrom).doubleValue();
 
-        burnValueTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.BURN_VALUE
-        );
-
-        burnValueTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(5d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        volumeTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.CUBIC_METRE
-        );
-
-        volumeTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = burnValueTimeseries.multiply(volumeTimeseries);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("GasBurnValueUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 50d, 96, true);
-
+        assertEquals(TimeseriesPeriod.DAY1, timeseries.getPeriod());
+        assertEquals(1, timeseries.getValueMap().size());
+        assertEquals(expectedTimestamp, actualFirstTimestamp);
+        assertEquals(expectedTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testGasBurnValueUnitConversionMonth() {
+    public void testCompactOperationDaylightSavingMissingHourWithQuarterHourPeriodToDayPeriod() {
+        Instant timestampFrom = ZonedDateTime.of(2016, 3, 27, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant timestampTo = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.DAY1);
+
+        Instant expectedTimestamp = ZonedDateTime.of(2016, 3, 27, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("92.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampFrom).doubleValue();
+
+        assertEquals(TimeseriesPeriod.DAY1, timeseries.getPeriod());
+        assertEquals(1, timeseries.getValueMap().size());
+        assertEquals(expectedTimestamp, actualFirstTimestamp);
+        assertEquals(expectedTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
+    }
+
+    @Test
+    public void testCompactOperationDaylightSavingAdditionalHourWithQuarterHourPeriodToDayPeriod() {
+        Instant timestampFrom = ZonedDateTime.of(2016, 10, 30, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant timestampTo = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
+
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.NONE);
+
+        t1.load();
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.DAY1);
+
+        Instant expectedTimestamp = ZonedDateTime.of(2016, 10, 30, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("100.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampFrom).doubleValue();
+
+        assertEquals(TimeseriesPeriod.DAY1, timeseries.getPeriod());
+        assertEquals(1, timeseries.getValueMap().size());
+        assertEquals(expectedTimestamp, actualFirstTimestamp);
+        assertEquals(expectedTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
+    }
+
+    @Test
+    public void testSpreadOperationDayWithHourPeriodToQuarterHourPeriod() {
+        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
+
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("4.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.HOUR1, TimeseriesUnit.NONE);
+        t1.load();
+
+        Long measureTimestamp = System.currentTimeMillis();
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.MIN15);
+        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
+        if (this.logger.isInfoEnabled())
+            this.logger.info("SpreadOperation(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
+
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
+
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("1.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesPeriod.MIN15, timeseries.getPeriod());
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
+    }
+
+    @Test
+    public void testSpreadOperationMonthWithHourPeriodToQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> burnValueTimeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> volumeTimeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(10d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        burnValueTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.BURN_VALUE
-        );
-
-        burnValueTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(5d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        volumeTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.CUBIC_METRE
-        );
-
-        volumeTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("4.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.HOUR1, TimeseriesUnit.NONE);
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = burnValueTimeseries.multiply(volumeTimeseries);
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.MIN15);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("GasBurnValueUnitConversion(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("SpreadOperation(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 50d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("1.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesPeriod.MIN15, timeseries.getPeriod());
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testGasBurnValueUnitConversionYear() {
-
+    public void testSpreadOperationYearWithHourPeriodToQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> burnValueTimeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> volumeTimeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(10d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        burnValueTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.BURN_VALUE
-        );
-
-        burnValueTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(5d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        volumeTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.CUBIC_METRE
-        );
-
-        volumeTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("4.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.HOUR1, TimeseriesUnit.NONE);
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = burnValueTimeseries.multiply(volumeTimeseries);
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.MIN15);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("GasBurnValueUnitConversion(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("SpreadOperation(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 50d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("1.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesPeriod.MIN15, timeseries.getPeriod());
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testRemunerationUnitConversionDay() {
-
+    public void testSpreadOperationRegularDayWithDayPeriodToQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> energyTimeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> remunerationTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("96.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.DAY1, TimeseriesUnit.NONE);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        t1.load();
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.MIN15);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(50d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        energyTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
+        Double expectedValue = new BigDecimal("1.0").doubleValue();
+        Double actualValue = timeseries.getValue(expectedFirstTimestamp).doubleValue();
 
-        energyTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(2.6d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        remunerationTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.EURO_CENT_PER_KILO_WATT_HOUR
-        );
-
-        remunerationTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = energyTimeseries.multiply(remunerationTimeseries).toUnit(TimeseriesUnit.EURO);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("RemunerationUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1.3d, 96, true);
-
+        assertEquals(TimeseriesPeriod.MIN15, timeseries.getPeriod());
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testRemunerationUnitConversionMonth() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+    public void testSpreadOperationDaylightSavingMissingHourWithQuarterHourPeriodToDayPeriod() {
+        Instant timestampFrom = ZonedDateTime.of(2016, 3, 27, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant timestampTo = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> energyTimeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> remunerationTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("92.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.DAY1, TimeseriesUnit.NONE);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        t1.load();
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.MIN15);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 3, 27, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(50d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        energyTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
+        Double expectedValue = new BigDecimal("1.0").doubleValue();
+        Double actualValue = timeseries.getValue(expectedFirstTimestamp).doubleValue();
 
-        energyTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(2.6d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        remunerationTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.EURO_CENT_PER_KILO_WATT_HOUR
-        );
-
-        remunerationTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = energyTimeseries.multiply(remunerationTimeseries).toUnit(TimeseriesUnit.EURO);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("RemunerationUnitConversion(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1.3d, 2976, false);
-
+        assertEquals(TimeseriesPeriod.MIN15, timeseries.getPeriod());
+        assertEquals(92, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testRemunerationUnitConversionYear() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+    public void testSpreadOperationDaylightSavingAdditionalHourWithQuarterHourPeriodToDayPeriod() {
+        Instant timestampFrom = ZonedDateTime.of(2016, 10, 30, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant timestampTo = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> energyTimeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> remunerationTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("100.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.DAY1, TimeseriesUnit.NONE);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        t1.load();
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.MIN15);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 10, 30, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(50d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        energyTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
+        Double expectedValue = new BigDecimal("1.0").doubleValue();
+        Double actualValue = timeseries.getValue(expectedFirstTimestamp).doubleValue();
 
-        energyTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(2.6d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        remunerationTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.EURO_CENT_PER_KILO_WATT_HOUR
-        );
-
-        remunerationTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = energyTimeseries.multiply(remunerationTimeseries).toUnit(TimeseriesUnit.EURO);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("RemunerationUnitConversion(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1.3d, 35136, false);
-
+        assertEquals(TimeseriesPeriod.MIN15, timeseries.getPeriod());
+        assertEquals(100, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testPowerToEnergyUnitConversionDay() {
-
+    public void testPowerToEnergyUnitConversionDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> powerTimeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        powerTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT
-        );
-
-        powerTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT);
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = powerTimeseries.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.MEGA_WATT_HOUR);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("PowerToEnergyUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 4d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("0.00025");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(TimeseriesUnit.MEGA_WATT_HOUR, timeseries.getUnit());
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testPowerToEnergyUnitConversionMonth() {
-
+    public void testPowerToEnergyUnitConversionMonthWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> powerTimeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        powerTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT
-        );
-
-        powerTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT);
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = powerTimeseries.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.MEGA_WATT_HOUR);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("PowerToEnergyUnitConversion(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 4d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("0.00025");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(TimeseriesUnit.MEGA_WATT_HOUR, timeseries.getUnit());
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testPowerToEnergyUnitConversionYear() {
-
+    public void testPowerToEnergyUnitConversionYearWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> powerTimeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        powerTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT
-        );
-
-        powerTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT);
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = powerTimeseries.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.MEGA_WATT_HOUR);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("PowerToEnergyUnitConversion(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 4d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("0.00025");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(TimeseriesUnit.MEGA_WATT_HOUR, timeseries.getUnit());
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testPowerToEnergyUnitConversionRegular() {
-
+    public void testPowerToEnergyUnitConversionRegularDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> powerTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT);
+        t1.load();
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(24d, new byte[8]),
-                TimeseriesPeriod.DAY1
-        );
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        powerTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.DAY1,
-                TimeseriesUnit.KILO_WATT
-        );
+        BigDecimal expectedValue = new BigDecimal("0.25");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
-        powerTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = powerTimeseries.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("PowerToEnergyUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1d, 1, false);
-
+        assertEquals(TimeseriesUnit.KILO_WATT_HOUR, timeseries.getUnit());
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testPowerToEnergyUnitConversionMissingHour() {
-
+    public void testPowerToEnergyUnitConversionDaylightSavingMissingHourWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 3, 27, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> powerTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT);
+        t1.load();
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 3, 27, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(23d, new byte[8]),
-                TimeseriesPeriod.DAY1
-        );
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        powerTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")),
-                TimeseriesPeriod.DAY1,
-                TimeseriesUnit.KILO_WATT
-        );
+        BigDecimal expectedValue = new BigDecimal("0.25");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
-        powerTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = powerTimeseries.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("PowerToEnergyUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1d, 1, false);
-
+        assertEquals(TimeseriesUnit.KILO_WATT_HOUR, timeseries.getUnit());
+        assertEquals(92, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testPowerToEnergyUnitConversionAdditionalHour() {
-
+    public void testPowerToEnergyUnitConversionDaylightSavingAdditionalHourWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 10, 30, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> powerTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT);
+        t1.load();
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 10, 30, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(25d, new byte[8]),
-                TimeseriesPeriod.DAY1
-        );
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        powerTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")),
-                TimeseriesPeriod.DAY1,
-                TimeseriesUnit.KILO_WATT
-        );
+        BigDecimal expectedValue = new BigDecimal("0.25");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
-        powerTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = powerTimeseries.toUnit(TimeseriesUnit.KILO_WATT_HOUR);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("PowerToEnergyUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1d, 1, false);
-
+        assertEquals(TimeseriesUnit.KILO_WATT_HOUR, timeseries.getUnit());
+        assertEquals(100, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testEnergyToPowerUnitConversionDay() {
-
+    public void testEnergyToPowerUnitConversionDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> energyTimeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        energyTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        energyTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT_HOUR);
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = energyTimeseries.toUnit(TimeseriesUnit.KILO_WATT);
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.MEGA_WATT);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("EnergyToPowerUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 0.25d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("0.004");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(TimeseriesUnit.MEGA_WATT, timeseries.getUnit());
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testEnergyToPowerUnitConversionMonth() {
-
+    public void testEnergyToPowerUnitConversionMonthWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> energyTimeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        energyTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        energyTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT_HOUR);
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = energyTimeseries.toUnit(TimeseriesUnit.KILO_WATT);
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.MEGA_WATT);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("EnergyToPowerUnitConversion(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 0.25d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("0.004");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(TimeseriesUnit.MEGA_WATT, timeseries.getUnit());
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testEnergyToPowerUnitConversionYear() {
-
+    public void testEnergyToPowerUnitConversionYearWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> energyTimeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        energyTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        energyTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT_HOUR);
+        t1.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = energyTimeseries.toUnit(TimeseriesUnit.KILO_WATT);
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.MEGA_WATT);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
             this.logger.info("EnergyToPowerUnitConversion(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 0.25d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        BigDecimal expectedValue = new BigDecimal("0.004");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
+
+        assertEquals(TimeseriesUnit.MEGA_WATT, timeseries.getUnit());
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testEnergyToPowerUnitConversionRegular() {
-
+    public void testEnergyToPowerUnitConversionRegularDayWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> powerTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT_HOUR);
+        t1.load();
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.KILO_WATT);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.DAY1
-        );
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        powerTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.DAY1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
+        BigDecimal expectedValue = new BigDecimal("4.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
-        powerTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = powerTimeseries.toUnit(TimeseriesUnit.KILO_WATT);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("EnergyToPowerUnitConversionRegular: " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 24d, 1, false);
-
+        assertEquals(TimeseriesUnit.KILO_WATT, timeseries.getUnit());
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testEnergyToPowerUnitConversionMissingHour() {
-
+    public void testEnergyToPowerUnitConversionDaylightSavingMissingHourWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 3, 27, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> powerTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT_HOUR);
+        t1.load();
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.KILO_WATT);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 3, 27, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.DAY1
-        );
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        powerTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")),
-                TimeseriesPeriod.DAY1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
+        BigDecimal expectedValue = new BigDecimal("4.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
-        powerTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = powerTimeseries.toUnit(TimeseriesUnit.KILO_WATT);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("EnergyToPowerUnitConversionMissingHour: " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 23d, 1, false);
-
+        assertEquals(TimeseriesUnit.KILO_WATT, timeseries.getUnit());
+        assertEquals(92, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testEnergyToPowerUnitConversionAdditionalHour() {
-
+    public void testEnergyToPowerUnitConversionDaylightSavingAdditionalHourWithQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 10, 30, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-        Timeseries<ValueStatusPair<Double, byte[]>> powerTimeseries;
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT_HOUR);
+        t1.load();
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
+        Timeseries<BigDecimal> timeseries = t1.toUnit(TimeseriesUnit.KILO_WATT);
 
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 10, 30, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.DAY1
-        );
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
 
-        powerTimeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")),
-                TimeseriesPeriod.DAY1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
+        BigDecimal expectedValue = new BigDecimal("4.0");
+        BigDecimal actualValue = timeseries.getValue(timestampTo);
 
-        powerTimeseries.load(new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET")));
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = powerTimeseries.toUnit(TimeseriesUnit.KILO_WATT);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("EnergyToPowerUnitConversionAdditionalHour: " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 25d, 1, false);
-
+        assertEquals(TimeseriesUnit.KILO_WATT, timeseries.getUnit());
+        assertEquals(100, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testSpreadOperationWithEnergyUnitDay() {
-
+    public void testGasBurnValueUnitConversionDay() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
+        Timeseries<BigDecimal> burnValueTimeseries = createTimeseries(new BigDecimal("10.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.BURN_VALUE);
+        Timeseries<BigDecimal> volumeTimeseries = createTimeseries(new BigDecimal("5.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.CUBIC_METRE);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.HOUR1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.HOUR1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 24, false);
+        burnValueTimeseries.load();
+        volumeTimeseries.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.MIN15);
+        Timeseries<BigDecimal> timeseries = burnValueTimeseries.multiply(volumeTimeseries);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("SpreadOperationWithEnergyUnit(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("GasBurnValueUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 0.25d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("50.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesUnit.KILO_WATT_HOUR, timeseries.getUnit());
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testSpreadOperationWithEnergyUnitMonth() {
-
+    public void testGasBurnValueUnitConversionMonth() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
+        Timeseries<BigDecimal> burnValueTimeseries = createTimeseries(new BigDecimal("10.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.BURN_VALUE);
+        Timeseries<BigDecimal> volumeTimeseries = createTimeseries(new BigDecimal("5.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.CUBIC_METRE);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.HOUR1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.HOUR1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 744, false);
+        burnValueTimeseries.load();
+        volumeTimeseries.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.MIN15);
+        Timeseries<BigDecimal> timeseries = burnValueTimeseries.multiply(volumeTimeseries);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("SpreadOperationWithEnergyUnit(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("GasBurnValueUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 0.25d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("50.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesUnit.KILO_WATT_HOUR, timeseries.getUnit());
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testSpreadOperationWithEnergyUnitYear() {
-
+    public void testGasBurnValueUnitConversionYear() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
+        Timeseries<BigDecimal> burnValueTimeseries = createTimeseries(new BigDecimal("10.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.BURN_VALUE);
+        Timeseries<BigDecimal> volumeTimeseries = createTimeseries(new BigDecimal("5.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.CUBIC_METRE);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.HOUR1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.HOUR1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 8784, false);
+        burnValueTimeseries.load();
+        volumeTimeseries.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.MIN15);
+        Timeseries<BigDecimal> timeseries = burnValueTimeseries.multiply(volumeTimeseries);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("SpreadOperationWithEnergyUnit(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("GasBurnValueUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 0.25d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("50.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesUnit.KILO_WATT_HOUR, timeseries.getUnit());
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testSpreadOperationWithPowerUnitDay() {
-
+    public void testRemunerationUnitConversionDay() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
+        Timeseries<BigDecimal> energyTimeseries = createTimeseries(new BigDecimal("50.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT_HOUR);
+        Timeseries<BigDecimal> remunerationTimeseries = createTimeseries(new BigDecimal("2.6"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.EURO_CENT_PER_KILO_WATT_HOUR);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.HOUR1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.HOUR1,
-                TimeseriesUnit.KILO_WATT
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 24, false);
+        energyTimeseries.load();
+        remunerationTimeseries.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.MIN15);
+        Timeseries<BigDecimal> timeseries = energyTimeseries.multiply(remunerationTimeseries).toUnit(TimeseriesUnit.EURO);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("SpreadOperationWithPowerUnit(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("RemunerationUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 1d, 96, true);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("1.3").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesUnit.EURO, timeseries.getUnit());
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testSpreadOperationWithPowerUnitMonth() {
-
+    public void testRemunerationUnitConversionMonth() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
+        Timeseries<BigDecimal> burnValueTimeseries = createTimeseries(new BigDecimal("50.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT_HOUR);
+        Timeseries<BigDecimal> volumeTimeseries = createTimeseries(new BigDecimal("2.6"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.EURO_CENT_PER_KILO_WATT_HOUR);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.HOUR1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.HOUR1,
-                TimeseriesUnit.KILO_WATT
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 744, false);
+        burnValueTimeseries.load();
+        volumeTimeseries.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.MIN15);
+        Timeseries<BigDecimal> timeseries = burnValueTimeseries.multiply(volumeTimeseries).toUnit(TimeseriesUnit.EURO);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("SpreadOperationWithPowerUnit(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("RemunerationUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 1d, 2976, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("1.3").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesUnit.EURO, timeseries.getUnit());
+        assertEquals(2976, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void testSpreadOperationWithPowerUnitYear() {
-
+    public void testRemunerationUnitConversionYear() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
 
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
+        Timeseries<BigDecimal> burnValueTimeseries = createTimeseries(new BigDecimal("50.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT_HOUR);
+        Timeseries<BigDecimal> volumeTimeseries = createTimeseries(new BigDecimal("2.6"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.EURO_CENT_PER_KILO_WATT_HOUR);
 
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.HOUR1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.HOUR1,
-                TimeseriesUnit.KILO_WATT
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 8784, false);
+        burnValueTimeseries.load();
+        volumeTimeseries.load();
 
         Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.MIN15);
+        Timeseries<BigDecimal> timeseries = burnValueTimeseries.multiply(volumeTimeseries).toUnit(TimeseriesUnit.EURO);
         measureTimestamp = System.currentTimeMillis() - measureTimestamp;
         if (this.logger.isInfoEnabled())
-            this.logger.info("SpreadOperationWithPowerUnit(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
+            this.logger.info("RemunerationUnitConversion(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
 
-        doTest(interval, timeseries, 1d, 35136, false);
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
 
+        Instant expectedLastTimestamp = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("1.3").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesUnit.EURO, timeseries.getUnit());
+        assertEquals(35136, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
     }
 
-    @Test
-    public void testCompactOperationWithEnergyUnitDay() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
+    private <T> Timeseries<T> createTimeseries(
+            T value,
+            ValuePlugin<T> valuePlugin,
+            TimeseriesInterval interval,
+            TimeseriesPeriod period,
+            TimeseriesUnit unit) {
+        return new Timeseries<>(
                 valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 96, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.HOUR1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("CompactOperationWithEnergyUnit(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 4d, 24, true);
-
-    }
-
-    @Test
-    public void testCompactOperationWithEnergyUnitMonth() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 2976, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.HOUR1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("CompactOperationWithEnergyUnit(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 4d, 744, false);
-
-    }
-
-    @Test
-    public void testCompactOperationWithEnergyUnitYear() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 35136, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.HOUR1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("CompactOperationWithEnergyUnit(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 4d, 8784, false);
-
-    }
-
-    @Test
-    public void testCompactOperationWithPowerUnitDay() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 96, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.HOUR1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("CompactOperationWithPowerUnit(Day): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1d, 24, true);
-
-    }
-
-    @Test
-    public void testCompactOperationWithPowerUnitMonth() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2016, 2, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 2976, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.HOUR1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("CompactOperationWithPowerUnit(Month): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1d, 744, false);
-
-    }
-
-    @Test
-    public void testCompactOperationWithPowerUnitYear() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.MIN15
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                new TimeseriesInterval(timestampFrom, timestampTo),
-                TimeseriesPeriod.MIN15,
-                TimeseriesUnit.KILO_WATT
-        );
-
-        timeseries.load(new TimeseriesInterval(timestampFrom, timestampTo));
-        doTest(interval, timeseries, 1d, 35136, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.HOUR1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("CompactOperationWithPowerUnit(Year): " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1d, 8784, false);
-
-    }
-
-    @Test
-    public void testCompactOperationDaylightSavingMissingHour() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 3, 27, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.HOUR1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
+                new TimeseriesDataProviderConstantValue<>(valuePlugin, value, period),
                 interval,
-                TimeseriesPeriod.HOUR1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(interval);
-        doTest(interval, timeseries, 1d, 23, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.DAY1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("CompactOperationDaylightSavingMissingHour: " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 23d, 1, false);
-
-    }
-
-    @Test
-    public void testCompactOperationDaylightSavingAdditionalHour() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 10, 30, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(1d, new byte[8]),
-                TimeseriesPeriod.HOUR1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                interval,
-                TimeseriesPeriod.HOUR1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(interval);
-        doTest(interval, timeseries, 1d, 25, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.DAY1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("CompactOperationDaylightSavingAdditionalHour: " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 25d, 1, false);
-
-    }
-
-    @Test
-    public void testSpreadOperationDaylightSavingMissingHour() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 3, 27, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2016, 3, 28, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(23d, new byte[8]),
-                TimeseriesPeriod.DAY1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                interval,
-                TimeseriesPeriod.DAY1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(interval);
-        doTest(interval, timeseries, 23d, 1, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.HOUR1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("SpreadOperationDaylightSavingMissingHour: " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1d, 23, false);
-
-    }
-
-    @Test
-    public void testSpreadOperationDaylightSavingAdditionalHour() {
-
-        Instant timestampFrom = ZonedDateTime.of(2016, 10, 30, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        Instant timestampTo = ZonedDateTime.of(2016, 10, 31, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
-        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
-
-        Timeseries<ValueStatusPair<Double, byte[]>> timeseries;
-
-        ValueStatusPairPlugin<Double, byte[]> valuePlugin;
-        TimeseriesDataProvider<ValueStatusPair<Double, byte[]>> dataProvider;
-
-        valuePlugin = new ValueStatusPairPlugin<>(
-                new DoublePlugin(),
-                new byte[8]
-        );
-
-        dataProvider = new TimeseriesDataProviderConstantValue<>(
-                valuePlugin,
-                new ValueStatusPair<>(25d, new byte[8]),
-                TimeseriesPeriod.DAY1
-        );
-
-        timeseries = new Timeseries<>(
-                valuePlugin,
-                dataProvider,
-                interval,
-                TimeseriesPeriod.DAY1,
-                TimeseriesUnit.KILO_WATT_HOUR
-        );
-
-        timeseries.load(interval);
-        doTest(interval, timeseries, 25d, 1, false);
-
-        Long measureTimestamp = System.currentTimeMillis();
-        timeseries = timeseries.toPeriod(TimeseriesPeriod.HOUR1);
-        measureTimestamp = System.currentTimeMillis() - measureTimestamp;
-        if (this.logger.isInfoEnabled())
-            this.logger.info("SpreadOperationDaylightSavingAdditionalHour: " + measureTimestamp.doubleValue() / 1000 + " s");
-
-        doTest(interval, timeseries, 1d, 25, false);
-
-    }
-
-    private class DTO {
-
-        Timeseries<ValueStatusPair<Double, byte[]>> t1;
-        Timeseries<ValueStatusPair<Double, byte[]>> t2;
+                period,
+                unit);
     }
 
 }
