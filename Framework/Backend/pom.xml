@@ -17,6 +17,7 @@
     <modules>
         <module>backend-api</module>
         <module>backend-domain</module>
+        <module>backend-service-registry</module>
     </modules>
 
     <dependencyManagement>
