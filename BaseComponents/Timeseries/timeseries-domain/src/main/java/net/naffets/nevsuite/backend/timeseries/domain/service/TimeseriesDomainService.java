@@ -7,9 +7,9 @@ import net.naffets.nevsuite.backend.timeseries.domain.repository.document.Timese
 import net.naffets.nevsuite.backend.timeseries.domain.repository.persistent.TimeseriesDocumentRepository;
 import net.naffets.nevsuite.backend.timeseries.domain.repository.persistent.TimeseriesHeadRepository;
 import net.naffets.nevsuite.backend.timeseries.domain.repository.temporary.TimeseriesDocumentInMemoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,32 +19,31 @@ import java.util.Optional;
 @Service
 public class TimeseriesDomainService {
 
-    @Autowired
     private TimeseriesHeadRepository timeseriesHeadRepository;
-
-    @Autowired
     private TimeseriesDocumentRepository timeseriesDocumentRepository;
-
-    @Autowired
     private TimeseriesDocumentMongoRepository timeseriesDocumentMongoRepository;
-
-    @Autowired
     private TimeseriesDocumentInMemoryRepository timeseriesDocumentInMemoryRepository;
+
+    @Inject
+    public TimeseriesDomainService(TimeseriesHeadRepository timeseriesHeadRepository, TimeseriesDocumentRepository timeseriesDocumentRepository, TimeseriesDocumentMongoRepository timeseriesDocumentMongoRepository, TimeseriesDocumentInMemoryRepository timeseriesDocumentInMemoryRepository) {
+        this.timeseriesHeadRepository = timeseriesHeadRepository;
+        this.timeseriesDocumentRepository = timeseriesDocumentRepository;
+        this.timeseriesDocumentMongoRepository = timeseriesDocumentMongoRepository;
+        this.timeseriesDocumentInMemoryRepository = timeseriesDocumentInMemoryRepository;
+    }
 
     public List<TimeseriesHead> findAllTimeseriesHeads() {
         return timeseriesHeadRepository.findAll();
     }
 
     public TimeseriesHead findTimeseriesHeadByPrimaryKey(String uuid) {
-        return timeseriesHeadRepository.findOne(uuid);
+        return timeseriesHeadRepository.getOne(uuid);
     }
 
     public TimeseriesHead saveTimeseriesHead(TimeseriesHeadDTO dto) {
         TimeseriesHead timeseriesHead;
         if ( Optional.ofNullable(dto.primaryKey).isPresent() ) {
-            final Optional<TimeseriesHead> persistentTimeseriesHead = Optional.ofNullable(
-                    this.timeseriesHeadRepository.findOne(dto.primaryKey)
-            );
+            final Optional<TimeseriesHead> persistentTimeseriesHead = Optional.of(this.timeseriesHeadRepository.getOne(dto.primaryKey));
             timeseriesHead = persistentTimeseriesHead.orElseGet(TimeseriesHead.builder()::build);
         } else {
             timeseriesHead = TimeseriesHead.builder().build();

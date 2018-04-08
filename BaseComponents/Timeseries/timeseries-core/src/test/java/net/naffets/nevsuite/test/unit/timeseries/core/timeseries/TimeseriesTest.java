@@ -906,6 +906,35 @@ public class TimeseriesTest {
     }
 
     @Test
+    public void testCompactOperationWithPowerUnit() {
+        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
+
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.MIN15, TimeseriesUnit.KILO_WATT);
+
+        t1.load();
+
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.HOUR1);
+
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 1, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
+
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("1.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesPeriod.HOUR1, timeseries.getPeriod());
+        assertEquals(TimeseriesUnit.KILO_WATT, timeseries.getUnit());
+        assertEquals(24, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
+    }
+
+    @Test
     public void testSpreadOperationDayWithHourPeriodToQuarterHourPeriod() {
         Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
         Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
@@ -1104,6 +1133,35 @@ public class TimeseriesTest {
         BigDecimal actualValue = timeseries.getValue(timestampTo);
 
         assertEquals(TimeseriesUnit.MEGA_WATT_HOUR, timeseries.getUnit());
+        assertEquals(96, timeseries.getValueMap().size());
+        assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
+        assertEquals(expectedLastTimestamp, actualLastTimestamp);
+        assertEquals(expectedValue, actualValue);
+    }
+
+    @Test
+    public void testSpreadOperationWithPowerUnit() {
+        Instant timestampFrom = ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant timestampTo = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        TimeseriesInterval interval = new TimeseriesInterval(timestampFrom, timestampTo, ZoneId.of("CET"));
+
+        Timeseries<BigDecimal> t1 = createTimeseries(new BigDecimal("1.0"), new BigDecimalPlugin(), interval, TimeseriesPeriod.HOUR1, TimeseriesUnit.KILO_WATT);
+
+        t1.load();
+
+        Timeseries<BigDecimal> timeseries = t1.toPeriod(TimeseriesPeriod.MIN15);
+
+        Instant expectedFirstTimestamp = ZonedDateTime.of(2016, 1, 1, 0, 15, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualFirstTimestamp = timeseries.getValueMap().keySet().stream().sorted().findFirst().orElse(null);
+
+        Instant expectedLastTimestamp = ZonedDateTime.of(2016, 1, 2, 0, 0, 0, 0, ZoneId.of("CET")).toInstant();
+        Instant actualLastTimestamp = timeseries.getValueMap().keySet().stream().max(Instant::compareTo).orElse(null);
+
+        Double expectedValue = new BigDecimal("1.0").doubleValue();
+        Double actualValue = timeseries.getValue(timestampTo).doubleValue();
+
+        assertEquals(TimeseriesPeriod.MIN15, timeseries.getPeriod());
+        assertEquals(TimeseriesUnit.KILO_WATT, timeseries.getUnit());
         assertEquals(96, timeseries.getValueMap().size());
         assertEquals(expectedFirstTimestamp, actualFirstTimestamp);
         assertEquals(expectedLastTimestamp, actualLastTimestamp);

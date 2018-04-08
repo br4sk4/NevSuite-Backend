@@ -45,6 +45,7 @@
         <nevsuite.version>0.11</nevsuite.version>
         <spring.boot.version>2.0.1.RELEASE</spring.boot.version>
         <spring.cloud.version>Finchley.M9</spring.cloud.version>
+        <javaee.version>7.0</javaee.version>
         <moxy.version>2.5.0</moxy.version>
         <jscience.version>4.3.1</jscience.version>
         <oracle.version>0.11</oracle.version>
@@ -52,6 +53,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${javaee.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.moxy</artifactId>

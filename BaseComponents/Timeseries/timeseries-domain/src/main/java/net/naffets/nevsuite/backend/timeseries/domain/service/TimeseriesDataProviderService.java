@@ -24,7 +24,7 @@ public class TimeseriesDataProviderService<T> extends TimeseriesDataProviderBase
     private String timeseriesIdentifier = "";
 
     @Autowired
-    TimeseriesDocumentRepository timeseriesDocumentRepository;
+    private TimeseriesDocumentRepository timeseriesDocumentRepository;
 
     public TimeseriesDataProviderService() {
         super(null, TimeseriesPeriod.DAY1);
