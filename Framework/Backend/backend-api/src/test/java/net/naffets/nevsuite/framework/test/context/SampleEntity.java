@@ -10,6 +10,8 @@ import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
 import net.naffets.nevsuite.framework.core.base.AbstractReference;
 import net.naffets.nevsuite.framework.lang.annotation.PropertyValidation;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author br4sk4 / created on 30.03.2018
  */
@@ -19,7 +21,10 @@ import net.naffets.nevsuite.framework.lang.annotation.PropertyValidation;
 @Setter
 public class SampleEntity extends AbstractEntityBean implements EntityBean {
 
+    @NotNull
     private String firstName;
+
+    @NotNull
     private String lastName;
 
     @Builder

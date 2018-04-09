@@ -71,7 +71,7 @@ public class AbstractValidatableTest {
         thrown.expect(hasProperty("message", is("validation.error")));
         thrown.expect(hasProperty("validationErrors", hasSize(1)));
         thrown.expect(hasProperty("validationErrors", hasItem(allOf(
-                hasProperty("fieldName", is("firstName")),
+                hasProperty("fieldName", is("lastName")),
                 hasProperty("errorMessage", is(errorMessage))
         ))));
 
@@ -84,14 +84,17 @@ public class AbstractValidatableTest {
         thrown.expect(EntityValidationException.class);
         thrown.expect(hasProperty("message", is("validation.error")));
         thrown.expect(hasProperty("validationErrors", hasSize(3)));
-        thrown.expect(hasProperty("fieldErrors", hasItem(allOf(
-                hasItem(allOf(hasProperty("fieldName", is("primaryKey")),
+        thrown.expect(hasProperty("validationErrors", allOf(
+                hasItem(allOf(
+                        hasProperty("fieldName", is("primaryKey")),
                         hasProperty("errorMessage", is(errorMessage)))),
-                hasItem(allOf(hasProperty("fieldName", is("firstName")),
+                hasItem(allOf(
+                        hasProperty("fieldName", is("firstName")),
                         hasProperty("errorMessage", is(errorMessage)))),
-                hasItem(allOf(hasProperty("fieldName", is("lastName")),
+                hasItem(allOf(
+                        hasProperty("fieldName", is("lastName")),
                         hasProperty("errorMessage", is(errorMessage))))
-        ))));
+        )));
 
         sampleEntity.setPrimaryKey(null);
         sampleEntity.setFirstName(null);

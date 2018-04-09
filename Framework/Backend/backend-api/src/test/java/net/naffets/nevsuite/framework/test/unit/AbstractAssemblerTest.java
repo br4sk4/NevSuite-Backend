@@ -53,7 +53,7 @@ public class AbstractAssemblerTest {
         ReferenceAssembler sut = new ReferenceAssembler();
         ReferenceDTO referenceDTO = sut.toDTO(sampleEntity);
 
-        String expectedTypeDiscriminator = "SAMPLEENTITY";
+        String expectedTypeDiscriminator = "SampleEntity";
         String expectedRepresentableName = "Sven Steffan";
 
         String actualPrimaryKey = referenceDTO.primaryKey;
