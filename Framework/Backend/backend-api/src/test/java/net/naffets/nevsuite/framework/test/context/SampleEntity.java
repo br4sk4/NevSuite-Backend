@@ -21,10 +21,10 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class SampleEntity extends AbstractEntityBean implements EntityBean {
 
-    @NotNull
+    @NotNull(message = "darf nicht null sein")
     private String firstName;
 
-    @NotNull
+    @NotNull(message = "darf nicht null sein")
     private String lastName;
 
     @Builder

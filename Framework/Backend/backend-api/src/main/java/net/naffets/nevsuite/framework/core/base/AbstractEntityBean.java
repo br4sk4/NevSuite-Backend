@@ -21,7 +21,7 @@ public abstract class AbstractEntityBean extends AbstractDomainObject implements
 
     @Id
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "darf nicht null sein")
     protected String primaryKey;
 
     public AbstractEntityBean() {
