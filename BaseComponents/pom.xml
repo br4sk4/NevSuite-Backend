@@ -16,6 +16,8 @@
 
     <modules>
         <module>Timeseries</module>
+        <module>BackgroundProcessManagement</module>
+        <module>BackgroundProcesses</module>
     </modules>
 
 </project>
