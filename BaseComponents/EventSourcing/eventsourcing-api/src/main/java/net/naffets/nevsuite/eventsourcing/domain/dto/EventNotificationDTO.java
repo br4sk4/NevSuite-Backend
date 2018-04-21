@@ -18,7 +18,7 @@ import java.io.Serializable;
         "referencedObjectType",
         "referencedObjectId"
 })
-@XmlRootElement(name = "backgroundprocess")
+@XmlRootElement(name = "eventnotification")
 @NoArgsConstructor
 public class EventNotificationDTO implements Serializable, DataTransferObject {
 

@@ -8,12 +8,13 @@ import net.naffets.nevsuite.framework.core.base.AbstractAssembler;
  * @author br4sk4
  * created on 20.04.18
  */
-public class EvenDescriptorAssembler extends AbstractAssembler<EventDescriptor, EventDescriptorDTO> {
+public class EventDescriptorAssembler extends AbstractAssembler<EventDescriptor, EventDescriptorDTO> {
 
     @Override
     public EventDescriptorDTO toDTO(EventDescriptor eventDescriptor) {
         return EventDescriptorDTO.builder()
                 .qualifier(eventDescriptor.getQualifier().toString())
+                .shortText(eventDescriptor.getQualifier().getShortText())
                 .build();
     }
 }

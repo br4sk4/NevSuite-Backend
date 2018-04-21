@@ -1,5 +1,7 @@
 package net.naffets.nevsuite.eventsourcing.domain.basictype;
 
+import java.util.ResourceBundle;
+
 /**
  * @author br4sk4
  * created on 08.07.2016
@@ -17,7 +19,8 @@ public enum EventQualifier {
     }
 
     public String getShortText() {
-        return this.shortText;
+        ResourceBundle resource = ResourceBundle.getBundle("eventsourcing");
+        return resource.getString(this.shortText);
     }
 
 }

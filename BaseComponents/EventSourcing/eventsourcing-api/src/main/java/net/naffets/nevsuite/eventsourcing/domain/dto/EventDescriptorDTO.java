@@ -13,16 +13,21 @@ import java.io.Serializable;
  * created on 20.04.18
  */
 @XmlType(propOrder = {
-        "qualifier"
+        "qualifier",
+        "shortText"
 })
-@XmlRootElement(name = "backgroundprocess")
+@XmlRootElement(name = "eventdescriptor")
 @NoArgsConstructor
 public class EventDescriptorDTO implements Serializable, DataTransferObject {
 
     public String qualifier;
+    public String shortText;
 
     @Builder
-    public EventDescriptorDTO(String qualifier) {
+    public EventDescriptorDTO(
+            String qualifier,
+            String shortText) {
         this.qualifier = qualifier;
+        this.shortText = shortText;
     }
 }
