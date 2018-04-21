@@ -15,8 +15,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>Timeseries</module>
+        <module>EventSourcing</module>
         <module>BackgroundProcesses</module>
+        <module>Timeseries</module>
     </modules>
 
 </project>
