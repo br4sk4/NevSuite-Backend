@@ -13,7 +13,7 @@ public class BackgroundProcessAssembler extends AbstractAssembler<BackgroundProc
     @Override
     public BackgroundProcessDTO toDTO(BackgroundProcess backgroundProcess) {
         return BackgroundProcessDTO.builder()
-                .primaryKey(backgroundProcess.getPrimaryKey().toString())
+                .primaryKey(backgroundProcess.getPrimaryKey())
                 .name(backgroundProcess.getName())
                 .start(backgroundProcess.getStart().toString())
                 .end(backgroundProcess.getEnd().toString())
