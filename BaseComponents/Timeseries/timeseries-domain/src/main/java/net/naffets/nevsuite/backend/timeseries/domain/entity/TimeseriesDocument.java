@@ -4,7 +4,7 @@ import lombok.*;
 import net.naffets.nevsuite.backend.timeseries.domain.valueobject.Interval;
 import net.naffets.nevsuite.framework.core.api.Reference;
 import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
-import net.naffets.nevsuite.framework.core.base.AbstractReference;
+import net.naffets.nevsuite.framework.core.base.BaseReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -57,15 +57,10 @@ public class TimeseriesDocument extends AbstractEntityBean implements Serializab
 
     @Override
     public Reference asReference() {
-        return new AbstractReference(this) {
+        return new BaseReference(this) {
             @Override
             public String getRepresentableName() {
                 return timeseriesIdentifier + " : " + interval.getInstantFrom() + " - " + interval.getInstantTo();
-            }
-
-            @Override
-            public String getTypeDiscriminator() {
-                return this.getClass().getSimpleName();
             }
         };
     }

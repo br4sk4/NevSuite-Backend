@@ -3,7 +3,7 @@ package net.naffets.nevsuite.backend.framework.domain.entity;
 import lombok.*;
 import net.naffets.nevsuite.framework.core.api.Reference;
 import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
-import net.naffets.nevsuite.framework.core.base.AbstractReference;
+import net.naffets.nevsuite.framework.core.base.BaseReference;
 import org.springframework.util.DigestUtils;
 
 import javax.persistence.AttributeOverride;
@@ -39,15 +39,10 @@ public class User extends AbstractEntityBean {
 
     @Override
     public Reference asReference() {
-        return new AbstractReference(this) {
+        return new BaseReference(this) {
             @Override
             public String getRepresentableName() {
                 return nickName;
-            }
-
-            @Override
-            public String getTypeDiscriminator() {
-                return this.getClass().getSimpleName();
             }
         };
     }

@@ -1,13 +1,11 @@
 package net.naffets.nevsuite.backgroundprocesses.webservice;
 
-import net.naffets.nevsuite.backgroundprocesses.domain.adapter.EventSourcingDomainClient;
+import net.naffets.nevsuite.backgroundprocesses.domain.facade.EventSourcingDomainServiceFacade;
 import net.naffets.nevsuite.eventsourcing.domain.dto.EventDescriptorDTO;
+import net.naffets.nevsuite.eventsourcing.domain.dto.EventNotificationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,11 +18,16 @@ import java.util.List;
 public class BackgroundProcessesDomainWebservice {
 
     @Autowired
-    private EventSourcingDomainClient eventSourcingDomainClient;
+    private EventSourcingDomainServiceFacade eventSourcingDomainClient;
 
     @RequestMapping(value = "eventdescriptors", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EventDescriptorDTO> getEventDescriptors() {
         return eventSourcingDomainClient.getEventDescriptors();
+    }
+
+    @RequestMapping(value = "eventnotifications", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EventNotificationDTO> getEventNotifcations() {
+        return eventSourcingDomainClient.getEventNotifications();
     }
 
 }

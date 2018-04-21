@@ -1,5 +1,6 @@
 package net.naffets.nevsuite.eventsourcing.domain.repository;
 
+import net.naffets.nevsuite.eventsourcing.domain.basictype.EventQualifier;
 import net.naffets.nevsuite.eventsourcing.domain.entity.EventDescriptor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,4 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface EventDescriptorRepository extends JpaRepository<EventDescriptor, String> {
+
+    EventDescriptor findByQualifier(EventQualifier qualifier);
+
 }

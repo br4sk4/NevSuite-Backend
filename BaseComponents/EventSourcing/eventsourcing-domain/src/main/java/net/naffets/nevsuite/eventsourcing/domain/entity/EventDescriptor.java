@@ -1,13 +1,10 @@
 package net.naffets.nevsuite.eventsourcing.domain.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import net.naffets.nevsuite.eventsourcing.domain.basictype.EventQualifier;
 import net.naffets.nevsuite.framework.core.api.Reference;
 import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
-import net.naffets.nevsuite.framework.core.base.AbstractReference;
+import net.naffets.nevsuite.framework.core.base.BaseReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,7 +15,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "T_EVSC_EVENT_DESCRIPTOR")
-@AttributeOverride(name = "primaryKey", column = @Column(name = "evds_id"))
+@AttributeOverride(name = "primaryKey", column = @Column(name = "EVDS_ID"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
@@ -31,17 +28,18 @@ public class EventDescriptor extends AbstractEntityBean implements Serializable 
     @Enumerated(EnumType.STRING)
     protected EventQualifier qualifier;
 
+    @Builder
+    public EventDescriptor(String primaryKey, EventQualifier qualifier) {
+        super(primaryKey);
+        this.qualifier = qualifier;
+    }
+
     @Override
     public Reference asReference() {
-        return new AbstractReference(this) {
+        return new BaseReference(this) {
             @Override
             public String getRepresentableName() {
-                return "EventDescriptor";
-            }
-
-            @Override
-            public String getTypeDiscriminator() {
-                return "EVDS";
+                return qualifier.toString();
             }
         };
     }

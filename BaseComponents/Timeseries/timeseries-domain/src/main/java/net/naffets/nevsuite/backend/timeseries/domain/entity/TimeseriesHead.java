@@ -4,7 +4,7 @@ import lombok.*;
 import net.naffets.nevsuite.backend.timeseries.domain.basictype.*;
 import net.naffets.nevsuite.framework.core.api.Reference;
 import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
-import net.naffets.nevsuite.framework.core.base.AbstractReference;
+import net.naffets.nevsuite.framework.core.base.BaseReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -66,15 +66,10 @@ public class TimeseriesHead extends AbstractEntityBean implements Serializable {
 
     @Override
     public Reference asReference() {
-        return new AbstractReference(this) {
+        return new BaseReference(this) {
             @Override
             public String getRepresentableName() {
                 return identifier;
-            }
-
-            @Override
-            public String getTypeDiscriminator() {
-                return this.getClass().getSimpleName();
             }
         };
     }

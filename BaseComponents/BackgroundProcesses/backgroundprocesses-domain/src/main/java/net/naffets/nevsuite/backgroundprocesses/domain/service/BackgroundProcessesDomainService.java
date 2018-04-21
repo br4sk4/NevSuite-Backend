@@ -58,7 +58,7 @@ public class BackgroundProcessesDomainService {
         );
     }
 
-    public void insertBackgroundProcess(BackgroundProcessDTO dto) {
+    public BackgroundProcess insertBackgroundProcess(BackgroundProcessDTO dto) {
         BackgroundProcess backgroundProcess = BackgroundProcess.builder()
                 .primaryKey(dto.primaryKey)
                 .name(dto.name)
@@ -66,10 +66,10 @@ public class BackgroundProcessesDomainService {
                 .status(BackgroundProcessStatus.valueOf(dto.status))
                 .build();
 
-        backgroundProcessRepository.save(backgroundProcess);
+        return backgroundProcessRepository.save(backgroundProcess);
     }
 
-    public void updateBackgroundProcess(BackgroundProcessDTO dto) {
+    public BackgroundProcess updateBackgroundProcess(BackgroundProcessDTO dto) {
         BackgroundProcess backgroundProcess = BackgroundProcess.builder()
                 .primaryKey(dto.primaryKey)
                 .name(dto.name)
@@ -78,6 +78,6 @@ public class BackgroundProcessesDomainService {
                 .status(BackgroundProcessStatus.valueOf(dto.status))
                 .build();
 
-        backgroundProcessRepository.save(backgroundProcess);
+        return backgroundProcessRepository.save(backgroundProcess);
     }
 }

@@ -1,6 +1,7 @@
-package net.naffets.nevsuite.backgroundprocesses.domain.adapter;
+package net.naffets.nevsuite.backgroundprocesses.domain.facade;
 
 import net.naffets.nevsuite.eventsourcing.domain.dto.EventDescriptorDTO;
+import net.naffets.nevsuite.eventsourcing.domain.dto.EventNotificationDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +14,15 @@ import java.util.List;
  */
 @Component
 @FeignClient("eventsourcing")
-public interface EventSourcingDomainClient {
+public interface EventSourcingDomainServiceFacade {
 
     @RequestMapping(method = RequestMethod.GET, value = "/DomainService/eventdescriptors")
     List<EventDescriptorDTO> getEventDescriptors();
+
+    @RequestMapping(method = RequestMethod.GET, value = "/DomainService/eventnotifications")
+    List<EventNotificationDTO> getEventNotifications();
+
+    @RequestMapping(method = RequestMethod.POST, value = "/DomainService/eventnotifications")
+    EventNotificationDTO pushEvent(EventNotificationDTO dto);
 
 }

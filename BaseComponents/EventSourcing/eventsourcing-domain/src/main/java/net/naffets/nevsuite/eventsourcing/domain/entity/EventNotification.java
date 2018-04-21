@@ -1,12 +1,9 @@
 package net.naffets.nevsuite.eventsourcing.domain.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import net.naffets.nevsuite.framework.core.api.Reference;
 import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
-import net.naffets.nevsuite.framework.core.base.AbstractReference;
+import net.naffets.nevsuite.framework.core.base.BaseReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,7 +15,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "T_EVSC_EVENT_NOTIFICATION")
-@AttributeOverride(name = "primaryKey", column = @Column(name = "evnf_id"))
+@AttributeOverride(name = "primaryKey", column = @Column(name = "EVNF_ID"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
@@ -36,21 +33,28 @@ public class EventNotification extends AbstractEntityBean implements Serializabl
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "typeDiscriminator", column = @Column(name = "EVNF_REFERENCE_TYPE")),
-            @AttributeOverride(name = "uuid", column = @Column(name = "EVNF_REFERENCE_UUID"))
+            @AttributeOverride(name = "primaryKey", column = @Column(name = "EVNF_REFERENCE_UUID"))
     })
-    Reference referencedObject;
+    BaseReference referencedObject;
+
+    @Builder
+    public EventNotification(
+            String primaryKey,
+            Timestamp timestamp,
+            EventDescriptor eventDescriptor,
+            BaseReference referencedObject) {
+        super(primaryKey);
+        this.timestamp = timestamp;
+        this.eventDescriptor = eventDescriptor;
+        this.referencedObject = referencedObject;
+    }
 
     @Override
     public Reference asReference() {
-        return new AbstractReference(this) {
+        return new BaseReference(this) {
             @Override
             public String getRepresentableName() {
                 return "EventNotification";
-            }
-
-            @Override
-            public String getTypeDiscriminator() {
-                return "EVNF";
             }
         };
     }

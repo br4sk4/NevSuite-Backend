@@ -4,7 +4,7 @@ import lombok.*;
 import net.naffets.nevsuite.backgroundprocesses.domain.basictype.BackgroundProcessStatus;
 import net.naffets.nevsuite.framework.core.api.Reference;
 import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
-import net.naffets.nevsuite.framework.core.base.AbstractReference;
+import net.naffets.nevsuite.framework.core.base.BaseReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -53,15 +53,10 @@ public class BackgroundProcess extends AbstractEntityBean implements Serializabl
 
     @Override
     public Reference asReference() {
-        return new AbstractReference(this) {
+        return new BaseReference(this) {
             @Override
             public String getRepresentableName() {
                 return name;
-            }
-
-            @Override
-            public String getTypeDiscriminator() {
-                return this.getClass().getSimpleName();
             }
         };
     }
