@@ -28,6 +28,11 @@
                 <artifactId>backgroundprocesses-api</artifactId>
                 <version>${nevsuite.version}</version>
             </dependency>
+            <dependency>
+                <groupId>net.naffets.nevsuite</groupId>
+                <artifactId>eventsourcing-api</artifactId>
+                <version>${nevsuite.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

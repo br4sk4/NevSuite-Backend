@@ -40,6 +40,7 @@
     <properties>
         <nevsuite.version>0.11</nevsuite.version>
         <spring.boot.version>2.0.1.RELEASE</spring.boot.version>
+        <spring.cloud.feign.version>1.4.4.RELEASE</spring.cloud.feign.version>
         <spring.cloud.version>Finchley.M9</spring.cloud.version>
         <javaee.version>7.0</javaee.version>
         <moxy.version>2.5.0</moxy.version>
@@ -88,6 +89,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-mongodb</artifactId>
                 <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-feign</artifactId>
+                <version>${spring.cloud.feign.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

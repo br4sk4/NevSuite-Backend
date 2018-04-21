@@ -73,8 +73,16 @@
             <artifactId>backgroundprocesses-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.naffets.nevsuite</groupId>
+            <artifactId>eventsourcing-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
