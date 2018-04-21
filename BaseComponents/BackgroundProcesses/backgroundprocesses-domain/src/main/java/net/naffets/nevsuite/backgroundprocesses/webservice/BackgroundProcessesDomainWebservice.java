@@ -1,6 +1,6 @@
 package net.naffets.nevsuite.backgroundprocesses.webservice;
 
-import net.naffets.nevsuite.backgroundprocesses.domain.facade.EventSourcingDomainServiceFacade;
+import net.naffets.nevsuite.eventsourcing.domain.facade.EventSourcingDomainServiceFacade;
 import net.naffets.nevsuite.eventsourcing.domain.dto.EventDescriptorDTO;
 import net.naffets.nevsuite.eventsourcing.domain.dto.EventNotificationDTO;
 import org.springframework.beans.factory.annotation.Autowired;

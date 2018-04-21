@@ -1,7 +1,7 @@
 package net.naffets.nevsuite.backgroundprocesses.domain.service;
 
 
-import net.naffets.nevsuite.backgroundprocesses.domain.facade.EventSourcingDomainServiceFacade;
+import net.naffets.nevsuite.eventsourcing.domain.facade.EventSourcingDomainServiceFacade;
 import net.naffets.nevsuite.backgroundprocesses.domain.dto.BackgroundProcessDTO;
 import net.naffets.nevsuite.backgroundprocesses.domain.entity.BackgroundProcess;
 import net.naffets.nevsuite.eventsourcing.domain.basictype.EventQualifier;
