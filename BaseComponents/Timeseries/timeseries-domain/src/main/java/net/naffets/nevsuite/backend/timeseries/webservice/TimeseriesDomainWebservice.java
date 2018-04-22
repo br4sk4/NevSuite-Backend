@@ -9,10 +9,10 @@ import net.naffets.nevsuite.backend.timeseries.domain.dto.TimeseriesHeadDTO;
 import net.naffets.nevsuite.backend.timeseries.domain.entity.TimeseriesHead;
 import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDataProviderService;
 import net.naffets.nevsuite.backend.timeseries.domain.service.TimeseriesDomainService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
@@ -26,11 +26,16 @@ import java.util.Optional;
 @RequestMapping("/DomainService")
 public class TimeseriesDomainWebservice {
 
-    @Autowired
     private TimeseriesDomainService domainService;
-
-    @Autowired
     private TimeseriesDataProviderService<BigDecimal> dataProviderService;
+
+    @Inject
+    public TimeseriesDomainWebservice(
+            TimeseriesDomainService domainService,
+            TimeseriesDataProviderService<BigDecimal> dataProviderService) {
+        this.domainService = domainService;
+        this.dataProviderService = dataProviderService;
+    }
 
     @RequestMapping("/timeseriesHead")
     public List<TimeseriesHeadDTO> findTimeseriesHead() {

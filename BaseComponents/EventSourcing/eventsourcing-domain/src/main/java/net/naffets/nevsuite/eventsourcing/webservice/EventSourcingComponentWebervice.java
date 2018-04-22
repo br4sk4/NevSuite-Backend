@@ -1,10 +1,11 @@
 package net.naffets.nevsuite.eventsourcing.webservice;
 
 import net.naffets.nevsuite.eventsourcing.domain.service.EventSourcingComponentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.inject.Inject;
 
 /**
  * @author br4sk4
@@ -15,8 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ComponentService")
 public class EventSourcingComponentWebervice {
 
-    @Autowired
     private EventSourcingComponentService componentService;
+
+    @Inject
+    public EventSourcingComponentWebervice(
+            EventSourcingComponentService componentService) {
+        this.componentService = componentService;
+    }
 
     @RequestMapping("/respond")
     public String respond() {

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author br4sk4 / created on 21.04.2018
  */
-@FeignClient("eventsourcing")
+@FeignClient("event-sourcing")
 public interface EventSourcingDomainServiceFacade {
 
     @RequestMapping(method = RequestMethod.GET, value = "/DomainService/eventdescriptors")

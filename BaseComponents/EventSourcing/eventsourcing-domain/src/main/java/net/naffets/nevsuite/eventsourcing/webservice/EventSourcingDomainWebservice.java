@@ -3,10 +3,10 @@ package net.naffets.nevsuite.eventsourcing.webservice;
 import net.naffets.nevsuite.eventsourcing.domain.dto.EventDescriptorDTO;
 import net.naffets.nevsuite.eventsourcing.domain.dto.EventNotificationDTO;
 import net.naffets.nevsuite.eventsourcing.domain.service.EventSourcingDomainService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -17,8 +17,12 @@ import java.util.List;
 @RequestMapping("/DomainService")
 public class EventSourcingDomainWebservice {
 
-    @Autowired
     private EventSourcingDomainService eventSourcingDomainService;
+
+    @Inject
+    public EventSourcingDomainWebservice(EventSourcingDomainService eventSourcingDomainService) {
+        this.eventSourcingDomainService = eventSourcingDomainService;
+    }
 
     @RequestMapping(value = "eventdescriptors", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EventDescriptorDTO> getEventDescriptors() {

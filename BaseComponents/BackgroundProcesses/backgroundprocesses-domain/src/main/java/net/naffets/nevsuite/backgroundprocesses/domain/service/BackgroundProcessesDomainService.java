@@ -8,9 +8,9 @@ import net.naffets.nevsuite.backgroundprocesses.domain.entity.BackgroundProcess;
 import net.naffets.nevsuite.backgroundprocesses.domain.entity.ScheduledBackgroundProcess;
 import net.naffets.nevsuite.backgroundprocesses.domain.repository.BackgroundProcessRepository;
 import net.naffets.nevsuite.backgroundprocesses.domain.repository.ScheduledBackgroundProcessRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -21,14 +21,19 @@ import java.time.Instant;
 @Service
 public class BackgroundProcessesDomainService {
 
-    @Autowired
     private ScheduledBackgroundProcessRepository scheduledBackgroundProcessRepository;
-
-    @Autowired
     private BackgroundProcessRepository backgroundProcessRepository;
-
-    @Autowired
     private BackgroundProcessSchedulerService schedulerService;
+
+    @Inject
+    public BackgroundProcessesDomainService(
+            ScheduledBackgroundProcessRepository scheduledBackgroundProcessRepository,
+            BackgroundProcessRepository backgroundProcessRepository,
+            BackgroundProcessSchedulerService schedulerService) {
+        this.scheduledBackgroundProcessRepository = scheduledBackgroundProcessRepository;
+        this.backgroundProcessRepository = backgroundProcessRepository;
+        this.schedulerService = schedulerService;
+    }
 
     public BackgroundProcessDTO findBackgroundProcessByUuid(String uuid) {
         return new BackgroundProcessAssembler().toDTO(backgroundProcessRepository.findById(uuid).orElse(null));

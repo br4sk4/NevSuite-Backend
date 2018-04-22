@@ -7,9 +7,9 @@ import net.naffets.nevsuite.backend.timeseries.core.timeseries.TimeseriesPeriod;
 import net.naffets.nevsuite.backend.timeseries.core.valueplugin.ValuePlugin;
 import net.naffets.nevsuite.backend.timeseries.domain.repository.persistent.TimeseriesDocumentRepository;
 import net.naffets.nevsuite.backend.timeseries.lang.persistence.ValueMapDocument;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class TimeseriesDataProviderService<T> extends TimeseriesDataProviderBase
 
     private String timeseriesIdentifier = "";
 
-    @Autowired
+    @Inject
     private TimeseriesDocumentRepository timeseriesDocumentRepository;
 
     public TimeseriesDataProviderService() {

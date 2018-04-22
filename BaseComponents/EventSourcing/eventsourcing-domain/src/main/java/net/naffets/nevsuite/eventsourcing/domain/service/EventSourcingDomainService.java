@@ -10,9 +10,9 @@ import net.naffets.nevsuite.eventsourcing.domain.entity.EventNotification;
 import net.naffets.nevsuite.eventsourcing.domain.repository.EventDescriptorRepository;
 import net.naffets.nevsuite.eventsourcing.domain.repository.EventNotificationRepository;
 import net.naffets.nevsuite.framework.core.base.BaseReference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -25,11 +25,16 @@ import java.util.UUID;
 @Service
 public class EventSourcingDomainService {
 
-    @Autowired
     private EventDescriptorRepository eventDescriptorRepository;
-
-    @Autowired
     private EventNotificationRepository eventNotificationRepository;
+
+    @Inject
+    public EventSourcingDomainService(
+            EventDescriptorRepository eventDescriptorRepository,
+            EventNotificationRepository eventNotificationRepository) {
+        this.eventDescriptorRepository = eventDescriptorRepository;
+        this.eventNotificationRepository = eventNotificationRepository;
+    }
 
     public List<EventDescriptorDTO> findEventDescriptors() {
         return new EventDescriptorAssembler().toDTO(eventDescriptorRepository.findAll());

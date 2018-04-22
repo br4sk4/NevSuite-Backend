@@ -1,10 +1,11 @@
 package net.naffets.nevsuite.backgroundprocesses.webservice;
 
 import net.naffets.nevsuite.backgroundprocesses.domain.service.BackgroundProcessesComponentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.inject.Inject;
 
 /**
  * @author br4sk4
@@ -15,8 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ComponentService")
 public class BackgroundProcessesComponentWebservice {
 
-    @Autowired
     private BackgroundProcessesComponentService componentService;
+
+    @Inject
+    public BackgroundProcessesComponentWebservice(
+            BackgroundProcessesComponentService componentService) {
+        this.componentService = componentService;
+    }
 
     @RequestMapping("/respond")
     public String respond() {

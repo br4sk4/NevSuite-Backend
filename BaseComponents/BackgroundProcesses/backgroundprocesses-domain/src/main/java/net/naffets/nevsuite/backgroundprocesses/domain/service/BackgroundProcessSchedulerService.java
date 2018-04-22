@@ -6,12 +6,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.Instant;
@@ -29,19 +29,22 @@ public class BackgroundProcessSchedulerService {
 
     private static final Logger logger = LogManager.getLogger(BackgroundProcessSchedulerService.class.getName());
 
-    @Autowired
     private ScheduledBackgroundProcessRepository scheduledBackgroundProcessRepository;
-
-    @Autowired
     private BackgroundProcessTaskFactory jobFactory;
-
     private Scheduler scheduler;
+
+    @Inject
+    public BackgroundProcessSchedulerService(
+            ScheduledBackgroundProcessRepository scheduledBackgroundProcessRepository,
+            BackgroundProcessTaskFactory jobFactory) {
+        this.scheduledBackgroundProcessRepository = scheduledBackgroundProcessRepository;
+        this.jobFactory = jobFactory;
+    }
 
     @PostConstruct
     public void startScheduler() {
         try {
             logger.info("Startup Scheduler");
-            //StdSchedulerFactory schedulerFactory = new StdSchedulerFactory();
             StdSchedulerFactory factory = new StdSchedulerFactory();
             factory.initialize(new ClassPathResource("quartz.properties").getInputStream());
 

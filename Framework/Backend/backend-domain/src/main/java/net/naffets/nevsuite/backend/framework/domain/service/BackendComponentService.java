@@ -1,9 +1,9 @@
 package net.naffets.nevsuite.backend.framework.domain.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,8 +13,13 @@ import java.util.stream.Collectors;
 @Service
 public class BackendComponentService {
 
-    @Autowired
     private DiscoveryClient discoveryClient;
+
+    @Inject
+    public BackendComponentService(
+            DiscoveryClient discoveryClient) {
+        this.discoveryClient = discoveryClient;
+    }
 
     public String respond() {
         return "May the force be with you!";

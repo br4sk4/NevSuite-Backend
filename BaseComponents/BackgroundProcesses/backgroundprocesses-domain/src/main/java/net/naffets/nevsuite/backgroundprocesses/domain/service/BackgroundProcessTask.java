@@ -1,6 +1,8 @@
 package net.naffets.nevsuite.backgroundprocesses.domain.service;
 
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import net.naffets.nevsuite.eventsourcing.domain.facade.EventSourcingDomainServiceFacade;
 import net.naffets.nevsuite.backgroundprocesses.domain.dto.BackgroundProcessDTO;
 import net.naffets.nevsuite.backgroundprocesses.domain.entity.BackgroundProcess;
@@ -11,9 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -22,35 +24,47 @@ import java.util.UUID;
  * created on 05.07.2016
  */
 @Component
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BackgroundProcessTask implements Job {
 
     private static Logger logger = LogManager.getLogger(BackgroundProcessTask.class.getName());
 
-    @Autowired
+    @Inject
     private BackgroundProcessesDomainService backgroundProcessesDomainService;
 
-    @Autowired
-    private EventSourcingDomainServiceFacade eventSourcingDomainClient;
+    @Inject
+    private EventSourcingDomainServiceFacade eventSourcingDomainServiceFacade;
+
+    @Inject
+    public BackgroundProcessTask(
+            BackgroundProcessesDomainService backgroundProcessesDomainService,
+            EventSourcingDomainServiceFacade eventSourcingDomainServiceFacade) {
+        this.backgroundProcessesDomainService = backgroundProcessesDomainService;
+        this.eventSourcingDomainServiceFacade = eventSourcingDomainServiceFacade;
+    }
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         BackgroundProcessDTO dto = createBackgroundProcessDTO(jobExecutionContext.getJobDetail().getJobDataMap().getString("jobname"));
-
         BackgroundProcess backgroundProcess = backgroundProcessesDomainService.insertBackgroundProcess(dto);
-        eventSourcingDomainClient.pushEvent(EventNotificationDTO.builder()
-                .descriptor(EventQualifier.E_101.toString())
-                .referencedObjectId(backgroundProcess.getPrimaryKey())
-                .referencedObjectType(backgroundProcess.asReference().getTypeDiscriminator())
-                .build());
 
-        logger.info("Running " + dto.name);
+        try {
+            eventSourcingDomainServiceFacade.pushEvent(EventNotificationDTO.builder()
+                    .descriptor(EventQualifier.E_101.toString())
+                    .referencedObjectId(backgroundProcess.getPrimaryKey())
+                    .referencedObjectType(backgroundProcess.asReference().getTypeDiscriminator())
+                    .build());
 
-        backgroundProcess = backgroundProcessesDomainService.updateBackgroundProcess(finishBackgroundProcessDTO(dto));
-        eventSourcingDomainClient.pushEvent(EventNotificationDTO.builder()
-                .descriptor(EventQualifier.E_102.toString())
-                .referencedObjectId(backgroundProcess.getPrimaryKey())
-                .referencedObjectType(backgroundProcess.asReference().getTypeDiscriminator())
-                .build());
+            logger.info("Running " + dto.name);
+
+            eventSourcingDomainServiceFacade.pushEvent(EventNotificationDTO.builder()
+                    .descriptor(EventQualifier.E_102.toString())
+                    .referencedObjectId(backgroundProcess.getPrimaryKey())
+                    .referencedObjectType(backgroundProcess.asReference().getTypeDiscriminator())
+                    .build());
+        } finally {
+            backgroundProcessesDomainService.updateBackgroundProcess(finishBackgroundProcessDTO(dto));
+        }
     }
 
     private BackgroundProcessDTO createBackgroundProcessDTO(String name) {
