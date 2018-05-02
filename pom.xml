@@ -39,9 +39,11 @@
 
     <properties>
         <nevsuite.version>0.11</nevsuite.version>
+        <spring.framework.version>5.0.5.RELEASE</spring.framework.version>
         <spring.boot.version>2.0.1.RELEASE</spring.boot.version>
-        <spring.cloud.feign.version>1.4.4.RELEASE</spring.cloud.feign.version>
-        <spring.cloud.version>Finchley.M9</spring.cloud.version>
+        <spring.cloud.version>Finchley.RC1</spring.cloud.version>
+        <spring.cloud.netflix.version>2.0.0.RC1</spring.cloud.netflix.version>
+        <spring.cloud.openfeign.version>2.0.0.RC1</spring.cloud.openfeign.version>
         <javaee.version>7.0</javaee.version>
         <moxy.version>2.5.0</moxy.version>
         <jscience.version>4.3.1</jscience.version>
@@ -71,6 +73,11 @@
                 <version>${oracle.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
                 <version>${spring.boot.version}</version>
@@ -92,8 +99,18 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-feign</artifactId>
-                <version>${spring.cloud.feign.version}</version>
+                <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+                <version>${spring.cloud.netflix.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+                <version>${spring.cloud.netflix.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${spring.cloud.openfeign.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

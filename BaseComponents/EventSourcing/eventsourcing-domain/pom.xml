@@ -41,8 +41,20 @@
                         </goals>
                         <configuration>
                             <hibernateDialect>org.hibernate.dialect.Oracle10gDialect</hibernateDialect>
-                            <persistenceUnit>NevSuite-Oracle-PU</persistenceUnit>
+                            <persistenceUnit>NevSuite-PU</persistenceUnit>
                             <outputFile>${project.basedir}/src/gen/db/oracle-schema.sql</outputFile>
+                            <target>SCRIPT</target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>GeneratePostgreSQLSchema</id>
+                        <goals>
+                            <goal>export</goal>
+                        </goals>
+                        <configuration>
+                            <hibernateDialect>org.hibernate.dialect.PostgreSQL82Dialect</hibernateDialect>
+                            <persistenceUnit>NevSuite-PU</persistenceUnit>
+                            <outputFile>${project.basedir}/src/gen/db/postgresql-schema.sql</outputFile>
                             <target>SCRIPT</target>
                         </configuration>
                     </execution>
@@ -53,7 +65,7 @@
                         </goals>
                         <configuration>
                             <hibernateDialect>org.hibernate.dialect.H2Dialect</hibernateDialect>
-                            <persistenceUnit>NevSuite-H2-PU</persistenceUnit>
+                            <persistenceUnit>NevSuite-PU</persistenceUnit>
                             <outputFile>${project.basedir}/src/gen/db/h2-schema.sql</outputFile>
                             <target>SCRIPT</target>
                         </configuration>
