@@ -7,6 +7,7 @@ package net.naffets.nevsuite.backgroundprocesses.domain.basictype;
 public enum BackgroundProcessStatus {
 
     RUNNING,
-    FINISHED
+    SUCCESSFULLY_FINISHED,
+    ERRONEOUSLY_FINISHED
 
 }

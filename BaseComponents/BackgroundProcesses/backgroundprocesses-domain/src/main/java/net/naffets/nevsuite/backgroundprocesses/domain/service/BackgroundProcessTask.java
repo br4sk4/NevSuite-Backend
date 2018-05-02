@@ -3,6 +3,7 @@ package net.naffets.nevsuite.backgroundprocesses.domain.service;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import net.naffets.nevsuite.backgroundprocesses.domain.basictype.BackgroundProcessStatus;
 import net.naffets.nevsuite.eventsourcing.domain.facade.EventSourcingDomainServiceFacade;
 import net.naffets.nevsuite.backgroundprocesses.domain.dto.BackgroundProcessDTO;
 import net.naffets.nevsuite.backgroundprocesses.domain.entity.BackgroundProcess;
@@ -49,21 +50,23 @@ public class BackgroundProcessTask implements Job {
         BackgroundProcess backgroundProcess = backgroundProcessesDomainService.insertBackgroundProcess(dto);
 
         try {
+            logger.info("Running " + dto.name);
+
             eventSourcingDomainServiceFacade.pushEvent(EventNotificationDTO.builder()
                     .descriptor(EventQualifier.E_101.toString())
                     .referencedObjectId(backgroundProcess.getPrimaryKey())
                     .referencedObjectType(backgroundProcess.asReference().getTypeDiscriminator())
                     .build());
 
-            logger.info("Running " + dto.name);
-
             eventSourcingDomainServiceFacade.pushEvent(EventNotificationDTO.builder()
                     .descriptor(EventQualifier.E_102.toString())
                     .referencedObjectId(backgroundProcess.getPrimaryKey())
                     .referencedObjectType(backgroundProcess.asReference().getTypeDiscriminator())
                     .build());
-        } finally {
-            backgroundProcessesDomainService.updateBackgroundProcess(finishBackgroundProcessDTO(dto));
+
+            backgroundProcessesDomainService.updateBackgroundProcess(finishBackgroundProcessDTO(dto, BackgroundProcessStatus.SUCCESSFULLY_FINISHED));
+        } catch (Exception e) {
+            backgroundProcessesDomainService.updateBackgroundProcess(finishBackgroundProcessDTO(dto, BackgroundProcessStatus.ERRONEOUSLY_FINISHED));
         }
     }
 
@@ -72,13 +75,15 @@ public class BackgroundProcessTask implements Job {
         processDTO.primaryKey = UUID.randomUUID().toString();
         processDTO.name = name;
         processDTO.start = Instant.now().toString();
-        processDTO.status = "RUNNING";
+        processDTO.status = BackgroundProcessStatus.RUNNING.toString();
 
         return processDTO;
     }
 
-    private BackgroundProcessDTO finishBackgroundProcessDTO(BackgroundProcessDTO processDTO) {
-        processDTO.status = "FINISHED";
+    private BackgroundProcessDTO finishBackgroundProcessDTO(
+            BackgroundProcessDTO processDTO,
+            BackgroundProcessStatus status) {
+        processDTO.status = status.toString();
         processDTO.end = Instant.now().toString();
 
         return processDTO;
