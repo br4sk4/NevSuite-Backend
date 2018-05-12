@@ -1,0 +1,7 @@
+{
+  "name": "nevsuite-react",
+  "version": "0.0.1",
+  "dependencies": {
+    "nevsuite-react": "^0.0.1"
+  }
+}

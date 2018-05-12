@@ -1,0 +1,43 @@
+﻿<html>
+
+    <head>
+
+        <!-- Application-Info -->
+        <title>NevSuite</title>
+        <link rel="shortcut icon" type="image/x-icon" href="src/img/react.ico">
+
+        <!-- Base-APIs -->
+        <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
+
+        <!-- UI-StyleSheets -->
+        <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css"/>
+        <link type="text/css" rel="stylesheet" href="node_modules/nevsuite-react/src/css/nevsuite.css">
+        <link type="text/css" rel="stylesheet" href="node_modules/nevsuite-react/src/css/nevsuite-widgets.css">
+
+        <!-- Disable Browser-ContextMenu -->
+        <script type="text/javascript">
+            if ( $(document).bind !== null ) {
+                $(document).bind('contextmenu', function () {
+                    return false;
+                });
+            }
+        </script>
+
+    </head>
+
+    <body>
+
+        <application/>
+
+        <!-- React-Flux-APIs -->
+        <script type="text/javascript" src="node_modules/flux/dist/Flux.min.js"></script>
+        <script type="text/javascript" src="node_modules/react/dist/react.min.js"></script>
+        <script type="text/javascript" src="node_modules/react-dom/dist/react-dom.min.js"></script>
+
+        <!-- NevSuiteApp -->
+        <script type="text/javascript" src="node_modules/nevsuite-react/dist/nevsuite.bundle.js"></script>
+
+    </body>
+
+</html>

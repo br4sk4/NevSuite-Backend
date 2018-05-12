@@ -1,8 +1,4 @@
-Frontend/src/js/nevsuite.bundle.js
-Frontend/src/node_modules/
-Server/tomcat/
-.tomcat
+**/gen
+**/node_modules
 .idea
 *.iml
-**/gen
-**/target
