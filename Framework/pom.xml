@@ -15,7 +15,20 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>Backend</module>
+        <module>backend-api</module>
+        <module>backend-domain</module>
+        <module>backend-service-registry</module>
+        <module>frontend-provider</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.naffets.nevsuite</groupId>
+                <artifactId>backend-api</artifactId>
+                <version>${nevsuite.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
