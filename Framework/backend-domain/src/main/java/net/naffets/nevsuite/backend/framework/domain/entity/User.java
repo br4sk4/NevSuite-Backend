@@ -2,10 +2,12 @@ package net.naffets.nevsuite.backend.framework.domain.entity;
 
 import lombok.*;
 import net.naffets.nevsuite.framework.core.api.Reference;
+import net.naffets.nevsuite.framework.core.base.AbstractEntityBean;
 import net.naffets.nevsuite.framework.core.base.BaseReference;
 import org.springframework.util.DigestUtils;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -17,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-public class User extends AbstractTimelinedAttributeEntity<User> {
+public class User extends AbstractEntityBean implements Serializable {
 
     @Column(name = "user_nickname")
     private String nickName;
@@ -27,13 +29,9 @@ public class User extends AbstractTimelinedAttributeEntity<User> {
 
     @Builder
     public User(String nickName,
-                String password,
-                List<TimelinedAttributeValue<User>> timelinedAttributeValues) {
+                String password) {
         this.nickName = nickName;
         this.passwordHash = DigestUtils.md5DigestAsHex(password.getBytes());
-        timelinedAttributeValues.forEach(timelinedAttributeValue ->
-                timelinedAttributeValue.setEntity(this));
-        this.timelinedAttributeValues = timelinedAttributeValues;
     }
 
     @Override
